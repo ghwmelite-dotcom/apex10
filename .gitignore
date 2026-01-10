@@ -36,3 +36,9 @@ drizzle/meta/
 # Misc
 *.tsbuildinfo
 .eslintcache
+
+# Lighthouse reports
+lighthouse-*.json
+
+# Windows null device artifact
+nul
