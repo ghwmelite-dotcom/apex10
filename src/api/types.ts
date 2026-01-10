@@ -172,6 +172,10 @@ export const CACHE_KEYS = {
     `guardian:approvals:${chain}:${address.toLowerCase()}`,
   WALLET_RISK: (address: string) => `guardian:risk:${address.toLowerCase()}`,
   GOPLUS_CHECK: (address: string) => `guardian:goplus:${address.toLowerCase()}`,
+  // News cache keys
+  NEWS_FEED: (category: string, source: string) => `news:feed:${category}:${source}`,
+  NEWS_ARTICLE: (id: string) => `news:article:${id}`,
+  NEWS_SOURCES: "news:sources",
 } as const;
 
 // ============================================
@@ -287,4 +291,51 @@ export interface WalletSecurityScore {
     mediumIssues: number;
     totalApprovals: number;
   };
+}
+
+// ============================================
+// NEWS TYPES
+// ============================================
+export type NewsCategory = "market" | "defi" | "nft" | "regulation" | "technology" | "analysis" | "all";
+
+export type NewsSource =
+  | "coindesk"
+  | "cointelegraph"
+  | "theblock"
+  | "decrypt"
+  | "cryptoslate"
+  | "bitcoinmagazine"
+  | "all";
+
+export interface NewsArticle {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  url: string;
+  image?: string;
+  source: NewsSource;
+  sourceName: string;
+  sourceIcon?: string;
+  author?: string;
+  publishedAt: string;
+  category: NewsCategory;
+  tags?: string[];
+  readingTime: number;
+}
+
+export interface NewsFeedResponse {
+  articles: NewsArticle[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+}
+
+export interface NewsSourceInfo {
+  id: NewsSource;
+  name: string;
+  icon: string;
+  url: string;
+  description: string;
 }

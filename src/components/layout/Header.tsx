@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { TrendingUp, Shield, BookOpen, Menu, X, Sparkles, Search, ScanLine, Wallet } from "lucide-react";
+import { TrendingUp, Shield, BookOpen, Menu, X, Sparkles, Search, ScanLine, Wallet, Newspaper } from "lucide-react";
 import { useState } from "react";
 import { MarketPulseMini } from "../MarketPulse";
 import { AchievementBadge } from "../AchievementSystem";
@@ -12,6 +12,7 @@ interface HeaderProps {
 
 const navItems = [
   { path: "/", label: "Rankings", icon: TrendingUp },
+  { path: "/news", label: "News", icon: Newspaper },
   { path: "/security", label: "Security", icon: Shield },
   { path: "/scanner", label: "Scanner", icon: ScanLine },
   { path: "/wallet-guardian", label: "Guardian", icon: Wallet },

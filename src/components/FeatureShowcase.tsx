@@ -10,6 +10,8 @@ import {
   Zap,
   Lock,
   Eye,
+  Newspaper,
+  Headphones,
 } from "lucide-react";
 
 interface Feature {
@@ -24,6 +26,16 @@ interface Feature {
 }
 
 const features: Feature[] = [
+  {
+    title: "Crypto News",
+    description: "Real-time aggregated news from top crypto sources with AI-powered text-to-speech reader for hands-free consumption",
+    icon: Newspaper,
+    path: "/news",
+    gradient: "from-pink-500 to-rose-500",
+    glowColor: "rgba(236, 72, 153, 0.4)",
+    badge: "AI Reader",
+    stats: "6 top sources",
+  },
   {
     title: "Wallet Guardian",
     description: "Scan token approvals, detect risky permissions, and revoke unlimited allowances to protect your assets",
@@ -120,7 +132,7 @@ export function FeatureShowcase() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
       >
         {features.map((feature, index) => (
           <FeatureCard key={feature.path} feature={feature} index={index} />

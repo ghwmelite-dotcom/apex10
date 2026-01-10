@@ -21,6 +21,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const ContractScanner = lazy(() => import("./pages/ContractScanner"));
 const WalletGuardian = lazy(() => import("./pages/WalletGuardian"));
 const VerifyPage = lazy(() => import("./pages/VerifyPage"));
+const NewsHub = lazy(() => import("./pages/NewsHub"));
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -86,6 +87,7 @@ export default function App() {
                         <Route path="/learn" element={<LearnCenter />} />
                         <Route path="/scanner" element={<ContractScanner />} />
                         <Route path="/wallet-guardian" element={<WalletGuardian />} />
+                        <Route path="/news" element={<NewsHub />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </AnimatePresence>
