@@ -196,46 +196,99 @@ ai.get("/security/quiz", async (c) => {
   }
 });
 
-// Phishing simulation generator
+// Security awareness training - scam identification scenarios
 ai.get("/security/phishing-test", async (c) => {
   const type = c.req.query("type") || "email";
 
-  const prompt = `Generate a realistic ${type === "email" ? "phishing email" : "suspicious message"} example for educational purposes. This is to train users to identify scams.
+  // Pre-built educational scenarios to avoid AI content filter issues
+  const emailScenarios = [
+    {
+      content: `From: support@crypt0-wallet-security.com\nSubject: URGENT: Your wallet has been compromised!\n\nDear Valued Customer,\n\nWe have detected suspicious activity on your CryptoSafe wallet. Your account will be suspended in 24 hours unless you verify your identity.\n\nClick here to verify: http://cryptosafe-verify.suspicious-link.com/login\n\nYou must enter your seed phrase to confirm ownership.\n\nBest regards,\nCryptoSafe Security Team`,
+      isPhishing: true,
+      redFlags: [
+        "Misspelled domain (crypt0 with zero)",
+        "Creates false urgency with 24-hour deadline",
+        "Suspicious link URL doesn't match company",
+        "Asks for seed phrase - legitimate services NEVER do this",
+        "Generic greeting instead of your name"
+      ],
+      explanation: "This is a classic phishing attempt. Legitimate crypto services will NEVER ask for your seed phrase. The urgency tactics and suspicious domain are major red flags."
+    },
+    {
+      content: `From: noreply@blockchainrewards.net\nSubject: Congratulations! You've won 2.5 BTC!\n\nHello Winner!\n\nYour wallet address was randomly selected in our blockchain anniversary giveaway!\n\nPrize: 2.5 BTC (≈$150,000)\n\nTo claim, simply send 0.01 BTC processing fee to:\nbc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh\n\nOnce received, your 2.5 BTC will be sent within 1 hour!\n\nAct fast - offer expires in 48 hours!`,
+      isPhishing: true,
+      redFlags: [
+        "Unsolicited prize notification",
+        "Requires payment to receive prize (advance fee scam)",
+        "Too good to be true amount",
+        "Time pressure tactics",
+        "Random wallet selection is not how crypto works"
+      ],
+      explanation: "This is an advance fee scam. You should never send crypto to receive crypto. Legitimate giveaways don't require upfront payment."
+    },
+    {
+      content: `From: admin@metamask-support.io\nSubject: Action Required: Wallet Synchronization\n\nDear User,\n\nDue to our recent upgrade, all wallets must be re-synchronized.\n\nFailure to complete this within 12 hours will result in loss of funds.\n\nSynchronize now: metamask-sync.com/wallet\n\nYou will need to import your wallet using your recovery phrase.\n\nMetaMask Support`,
+      isPhishing: true,
+      redFlags: [
+        "Fake domain (metamask-support.io, not metamask.io)",
+        "Wallets don't need 'synchronization'",
+        "Threatens fund loss",
+        "Asks for recovery phrase",
+        "Link goes to unofficial domain"
+      ],
+      explanation: "MetaMask and other wallets never require 're-synchronization'. This is attempting to steal your seed phrase through a fake website."
+    }
+  ];
 
-  Return ONLY valid JSON:
-  {
-    "content": "the fake ${type} content with realistic but obviously fake details",
-    "isPhishing": true,
-    "redFlags": ["list", "of", "warning", "signs"],
-    "explanation": "educational explanation of why this is suspicious"
-  }
-
-  Use fake company names like "CryptoSafe" or "BlockSecure" - never real companies.
-  Include subtle red flags that trained users should spot.`;
+  const messageScenarios = [
+    {
+      content: `Hey! I'm a developer from Uniswap. We noticed your wallet qualifies for our exclusive airdrop of 5000 UNI tokens. DM me your wallet address and seed phrase to verify eligibility. This is time-sensitive - only 50 spots left! 🚀`,
+      isPhishing: true,
+      redFlags: [
+        "Unsolicited DM about free tokens",
+        "Claims to be from official team via DM",
+        "Asks for seed phrase",
+        "Creates artificial scarcity",
+        "Uses urgency tactics"
+      ],
+      explanation: "Official teams never DM first about airdrops or ask for seed phrases. Airdrops are claimed through official websites, not private messages."
+    },
+    {
+      content: `ATTENTION: Your Trust Wallet needs immediate verification due to new KYC regulations. Visit trustwallet-verify.com within 24 hours or your assets will be frozen. Enter your 12-word phrase to complete verification.`,
+      isPhishing: true,
+      redFlags: [
+        "Fake regulatory claims",
+        "Non-official domain",
+        "Asks for 12-word phrase",
+        "Threatens to freeze assets",
+        "Urgency tactics"
+      ],
+      explanation: "Trust Wallet is a non-custodial wallet - there's no central authority to 'freeze' your assets. They would never ask for your seed phrase."
+    },
+    {
+      content: `🎁 CONGRATS! You've been selected for the Binance Mystery Box event! Connect your wallet at binance-rewards.xyz to claim your FREE NFT worth up to $10,000! Only 100 boxes remaining! ⏰`,
+      isPhishing: true,
+      redFlags: [
+        "Unofficial domain (.xyz not binance.com)",
+        "Unsolicited reward notification",
+        "Too-good-to-be-true value",
+        "Artificial scarcity (100 remaining)",
+        "Asks to connect wallet to unknown site"
+      ],
+      explanation: "This fake giveaway tries to get you to connect your wallet to a malicious site that could drain your funds through a malicious smart contract approval."
+    }
+  ];
 
   try {
-    const response = await c.env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
-      messages: [
-        { role: "system", content: "You are creating educational phishing examples. Return ONLY valid JSON." },
-        { role: "user", content: prompt },
-      ],
-      max_tokens: 400,
-      temperature: 0.9,
+    const scenarios = type === "email" ? emailScenarios : messageScenarios;
+    const randomIndex = Math.floor(Math.random() * scenarios.length);
+    const scenario = scenarios[randomIndex];
+
+    return c.json({
+      ...scenario,
+      id: crypto.randomUUID(),
+      type,
     });
-
-    const responseText = (response as { response: string }).response;
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-
-    if (jsonMatch) {
-      const simulation = JSON.parse(jsonMatch[0]);
-      return c.json({
-        ...simulation,
-        id: crypto.randomUUID(),
-        type,
-      });
-    }
-
-    return c.json({ error: "Failed to generate simulation" }, 500);
   } catch (error) {
     console.error("Phishing simulation error:", error);
     return c.json({ error: "Failed to generate simulation" }, 500);
