@@ -1,8 +1,8 @@
-import { useRef, ReactNode, MouseEvent } from "react";
+import { useRef, ReactNode, MouseEvent, ButtonHTMLAttributes } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-interface MagneticButtonProps {
+interface MagneticButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onMouseMove' | 'onMouseLeave'> {
   children: ReactNode;
   className?: string;
   strength?: number;
@@ -16,6 +16,7 @@ export function MagneticButton({
   strength = 0.3,
   onClick,
   disabled = false,
+  ...props
 }: MagneticButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -62,6 +63,7 @@ export function MagneticButton({
         disabled && "opacity-50 cursor-not-allowed",
         className
       )}
+      {...props}
     >
       {children}
     </motion.button>

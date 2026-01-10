@@ -1,25 +1,45 @@
-import { motion } from "framer-motion";
 import { TrendingUp, Info, BarChart3, Grid, List, Orbit, Sparkles } from "lucide-react";
 import { useState, lazy, Suspense } from "react";
 import { useTop10Assets, usePrices } from "@/hooks/useAssets";
+import { Card, SkeletonCard, SkeletonAssetRow } from "@/components/ui";
+
+// Only lazy load truly heavy components (Three.js, WebGL)
+const OrbitalView = lazy(() => import("@/components/OrbitalView"));
+
+// Critical above-the-fold components - load synchronously to prevent CLS
 import { AssetCard } from "@/components/AssetCard";
 import { AssetTable } from "@/components/AssetTable";
-
-// Lazy load Three.js heavy component
-const OrbitalView = lazy(() => import("@/components/OrbitalView"));
 import { MarketPulse } from "@/components/MarketPulse";
 import { FloatingOrbs } from "@/components/ParticleBackground";
-import { TiltCard } from "@/components/ui/TiltCard";
-import { MagneticButton, MagneticAuroraButton } from "@/components/ui/MagneticButton";
-import { Card, SkeletonCard, SkeletonAssetRow } from "@/components/ui";
 import { LiveActivityFeed, LiveActivityTicker } from "@/components/LiveActivityFeed";
 import { HolographicCard } from "@/components/HolographicCard";
-import { FadeInOnScroll, StaggerContainer, StaggerItem, RevealText } from "@/components/ScrollAnimations";
+import { CommunityPulse } from "@/components/CommunityPulse";
+import { FeatureShowcase } from "@/components/FeatureShowcase";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { MagneticButton, MagneticAuroraButton } from "@/components/ui/MagneticButton";
 import { TimeGreeting, TimeBasedSuggestions } from "@/components/TimeAwareUI";
 import { XPProgressBar } from "@/components/AchievementSystem";
 import { AmbientToggle } from "@/components/AmbientMode";
-import { CommunityPulse, CommunityPulseMini } from "@/components/CommunityPulse";
-import { FeatureShowcase } from "@/components/FeatureShowcase";
+
+// Simple CSS-based animation wrapper (no framer-motion for initial render)
+const FadeIn = ({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
+  <div
+    className={`animate-fade-in ${className}`}
+    style={{ animationDelay: `${delay}s` }}
+  >
+    {children}
+  </div>
+);
+
+const StaggerContainer = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <div className={className}>{children}</div>
+);
+
+const StaggerItem = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+
+const RevealText = ({ text, className = "" }: { text: string; className?: string }) => (
+  <span className={className}>{text}</span>
+);
 
 type ViewMode = "table" | "grid" | "orbital";
 
@@ -35,7 +55,7 @@ export default function Dashboard() {
       <FloatingOrbs />
 
       {/* Time-Aware Greeting & Progress */}
-      <FadeInOnScroll direction="up" className="mb-6">
+      <FadeIn className="mb-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <div className="flex items-start justify-between">
@@ -50,24 +70,19 @@ export default function Dashboard() {
             <XPProgressBar />
           </div>
         </div>
-      </FadeInOnScroll>
+      </FadeIn>
 
       {/* Hero Section */}
-      <FadeInOnScroll direction="up" className="mb-8 relative">
+      <FadeIn className="mb-8 relative" delay={0.05}>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="flex items-center gap-4">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", delay: 0.1 }}
-              className="p-4 rounded-2xl bg-gradient-to-br from-aurora-cyan/20 to-aurora-purple/20 border border-aurora-cyan/30 shadow-glow"
-            >
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-aurora-cyan/20 to-aurora-purple/20 border border-aurora-cyan/30 shadow-glow animate-scale-in">
               <TrendingUp className="w-8 h-8 text-aurora-cyan" />
-            </motion.div>
+            </div>
             <div>
               <h1 className="text-3xl md:text-4xl font-bold">
                 <RevealText text="Top 10" className="aurora-text" />{" "}
-                <RevealText text="Rankings" delay={0.2} className="text-text-primary" />
+                <RevealText text="Rankings" className="text-text-primary" />
               </h1>
               <p className="text-text-muted mt-1">
                 Curated high-potential crypto assets with transparent methodology
@@ -83,19 +98,15 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-      </FadeInOnScroll>
+      </FadeIn>
 
       {/* New Features Showcase */}
-      <FadeInOnScroll direction="up" delay={0.1}>
+      <FadeIn delay={0.1}>
         <FeatureShowcase />
-      </FadeInOnScroll>
+      </FadeIn>
 
       {/* Info Banner */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-      >
+      <FadeIn delay={0.15}>
         <TiltCard className="mb-6">
           <div className="glass-card p-4">
             <div className="flex items-start gap-3">
@@ -115,15 +126,10 @@ export default function Dashboard() {
             </div>
           </div>
         </TiltCard>
-      </motion.div>
+      </FadeIn>
 
       {/* Controls */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
-        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6"
-      >
+      <FadeIn delay={0.2} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-text-muted" />
           <span className="text-text-muted text-sm">
@@ -151,7 +157,7 @@ export default function Dashboard() {
             label="Orbital"
           />
         </div>
-      </motion.div>
+      </FadeIn>
 
       {/* Error State */}
       {assetsError && (
@@ -189,12 +195,7 @@ export default function Dashboard() {
         {/* Data Display - Main Column */}
         <div className="flex-1 min-w-0">
           {assets && !assetsLoading && (
-            <motion.div
-              key={viewMode}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
+            <FadeIn delay={0.25}>
               {viewMode === "orbital" ? (
                 <Suspense fallback={
                   <div className="h-[500px] rounded-2xl bg-bg-secondary border border-border-default flex items-center justify-center">
@@ -207,7 +208,7 @@ export default function Dashboard() {
                   <OrbitalView assets={assets} />
                 </Suspense>
               ) : viewMode === "grid" ? (
-                <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" staggerDelay={0.08}>
+                <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {assets.map((asset, index) => (
                     <StaggerItem key={asset.id}>
                       <HolographicCard intensity={index < 3 ? "high" : "medium"}>
@@ -223,49 +224,36 @@ export default function Dashboard() {
               ) : (
                 <AssetTable assets={assets} prices={prices} />
               )}
-            </motion.div>
+            </FadeIn>
           )}
         </div>
 
         {/* Live Activity Feed & Community - Side Column (Desktop Only) */}
         <div className="hidden lg:block w-80 flex-shrink-0">
           <div className="sticky top-24 space-y-6">
-            <FadeInOnScroll direction="right">
-              <LiveActivityFeed />
-            </FadeInOnScroll>
-            <FadeInOnScroll direction="right" delay={0.1}>
-              <CommunityPulse />
-            </FadeInOnScroll>
+            <LiveActivityFeed />
+            <CommunityPulse />
           </div>
         </div>
       </div>
 
       {/* Methodology Link */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="mt-12 text-center"
-      >
+      <FadeIn delay={0.5} className="mt-12 text-center">
         <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-bg-secondary/50 border border-border-default">
           <Sparkles className="w-4 h-4 text-aurora-purple" />
           <p className="text-text-muted text-sm">
             Want to understand how we rank assets?{" "}
-            <button className="text-aurora-cyan hover:underline font-medium">
+            <button className="text-aurora-cyan hover:underline font-medium" aria-label="View ranking methodology">
               View our methodology
             </button>
           </p>
         </div>
-      </motion.div>
+      </FadeIn>
 
       {/* Live Activity + Market Pulse - Mobile */}
       <div className="lg:hidden mt-8 space-y-6">
-        <FadeInOnScroll>
-          <LiveActivityFeed />
-        </FadeInOnScroll>
-        <FadeInOnScroll delay={0.1}>
-          <MarketPulse symbols={symbols} />
-        </FadeInOnScroll>
+        <LiveActivityFeed />
+        <MarketPulse symbols={symbols} />
       </div>
 
     </div>
@@ -288,6 +276,8 @@ function ViewButton({
     <MagneticButton
       onClick={onClick}
       strength={0.2}
+      aria-label={`Switch to ${label} view`}
+      aria-pressed={active}
       className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
         active
           ? "bg-aurora-cyan/20 text-aurora-cyan shadow-glow-sm"

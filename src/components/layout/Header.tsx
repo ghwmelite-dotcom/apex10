@@ -95,6 +95,7 @@ export default function Header({ onDiscoveryClick }: HeaderProps) {
                 document.dispatchEvent(event);
               }}
               className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-bg-tertiary/50 border border-border-default hover:border-aurora-cyan/30 transition-all text-sm text-text-muted hover:text-text-primary"
+              aria-label="Search (Cmd+K)"
             >
               <Search className="w-4 h-4" />
               <span className="hidden lg:inline">Search</span>
@@ -110,6 +111,7 @@ export default function Header({ onDiscoveryClick }: HeaderProps) {
               whileTap={{ scale: 0.95 }}
               className="relative flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-aurora-cyan/20 to-aurora-purple/20 border border-aurora-cyan/30 text-aurora-cyan text-sm font-medium overflow-hidden cursor-pointer"
               style={{ zIndex: 50 }}
+              aria-label="Open Discovery Mode"
             >
               {/* Animated background pulse */}
               <motion.div

@@ -97,19 +97,29 @@ export default defineConfig({
   build: {
     minify: "esbuild",
     sourcemap: true,
+    target: "esnext",
     rollupOptions: {
       output: {
-        manualChunks: {
-          // React core
-          "vendor-react": ["react", "react-dom", "react-router-dom"],
-          // Animation libraries
-          "vendor-animation": ["framer-motion"],
-          // Three.js (heavy, lazy loaded)
-          "vendor-three": ["three", "@react-three/fiber", "@react-three/drei"],
+        manualChunks(id) {
+          // React core - smallest possible
+          if (id.includes("react-dom")) return "vendor-react";
+          if (id.includes("react-router")) return "vendor-react";
+          if (id.includes("node_modules/react/")) return "vendor-react";
+
+          // Three.js - lazy loaded, separate chunk
+          if (id.includes("three") || id.includes("@react-three")) return "vendor-three";
+
+          // Web3 libraries - separate chunk for wallet pages
+          if (id.includes("wagmi") || id.includes("viem") || id.includes("@wagmi") || id.includes("@walletconnect")) return "vendor-web3";
+
+          // Animation - can be deferred
+          if (id.includes("framer-motion")) return "vendor-animation";
+
           // TanStack Query
-          "vendor-query": ["@tanstack/react-query"],
-          // Utilities
-          "vendor-utils": ["clsx", "tailwind-merge", "lucide-react"],
+          if (id.includes("@tanstack")) return "vendor-query";
+
+          // Icons - tree-shake but group together
+          if (id.includes("lucide-react")) return "vendor-icons";
         },
       },
     },
