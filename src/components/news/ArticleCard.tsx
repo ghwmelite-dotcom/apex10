@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { motion } from "framer-motion";
 import { Clock, User, ExternalLink, Headphones } from "lucide-react";
 import type { NewsArticle, NewsCategory } from "@/api/types";
@@ -69,6 +69,7 @@ export const ArticleCard = memo(function ArticleCard({
   featured = false,
   index = 0,
 }: ArticleCardProps) {
+  const [imageError, setImageError] = useState(false);
   const categoryStyle = categoryColors[article.category as Exclude<NewsCategory, "all">] || categoryColors.market;
 
   return (
@@ -90,12 +91,13 @@ export const ArticleCard = memo(function ArticleCard({
         "relative overflow-hidden",
         featured ? "h-64" : "h-48"
       )}>
-        {article.image ? (
+        {article.image && !imageError ? (
           <img
             src={article.image}
             alt={article.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
+            onError={() => setImageError(true)}
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-aurora-cyan/20 to-aurora-purple/20 flex items-center justify-center">
