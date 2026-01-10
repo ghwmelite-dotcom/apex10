@@ -72,13 +72,23 @@ export const ArticleCard = memo(function ArticleCard({
   const [imageError, setImageError] = useState(false);
   const categoryStyle = categoryColors[article.category as Exclude<NewsCategory, "all">] || categoryColors.market;
 
+  const handleCardClick = () => {
+    onRead?.(article);
+  };
+
+  const handleListenClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onListen?.(article);
+  };
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
+      onClick={handleCardClick}
       className={cn(
-        "group relative rounded-2xl overflow-hidden",
+        "group relative rounded-2xl overflow-hidden cursor-pointer",
         "bg-bg-secondary/80 backdrop-blur-sm",
         "border border-border-default hover:border-aurora-cyan/30",
         "transition-all duration-300",
@@ -178,7 +188,6 @@ export const ArticleCard = memo(function ArticleCard({
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => onRead?.(article)}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-aurora-cyan/10 border border-aurora-cyan/30 text-aurora-cyan text-sm font-medium hover:bg-aurora-cyan/20 transition-colors"
             aria-label={`Read article: ${article.title}`}
           >
@@ -188,7 +197,7 @@ export const ArticleCard = memo(function ArticleCard({
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => onListen?.(article)}
+            onClick={handleListenClick}
             className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-aurora-purple/10 border border-aurora-purple/30 text-aurora-purple text-sm font-medium hover:bg-aurora-purple/20 transition-colors"
             aria-label={`Listen to article: ${article.title}`}
           >
