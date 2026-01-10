@@ -67,6 +67,18 @@ function AmbientOverlay() {
   const [theme, setTheme] = useState<"aurora" | "midnight" | "sunset">("aurora");
   const [showSettings, setShowSettings] = useState(false);
 
+  // ESC key handler to exit ambient mode
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setAmbient(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [setAmbient]);
+
   const themes = {
     aurora: {
       colors: ["from-aurora-cyan/30", "via-aurora-purple/20", "to-aurora-pink/30"],
@@ -181,24 +193,29 @@ function AmbientOverlay() {
       </div>
 
       {/* Controls */}
-      <div className="absolute top-6 right-6 flex items-center gap-3">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="absolute top-6 right-6 flex items-center gap-3"
+      >
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowSettings(!showSettings)}
-          className="p-3 rounded-xl bg-bg-secondary/50 backdrop-blur-sm border border-border-default text-text-muted hover:text-text-primary"
+          className="p-3 rounded-xl bg-bg-secondary/70 backdrop-blur-sm border border-border-default text-text-muted hover:text-text-primary"
         >
           <Settings className="w-5 h-5" />
         </motion.button>
         <motion.button
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.1, backgroundColor: "rgba(239, 68, 68, 0.2)" }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setAmbient(false)}
-          className="p-3 rounded-xl bg-bg-secondary/50 backdrop-blur-sm border border-border-default text-text-muted hover:text-text-primary"
+          className="p-3 rounded-xl bg-bg-secondary/70 backdrop-blur-sm border border-nova-red/50 text-nova-red hover:border-nova-red"
         >
           <X className="w-5 h-5" />
         </motion.button>
-      </div>
+      </motion.div>
 
       {/* Theme settings panel */}
       <AnimatePresence>
