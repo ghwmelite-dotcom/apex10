@@ -36,6 +36,11 @@
     }
   ],
 
+  // Workers AI binding for Llama 3 and other models
+  "ai": {
+    "binding": "AI"
+  },
+
   // Environment variables
   "vars": {
     "ENVIRONMENT": "development"

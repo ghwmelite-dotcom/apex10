@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { BookOpen, Wallet, ShoppingCart, Shield } from "lucide-react";
+import { BookOpen, Wallet, ShoppingCart, Shield, Sparkles, Brain } from "lucide-react";
 import { useWalletGuides, useAcquisitionGuides } from "@/hooks/useSecurity";
 import {
   Card,
@@ -7,6 +7,7 @@ import {
   Button,
   Skeleton,
 } from "@/components/ui";
+import { LearningPathGenerator } from "@/components/LearningPath";
 
 export default function LearnCenter() {
   const { data: walletGuides, isLoading: walletsLoading } = useWalletGuides();
@@ -32,6 +33,32 @@ export default function LearnCenter() {
           </div>
         </div>
       </motion.div>
+
+      {/* AI-Powered Learning Path */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="mb-12"
+      >
+        <Card className="p-6 bg-gradient-to-br from-aurora-purple/5 to-aurora-cyan/5 border-aurora-purple/20">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-aurora-purple/20 to-aurora-cyan/20">
+              <Brain className="w-6 h-6 text-aurora-purple" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-text-primary flex items-center gap-2">
+                Personalized Learning Path
+                <Badge variant="info" className="text-xs">AI Powered</Badge>
+              </h2>
+              <p className="text-sm text-text-muted">
+                Get a customized curriculum tailored to your interests and experience
+              </p>
+            </div>
+          </div>
+          <LearningPathGenerator />
+        </Card>
+      </motion.section>
 
       {/* Wallet Guides Section */}
       <motion.section

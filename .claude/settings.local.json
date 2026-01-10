@@ -21,7 +21,13 @@
       "Bash(xargs -I {} cmd //c \"taskkill /PID {} /F\")",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Apex10 Crypto Education Platform\n\nFeatures implemented:\n- Top 10 crypto rankings with transparent methodology\n- Security Hub with interactive checklist and threat awareness\n- Learning Center with step-by-step guides\n- 3D Orbital View visualization using Three.js\n- Custom animated cursor with glow trail\n- Holographic card effects with rainbow shimmer\n- Live activity feed with simulated trades\n- Sound design system with Web Audio API\n- Spectacular 404 page with exploding text\n- Confetti celebrations for achievements\n- Scroll-triggered animations and parallax\n- Command palette \\(Cmd+K\\) for quick navigation\n- Discovery mode onboarding experience\n- Particle backgrounds and floating orbs\n- Market pulse with real-time price updates\n\nTech Stack:\n- React 18 + TypeScript + Vite\n- Cloudflare Workers + D1 Database\n- Hono API framework\n- Framer Motion animations\n- Three.js / React Three Fiber\n- TailwindCSS with custom design system\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(npm run deploy:*)"
     ]
   }
 }

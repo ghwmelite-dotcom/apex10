@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { Shield, AlertTriangle, Wallet, BookOpen } from "lucide-react";
+import { Shield, AlertTriangle, Wallet, BookOpen, Gamepad2, Brain } from "lucide-react";
 import { useSecurityChecklist, useSecurityContent } from "@/hooks/useSecurity";
 import { SecurityChecklist } from "@/components/SecurityChecklist";
+import { SecurityTrainingHub } from "@/components/SecurityTraining";
 import {
   Card,
   CardHeader,
@@ -58,11 +59,40 @@ export default function SecurityHub() {
             ) : null}
           </motion.div>
 
+          {/* AI-Powered Security Training */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
+            <Card className="overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-aurora-purple/10 to-aurora-cyan/10">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-gradient-to-r from-aurora-purple/20 to-aurora-cyan/20">
+                    <Brain className="w-5 h-5 text-aurora-cyan" />
+                  </div>
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      AI Security Training
+                      <Badge variant="info" className="text-xs">Powered by Llama 3</Badge>
+                    </CardTitle>
+                    <CardDescription>
+                      Test your skills with AI-generated quizzes and phishing simulations
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <SecurityTrainingHub />
+              </CardContent>
+            </Card>
+          </motion.div>
+
           {/* Common Threats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.25 }}
           >
             <Card>
               <CardHeader>
@@ -135,7 +165,7 @@ export default function SecurityHub() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.35 }}
           >
             <Card>
               <CardHeader>
@@ -192,7 +222,7 @@ export default function SecurityHub() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.45 }}
           >
             <Card className="bg-gradient-glow border-accent-primary/20">
               <CardHeader>

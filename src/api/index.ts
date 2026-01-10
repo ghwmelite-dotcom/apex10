@@ -6,6 +6,7 @@ import { assetsRoutes } from "./routes/assets";
 import { rankingsRoutes } from "./routes/rankings";
 import { securityRoutes } from "./routes/security";
 import { pricesRoutes } from "./routes/prices";
+import aiRoutes from "./routes/ai";
 import type { Env } from "./types";
 
 const api = new Hono<{ Bindings: Env }>().basePath("/api");
@@ -45,6 +46,7 @@ api.route("/assets", assetsRoutes);
 api.route("/rankings", rankingsRoutes);
 api.route("/security", securityRoutes);
 api.route("/prices", pricesRoutes);
+api.route("/ai", aiRoutes);
 
 // ============================================
 // ERROR HANDLING

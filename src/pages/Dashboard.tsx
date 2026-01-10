@@ -13,6 +13,10 @@ import { Card, SkeletonCard, SkeletonAssetRow } from "@/components/ui";
 import { LiveActivityFeed, LiveActivityTicker } from "@/components/LiveActivityFeed";
 import { HolographicCard } from "@/components/HolographicCard";
 import { FadeInOnScroll, StaggerContainer, StaggerItem, RevealText } from "@/components/ScrollAnimations";
+import { TimeGreeting, TimeBasedSuggestions } from "@/components/TimeAwareUI";
+import { XPProgressBar } from "@/components/AchievementSystem";
+import { AmbientToggle } from "@/components/AmbientMode";
+import { CommunityPulse, CommunityPulseMini } from "@/components/CommunityPulse";
 
 type ViewMode = "table" | "grid" | "orbital";
 
@@ -26,6 +30,24 @@ export default function Dashboard() {
     <div className="container-custom py-8 relative">
       {/* Floating orbs background */}
       <FloatingOrbs />
+
+      {/* Time-Aware Greeting & Progress */}
+      <FadeInOnScroll direction="up" className="mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <div className="flex items-start justify-between">
+              <TimeGreeting />
+              <AmbientToggle />
+            </div>
+            <div className="mt-4">
+              <TimeBasedSuggestions />
+            </div>
+          </div>
+          <div className="hidden lg:block">
+            <XPProgressBar />
+          </div>
+        </div>
+      </FadeInOnScroll>
 
       {/* Hero Section */}
       <FadeInOnScroll direction="up" className="mb-8 relative">
@@ -188,11 +210,14 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Live Activity Feed - Side Column (Desktop Only) */}
+        {/* Live Activity Feed & Community - Side Column (Desktop Only) */}
         <div className="hidden lg:block w-80 flex-shrink-0">
-          <div className="sticky top-24">
+          <div className="sticky top-24 space-y-6">
             <FadeInOnScroll direction="right">
               <LiveActivityFeed />
+            </FadeInOnScroll>
+            <FadeInOnScroll direction="right" delay={0.1}>
+              <CommunityPulse />
             </FadeInOnScroll>
           </div>
         </div>

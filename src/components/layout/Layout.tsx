@@ -9,6 +9,8 @@ import { CustomCursor } from "../CustomCursor";
 import { ScrollProgress } from "../ScrollAnimations";
 import { useCelebration } from "../Confetti";
 import { useSound } from "@/lib/sounds";
+import { AIMentor } from "../AIMentor";
+import { VoiceNavigation } from "../VoiceNavigation";
 
 interface LayoutProps {
   children: ReactNode;
@@ -114,6 +116,12 @@ export default function Layout({ children }: LayoutProps) {
           onClose={closeDiscovery}
           onComplete={handleDiscoveryComplete}
         />
+
+        {/* AI Mentor floating chat */}
+        <AIMentor />
+
+        {/* Voice Navigation */}
+        <VoiceNavigation onDiscoveryTrigger={handleDiscoveryClick} />
 
         {/* Celebration effects */}
         <CelebrationComponents />

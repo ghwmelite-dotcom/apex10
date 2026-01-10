@@ -1,4 +1,4 @@
-import type { D1Database, KVNamespace, R2Bucket } from "@cloudflare/workers-types";
+import type { D1Database, KVNamespace, R2Bucket, Ai } from "@cloudflare/workers-types";
 
 // ============================================
 // CLOUDFLARE BINDINGS
@@ -7,9 +7,75 @@ export interface Env {
   DB: D1Database;
   CACHE: KVNamespace;
   STORAGE: R2Bucket;
+  AI: Ai;
   ASSETS: { fetch: (request: Request) => Promise<Response> };
   ENVIRONMENT: string;
   COINGECKO_API_KEY?: string;
+}
+
+// ============================================
+// AI TYPES
+// ============================================
+export interface ChatMessage {
+  role: "system" | "user" | "assistant";
+  content: string;
+}
+
+export interface AIChatRequest {
+  messages: ChatMessage[];
+  context?: "general" | "security" | "trading" | "defi" | "nft";
+}
+
+export interface AIChatResponse {
+  response: string;
+  model: string;
+  tokensUsed?: number;
+}
+
+export interface AIAnalysisRequest {
+  type: "asset" | "security" | "market";
+  data: Record<string, unknown>;
+}
+
+export interface SecurityQuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+  difficulty: "easy" | "medium" | "hard";
+  category: "phishing" | "wallet" | "scam" | "general";
+}
+
+export interface PhishingSimulation {
+  id: string;
+  type: "email" | "website" | "message";
+  content: string;
+  isPhishing: boolean;
+  redFlags: string[];
+  explanation: string;
+}
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  category: "learning" | "security" | "engagement" | "mastery";
+  xpReward: number;
+  unlockedAt?: string;
+}
+
+export interface UserProgress {
+  id: string;
+  visitorId: string;
+  xp: number;
+  level: number;
+  achievements: string[];
+  completedLessons: string[];
+  securityScore: number;
+  streak: number;
+  lastActive: string;
 }
 
 // ============================================

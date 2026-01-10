@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { TrendingUp, Shield, BookOpen, Menu, X, Sparkles, Search } from "lucide-react";
 import { useState } from "react";
 import { MarketPulseMini } from "../MarketPulse";
+import { AchievementBadge } from "../AchievementSystem";
+import { TimeIndicator } from "../TimeAwareUI";
 
 interface HeaderProps {
   onDiscoveryClick?: () => void;
@@ -70,8 +72,16 @@ export default function Header({ onDiscoveryClick }: HeaderProps) {
 
           {/* Right side actions */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Time Indicator */}
+            <TimeIndicator />
+
             {/* Market Pulse */}
             <MarketPulseMini />
+
+            {/* Achievement/Level Badge */}
+            <div className="px-2 py-1 rounded-xl bg-bg-tertiary/50 border border-border-default">
+              <AchievementBadge />
+            </div>
 
             {/* Command palette trigger */}
             <button
