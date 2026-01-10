@@ -1,0 +1,58 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "apex10-cryptodiscover",
+  "main": "src/api/index.ts",
+  "compatibility_date": "2024-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Assets configuration for static files
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS"
+  },
+
+  // D1 Database binding
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "apex10-db",
+      "database_id": "957bd7eb-8136-4b4b-ae6f-0048e9f95041"
+    }
+  ],
+
+  // KV Namespace for caching
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "ced84e7017f84859a6ff89495bdc09d9"
+    }
+  ],
+
+  // R2 Bucket for object storage
+  "r2_buckets": [
+    {
+      "binding": "STORAGE",
+      "bucket_name": "apex10-storage"
+    }
+  ],
+
+  // Environment variables
+  "vars": {
+    "ENVIRONMENT": "development"
+  },
+
+  // Development settings
+  "dev": {
+    "port": 8787,
+    "local_protocol": "http"
+  },
+
+  // Production environment overrides
+  "env": {
+    "production": {
+      "vars": {
+        "ENVIRONMENT": "production"
+      }
+    }
+  }
+}

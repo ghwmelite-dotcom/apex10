@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s \"C:\\\\Users\\\\rsimd\\\\Desktop\\\\Apex10\")",
+      "Bash(npm install)",
+      "Bash(if [ -d \"node_modules\" ])",
+      "Bash(then echo \"node_modules exists\")",
+      "Bash(else echo \"Still installing...\")",
+      "Bash(fi)",
+      "Bash(npm run dev:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(cmd //c \"taskkill /PID 4548 /F\")",
+      "Bash(npx wrangler:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(start http://localhost:5173)",
+      "Bash(timeout /t 3 /nobreak)",
+      "Bash(xargs -I {} cmd //c \"taskkill /PID {} /F\")",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git reset:*)"
+    ]
+  }
+}
