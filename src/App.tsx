@@ -9,13 +9,18 @@ import { SplashScreen } from "./components/SplashScreen";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { OfflineIndicator } from "./components/OfflineIndicator";
 import { PageLoader } from "./components/ui/PageLoader";
+import { WalletProvider } from "./components/web3/WalletProvider";
 
 // Lazy load pages for code splitting
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const AssetDetail = lazy(() => import("./pages/AssetDetail"));
 const SecurityHub = lazy(() => import("./pages/SecurityHub"));
 const LearnCenter = lazy(() => import("./pages/LearnCenter"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const ContractScanner = lazy(() => import("./pages/ContractScanner"));
+const WalletGuardian = lazy(() => import("./pages/WalletGuardian"));
+const VerifyPage = lazy(() => import("./pages/VerifyPage"));
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -42,9 +47,10 @@ export default function App() {
   }, []);
 
   return (
-    <TimeAwareProvider>
-      <AchievementProvider>
-        <AmbientProvider>
+    <WalletProvider>
+      <TimeAwareProvider>
+        <AchievementProvider>
+          <AmbientProvider>
           {/* Splash Screen */}
           <AnimatePresence>
             {showSplash && (
@@ -59,24 +65,41 @@ export default function App() {
           <OfflineIndicator />
 
           {/* Main App */}
-          <Layout>
-            <Suspense fallback={<PageLoader />}>
-              <AnimatePresence mode="wait">
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/asset/:slug" element={<AssetDetail />} />
-                  <Route path="/security" element={<SecurityHub />} />
-                  <Route path="/learn" element={<LearnCenter />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </AnimatePresence>
-            </Suspense>
-          </Layout>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Admin route - outside Layout */}
+              <Route path="/admin" element={<AdminDashboard />} />
+
+              {/* Verification page - outside Layout */}
+              <Route path="/verify/:tokenId" element={<VerifyPage />} />
+
+              {/* Main app routes with Layout */}
+              <Route
+                path="*"
+                element={
+                  <Layout>
+                    <AnimatePresence mode="wait">
+                      <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/asset/:slug" element={<AssetDetail />} />
+                        <Route path="/security" element={<SecurityHub />} />
+                        <Route path="/learn" element={<LearnCenter />} />
+                        <Route path="/scanner" element={<ContractScanner />} />
+                        <Route path="/wallet-guardian" element={<WalletGuardian />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </AnimatePresence>
+                  </Layout>
+                }
+              />
+            </Routes>
+          </Suspense>
 
           {/* PWA Install Prompt */}
           <PWAInstallPrompt />
-        </AmbientProvider>
-      </AchievementProvider>
-    </TimeAwareProvider>
+          </AmbientProvider>
+        </AchievementProvider>
+      </TimeAwareProvider>
+    </WalletProvider>
   );
 }

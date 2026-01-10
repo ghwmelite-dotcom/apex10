@@ -197,3 +197,64 @@ securityRoutes.get("/checklist", async (c) => {
 
   return c.json({ data: checklist });
 });
+
+// ============================================
+// POST /api/security/certificate-email
+// Captures email for certificate download
+// ============================================
+securityRoutes.post("/certificate-email", async (c) => {
+  try {
+    const body = await c.req.json<{
+      email: string;
+      certificateId: string;
+      tier: string;
+      accuracy: number;
+      completedAt: string;
+    }>();
+
+    const { email, certificateId, tier, accuracy, completedAt } = body;
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      return c.json({ error: "Invalid email address" }, 400);
+    }
+
+    // Store in KV for lead capture
+    const leadData = {
+      email,
+      certificateId,
+      tier,
+      accuracy,
+      completedAt,
+      capturedAt: new Date().toISOString(),
+      source: "certificate",
+    };
+
+    // Store individual lead
+    await c.env.CACHE.put(
+      `lead:certificate:${certificateId}`,
+      JSON.stringify(leadData),
+      { expirationTtl: 60 * 60 * 24 * 365 } // 1 year
+    );
+
+    // Also append to a list of all certificate leads
+    const leadsListKey = "leads:certificates:list";
+    const existingLeads = await c.env.CACHE.get(leadsListKey, "json") as string[] || [];
+    if (!existingLeads.includes(email)) {
+      existingLeads.push(email);
+      await c.env.CACHE.put(leadsListKey, JSON.stringify(existingLeads), {
+        expirationTtl: 60 * 60 * 24 * 365,
+      });
+    }
+
+    return c.json({
+      success: true,
+      message: "Email captured successfully",
+      certificateId,
+    });
+  } catch (error) {
+    console.error("Certificate email capture error:", error);
+    return c.json({ error: "Failed to capture email" }, 500);
+  }
+});

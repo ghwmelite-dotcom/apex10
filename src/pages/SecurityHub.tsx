@@ -64,28 +64,26 @@ export default function SecurityHub() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
+            className="space-y-6"
           >
-            <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-aurora-purple/10 to-aurora-cyan/10">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-gradient-to-r from-aurora-purple/20 to-aurora-cyan/20">
-                    <Brain className="w-5 h-5 text-aurora-cyan" />
-                  </div>
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      AI Security Training
-                      <Badge variant="info" className="text-xs">Powered by Llama 3</Badge>
-                    </CardTitle>
-                    <CardDescription>
-                      Test your skills with AI-generated quizzes and phishing simulations
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <SecurityTrainingHub />
-              </CardContent>
-            </Card>
+            {/* Section Header */}
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-gradient-to-r from-aurora-purple/20 to-aurora-cyan/20">
+                <Brain className="w-5 h-5 text-aurora-cyan" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-text-primary flex items-center gap-2">
+                  AI Security Training
+                  <Badge variant="info" className="text-xs">Powered by Llama 3</Badge>
+                </h2>
+                <p className="text-sm text-text-muted">
+                  Test your skills with AI-generated quizzes and phishing simulations
+                </p>
+              </div>
+            </div>
+
+            {/* Training Hub with Focus Mode */}
+            <SecurityTrainingHub />
           </motion.div>
 
           {/* Common Threats */}

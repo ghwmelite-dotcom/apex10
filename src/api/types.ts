@@ -11,6 +11,19 @@ export interface Env {
   ASSETS: { fetch: (request: Request) => Promise<Response> };
   ENVIRONMENT: string;
   COINGECKO_API_KEY?: string;
+  ADMIN_API_KEY?: string;
+  // Web3 bindings
+  POLYGON_RPC_URL?: string;
+  RELAYER_PRIVATE_KEY?: string;
+  CREDENTIAL_CONTRACT_ADDRESS?: string;
+  WALLETCONNECT_PROJECT_ID?: string;
+  // External API keys
+  ETHERSCAN_API_KEY?: string;
+  POLYGONSCAN_API_KEY?: string;
+  BSCSCAN_API_KEY?: string;
+  ARBISCAN_API_KEY?: string;
+  BASESCAN_API_KEY?: string;
+  GOPLUS_API_KEY?: string;
 }
 
 // ============================================
@@ -149,6 +162,16 @@ export const CACHE_KEYS = {
   PRICE_HISTORY: (symbol: string, period: string) => `history:${symbol}:${period}`,
   SECURITY_CONTENT: (type: string) => `security:${type}`,
   RANKINGS_METHODOLOGY: "rankings:methodology",
+  // Scanner cache keys
+  CONTRACT_ANALYSIS: (chain: string, address: string) =>
+    `scanner:${chain}:${address.toLowerCase()}`,
+  CONTRACT_QUICK: (chain: string, address: string) =>
+    `scanner:quick:${chain}:${address.toLowerCase()}`,
+  // Wallet guardian cache keys
+  WALLET_APPROVALS: (chain: string, address: string) =>
+    `guardian:approvals:${chain}:${address.toLowerCase()}`,
+  WALLET_RISK: (address: string) => `guardian:risk:${address.toLowerCase()}`,
+  GOPLUS_CHECK: (address: string) => `guardian:goplus:${address.toLowerCase()}`,
 } as const;
 
 // ============================================
@@ -160,4 +183,108 @@ export const CACHE_TTL = {
   PRICE_HISTORY: 300,
   SECURITY_CONTENT: 3600, // 1 hour
   RANKINGS: 600, // 10 minutes
+  // Scanner cache TTLs
+  CONTRACT_ANALYSIS: 300, // 5 minutes
+  CONTRACT_QUICK: 60, // 1 minute
+  // Wallet guardian cache TTLs
+  WALLET_APPROVALS: 300, // 5 minutes
+  WALLET_RISK: 600, // 10 minutes
+  GOPLUS_CHECK: 3600, // 1 hour
 } as const;
+
+// ============================================
+// SCANNER TYPES
+// ============================================
+export type ChainId = "ethereum" | "bsc" | "polygon" | "arbitrum" | "base";
+
+export interface RiskFactor {
+  id: string;
+  name: string;
+  severity: "critical" | "high" | "medium" | "low" | "safe";
+  detected: boolean;
+  description: string;
+  educationalTip: string;
+}
+
+export interface ContractAnalysisResult {
+  address: string;
+  chain: ChainId;
+  riskScore: number;
+  riskLevel: "critical" | "high" | "medium" | "low" | "safe";
+  isVerified: boolean;
+  tokenInfo: {
+    name: string;
+    symbol: string;
+    decimals: number;
+    totalSupply: string;
+  } | null;
+  riskFactors: {
+    honeypot: RiskFactor;
+    rugPull: RiskFactor;
+    taxes: RiskFactor;
+    liquidity: RiskFactor;
+    ownership: RiskFactor;
+    mintable: RiskFactor;
+    proxy: RiskFactor;
+  };
+  liquidityAnalysis: {
+    totalLiquidityUsd: number;
+    isLocked: boolean;
+    lockDuration: string | null;
+    lpPairs: Array<{
+      pair: string;
+      liquidityUsd: number;
+      dex: string;
+    }>;
+  };
+  taxAnalysis: {
+    buyTax: number;
+    sellTax: number;
+    isHighTax: boolean;
+  };
+  aiExplanation: string;
+  analyzedAt: string;
+}
+
+// ============================================
+// WALLET GUARDIAN TYPES
+// ============================================
+export interface TokenApproval {
+  id: string;
+  tokenAddress: string;
+  tokenSymbol: string;
+  tokenName: string;
+  spenderAddress: string;
+  spenderName: string | null;
+  approvalAmount: string;
+  approvalTimestamp: number;
+  txHash: string;
+  type: "ERC20" | "ERC721" | "ERC1155";
+}
+
+export interface ApprovalRisk {
+  approvalId: string;
+  riskLevel: "critical" | "high" | "medium" | "low";
+  riskScore: number;
+  factors: {
+    isKnownScam: boolean;
+    isUnlimitedApproval: boolean;
+    approvalAgeDays: number;
+    isContractVerified: boolean;
+    hasRecentDrains: boolean;
+    spenderReputation: "trusted" | "unknown" | "suspicious" | "malicious";
+  };
+  aiExplanation: string;
+  recommendation: "revoke_immediately" | "consider_revoking" | "monitor" | "safe";
+}
+
+export interface WalletSecurityScore {
+  grade: "A" | "B" | "C" | "D" | "F";
+  numericScore: number;
+  breakdown: {
+    criticalIssues: number;
+    highIssues: number;
+    mediumIssues: number;
+    totalApprovals: number;
+  };
+}

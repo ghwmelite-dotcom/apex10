@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield,
@@ -10,13 +10,20 @@ import {
   Zap,
   Mail,
   MessageSquare,
-  Globe,
   ChevronRight,
   Loader2,
+  Maximize2,
+  Target,
+  BookOpen,
+  Sparkles,
+  GraduationCap,
+  Award,
 } from "lucide-react";
 import { useCelebration } from "./Confetti";
 import { useSound } from "@/lib/sounds";
 import { useAchievements } from "./AchievementSystem";
+import { FocusMode, FocusModeProvider, useFocusMode } from "./FocusMode";
+import { CertificateModal, useCertificate } from "./Certificate";
 
 interface QuizQuestion {
   id: string;
@@ -38,7 +45,7 @@ interface PhishingTest {
 }
 
 // Security Quiz Component
-export function SecurityQuiz() {
+export function SecurityQuiz({ inFocusMode = false }: { inFocusMode?: boolean }) {
   const [question, setQuestion] = useState<QuizQuestion | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -49,6 +56,7 @@ export function SecurityQuiz() {
   const { triggerConfetti, triggerEmoji } = useCelebration();
   const { playSuccess, playError } = useSound();
   const { addXP, unlockAchievement, hasAchievement } = useAchievements();
+  const focusModeContext = useFocusMode();
 
   const fetchQuestion = async () => {
     setIsLoading(true);
@@ -76,6 +84,11 @@ export function SecurityQuiz() {
 
     setShowResult(true);
     const isCorrect = selectedAnswer === question.correctAnswer;
+
+    // Update focus mode stats if in focus mode
+    if (focusModeContext) {
+      focusModeContext.incrementAnswered(isCorrect);
+    }
 
     if (isCorrect) {
       playSuccess();
@@ -239,7 +252,7 @@ export function SecurityQuiz() {
 }
 
 // Phishing Simulator Component
-export function PhishingSimulator() {
+export function PhishingSimulator({ inFocusMode = false }: { inFocusMode?: boolean }) {
   const [test, setTest] = useState<PhishingTest | null>(null);
   const [userGuess, setUserGuess] = useState<boolean | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -250,6 +263,7 @@ export function PhishingSimulator() {
   const { triggerEmoji } = useCelebration();
   const { playSuccess, playError } = useSound();
   const { addXP, unlockAchievement, hasAchievement } = useAchievements();
+  const focusModeContext = useFocusMode();
 
   const fetchTest = async () => {
     setIsLoading(true);
@@ -277,6 +291,11 @@ export function PhishingSimulator() {
 
     setShowResult(true);
     const isCorrect = userGuess === test.isPhishing;
+
+    // Update focus mode stats if in focus mode
+    if (focusModeContext) {
+      focusModeContext.incrementAnswered(isCorrect);
+    }
 
     if (isCorrect) {
       playSuccess();
@@ -481,49 +500,351 @@ export function PhishingSimulator() {
   );
 }
 
-// Combined Security Training Page Component
-export function SecurityTrainingHub() {
-  const [activeTab, setActiveTab] = useState<"quiz" | "phishing">("quiz");
+// Training mode selection card
+interface TrainingModeCardProps {
+  title: string;
+  description: string;
+  icon: typeof Shield;
+  gradient: string;
+  iconColor: string;
+  onClick: () => void;
+  stats?: { label: string; value: string | number }[];
+}
 
+function TrainingModeCard({
+  title,
+  description,
+  icon: Icon,
+  gradient,
+  iconColor,
+  onClick,
+  stats,
+}: TrainingModeCardProps) {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          onClick={() => setActiveTab("quiz")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
-            activeTab === "quiz"
-              ? "bg-gradient-to-r from-aurora-cyan/20 to-aurora-purple/20 text-aurora-cyan border border-aurora-cyan/30"
-              : "bg-bg-tertiary text-text-muted hover:text-text-primary"
-          }`}
-        >
-          <Shield className="w-5 h-5" />
-          Security Quiz
-          <ChevronRight className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => setActiveTab("phishing")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
-            activeTab === "phishing"
-              ? "bg-gradient-to-r from-nova-red/20 to-plasma-orange/20 text-nova-red border border-nova-red/30"
-              : "bg-bg-tertiary text-text-muted hover:text-text-primary"
-          }`}
-        >
-          <AlertTriangle className="w-5 h-5" />
-          Spot the Scam
-          <ChevronRight className="w-4 h-4" />
-        </button>
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.02, y: -4 }}
+      whileTap={{ scale: 0.98 }}
+      className={`relative w-full p-6 rounded-2xl text-left overflow-hidden group ${gradient}`}
+    >
+      {/* Background glow effect */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />
       </div>
 
-      <AnimatePresence mode="wait">
+      {/* Content */}
+      <div className="relative z-10">
+        <div className={`inline-flex p-3 rounded-xl ${iconColor} mb-4`}>
+          <Icon className="w-6 h-6" />
+        </div>
+        <h3 className="text-lg font-semibold text-text-primary mb-2">{title}</h3>
+        <p className="text-sm text-text-secondary mb-4">{description}</p>
+
+        {stats && stats.length > 0 && (
+          <div className="flex gap-4">
+            {stats.map((stat, i) => (
+              <div key={i} className="flex flex-col">
+                <span className="text-xs text-text-muted">{stat.label}</span>
+                <span className="text-sm font-semibold text-text-primary">{stat.value}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-4 flex items-center gap-2 text-sm font-medium text-accent-cyan">
+          <span>Start Training</span>
+          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </div>
+      </div>
+    </motion.button>
+  );
+}
+
+// Focus mode entry banner
+function FocusModeEntry({ onEnter }: { onEnter: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-bg-secondary via-bg-secondary to-accent-purple/5 border border-border-primary/50"
+    >
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
+          className="absolute -top-1/2 -right-1/2 w-full h-full rounded-full bg-accent-cyan/5 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{ duration: 6, repeat: Infinity }}
+        />
+        <motion.div
+          className="absolute -bottom-1/2 -left-1/2 w-full h-full rounded-full bg-accent-purple/5 blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{ duration: 6, repeat: Infinity, delay: 3 }}
+        />
+      </div>
+
+      <div className="relative z-10 p-6 md:p-8">
+        <div className="flex flex-col md:flex-row md:items-center gap-6">
+          {/* Icon and text */}
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-accent-cyan/20 to-accent-purple/20 border border-accent-cyan/30">
+                <Maximize2 className="w-6 h-6 text-accent-cyan" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-text-primary">Focus Mode</h3>
+                <p className="text-sm text-text-secondary">Immersive learning experience</p>
+              </div>
+            </div>
+            <p className="text-text-secondary max-w-xl">
+              Enter a distraction-free environment designed for deep learning.
+              Track your progress, build streaks, and master crypto security without interruptions.
+            </p>
+
+            {/* Feature highlights */}
+            <div className="flex flex-wrap gap-3 mt-4">
+              {[
+                { icon: Target, label: "Progress Tracking" },
+                { icon: Zap, label: "Streak Counter" },
+                { icon: Trophy, label: "Session Stats" },
+              ].map((feature, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-bg-tertiary/50 text-xs text-text-secondary"
+                >
+                  <feature.icon className="w-3.5 h-3.5 text-accent-cyan" />
+                  {feature.label}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Enter button */}
+          <motion.button
+            onClick={onEnter}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-accent-cyan to-accent-purple text-bg-primary font-semibold shadow-lg shadow-accent-cyan/20 hover:shadow-accent-cyan/30 transition-shadow"
+          >
+            <Sparkles className="w-5 h-5" />
+            Enter Focus Mode
+          </motion.button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// Session stats interface
+interface SessionStats {
+  questionsAnswered: number;
+  correctAnswers: number;
+  timeSpent: number;
+}
+
+// Combined Security Training Page Component with Focus Mode
+export function SecurityTrainingHub() {
+  const [activeTab, setActiveTab] = useState<"quiz" | "phishing">("quiz");
+  const [isFocusMode, setIsFocusMode] = useState(false);
+  const [sessionStats, setSessionStats] = useState<SessionStats>({
+    questionsAnswered: 0,
+    correctAnswers: 0,
+    timeSpent: 0,
+  });
+  const [certificateAwarded, setCertificateAwarded] = useState(false);
+  const { certificateData, isModalOpen, awardCertificate, closeModal } = useCertificate();
+  const { triggerConfetti } = useCelebration();
+
+  const handleEnterFocusMode = useCallback(() => {
+    setIsFocusMode(true);
+    setSessionStats({ questionsAnswered: 0, correctAnswers: 0, timeSpent: 0 });
+    setCertificateAwarded(false);
+  }, []);
+
+  const handleExitFocusMode = useCallback(() => {
+    setIsFocusMode(false);
+  }, []);
+
+  // Track stats for focus mode session
+  const handleStatsUpdate = useCallback((stats: SessionStats) => {
+    setSessionStats(stats);
+
+    // Award certificate when 10 questions completed
+    if (stats.questionsAnswered >= 10 && !certificateAwarded) {
+      setCertificateAwarded(true);
+      triggerConfetti();
+
+      // Small delay to let confetti show first
+      setTimeout(() => {
+        awardCertificate({
+          questionsAnswered: stats.questionsAnswered,
+          correctAnswers: stats.correctAnswers,
+          timeSpent: stats.timeSpent,
+          trainingType: "mixed",
+        });
+      }, 500);
+    }
+  }, [certificateAwarded, awardCertificate, triggerConfetti]);
+
+  return (
+    <>
+      {/* Focus Mode Entry Banner */}
+      <FocusModeEntry onEnter={handleEnterFocusMode} />
+
+      {/* Regular Training Section */}
+      <div className="mt-8 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-text-primary">Quick Training</h3>
+            <p className="text-sm text-text-secondary">Practice without entering focus mode</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setActiveTab("quiz")}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
+              activeTab === "quiz"
+                ? "bg-gradient-to-r from-aurora-cyan/20 to-aurora-purple/20 text-aurora-cyan border border-aurora-cyan/30"
+                : "bg-bg-tertiary text-text-muted hover:text-text-primary"
+            }`}
+          >
+            <Shield className="w-5 h-5" />
+            Security Quiz
+            <ChevronRight className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setActiveTab("phishing")}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
+              activeTab === "phishing"
+                ? "bg-gradient-to-r from-nova-red/20 to-plasma-orange/20 text-nova-red border border-nova-red/30"
+                : "bg-bg-tertiary text-text-muted hover:text-text-primary"
+            }`}
+          >
+            <AlertTriangle className="w-5 h-5" />
+            Spot the Scam
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            {activeTab === "quiz" ? <SecurityQuiz /> : <PhishingSimulator />}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Focus Mode Overlay */}
+      <FocusMode
+        isActive={isFocusMode}
+        onClose={handleExitFocusMode}
+        title={activeTab === "quiz" ? "Security Quiz" : "Spot the Scam"}
+        subtitle="Master crypto security through interactive challenges"
+        currentStep={sessionStats.questionsAnswered}
+        totalSteps={10}
+      >
+        <FocusModeContent
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onStatsUpdate={handleStatsUpdate}
+        />
+      </FocusMode>
+
+      {/* Certificate Modal */}
+      {certificateData && (
+        <CertificateModal
+          data={certificateData}
+          isOpen={isModalOpen}
+          onClose={closeModal}
+        />
+      )}
+    </>
+  );
+}
+
+// Content rendered inside focus mode
+
+function FocusModeContent({
+  activeTab,
+  setActiveTab,
+  onStatsUpdate,
+}: {
+  activeTab: "quiz" | "phishing";
+  setActiveTab: (tab: "quiz" | "phishing") => void;
+  onStatsUpdate: (stats: SessionStats) => void;
+}) {
+  return (
+    <FocusModeProvider onStatsUpdate={onStatsUpdate as (stats: { questionsAnswered: number; correctAnswers: number; timeSpent: number; streak: number }) => void}>
+      <div className="space-y-6">
+        {/* Tab switcher inside focus mode */}
+        <div className="flex items-center justify-center gap-4">
+          <button
+            onClick={() => setActiveTab("quiz")}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
+              activeTab === "quiz"
+                ? "bg-gradient-to-r from-accent-cyan/20 to-accent-purple/20 text-accent-cyan border border-accent-cyan/30"
+                : "bg-bg-tertiary/50 text-text-muted hover:text-text-primary"
+            }`}
+          >
+            <Shield className="w-5 h-5" />
+            Security Quiz
+          </button>
+          <button
+            onClick={() => setActiveTab("phishing")}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${
+              activeTab === "phishing"
+                ? "bg-gradient-to-r from-nova-red/20 to-plasma-orange/20 text-nova-red border border-nova-red/30"
+                : "bg-bg-tertiary/50 text-text-muted hover:text-text-primary"
+            }`}
+          >
+            <AlertTriangle className="w-5 h-5" />
+            Spot the Scam
+          </button>
+        </div>
+
+        {/* Training content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+          >
+            {activeTab === "quiz" ? (
+              <SecurityQuiz inFocusMode />
+            ) : (
+              <PhishingSimulator inFocusMode />
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Motivational message */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-center py-4"
         >
-          {activeTab === "quiz" ? <SecurityQuiz /> : <PhishingSimulator />}
+          <div className="flex items-center justify-center gap-2 text-text-muted">
+            <GraduationCap className="w-4 h-4" />
+            <span className="text-sm">
+              Complete 10 questions to earn your Security Training Certificate
+            </span>
+            <Award className="w-4 h-4 text-solar-gold" />
+          </div>
         </motion.div>
-      </AnimatePresence>
-    </div>
+      </div>
+    </FocusModeProvider>
   );
 }
