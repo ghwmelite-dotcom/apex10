@@ -290,7 +290,9 @@ function rssItemToArticle(item: RSSItem, source: Exclude<NewsSource, "all">): Ne
   const category = categorizeArticle(item);
 
   // Use original thumbnail or fallback to category-based image
-  const image = item.thumbnail || getFallbackImage(articleId, category);
+  // Ensure we always have an image - handle null, undefined, empty string, or whitespace
+  const thumbnail = item.thumbnail?.trim();
+  const image = thumbnail && thumbnail.length > 0 ? thumbnail : getFallbackImage(articleId, category);
 
   return {
     id: articleId,

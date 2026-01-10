@@ -2,7 +2,6 @@ import { useEffect, useCallback, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
-  ArrowLeft,
   ExternalLink,
   Share2,
   Clock,
@@ -12,8 +11,9 @@ import {
   SkipBack,
   SkipForward,
   Volume2,
-  Settings,
-  ChevronDown,
+  VolumeX,
+  BookOpen,
+  Calendar,
 } from "lucide-react";
 import type { NewsArticle } from "@/api/types";
 import { useTextToSpeech, TTS_SPEED_PRESETS } from "@/hooks/useTextToSpeech";
@@ -24,20 +24,26 @@ interface ImmersiveReaderProps {
   onClose: () => void;
 }
 
+// Category color mapping
+const categoryColors: Record<string, { bg: string; text: string; border: string }> = {
+  market: { bg: "bg-aurora-cyan/10", text: "text-aurora-cyan", border: "border-aurora-cyan/30" },
+  defi: { bg: "bg-aurora-purple/10", text: "text-aurora-purple", border: "border-aurora-purple/30" },
+  nft: { bg: "bg-aurora-pink/10", text: "text-aurora-pink", border: "border-aurora-pink/30" },
+  regulation: { bg: "bg-nova-gold/10", text: "text-nova-gold", border: "border-nova-gold/30" },
+  technology: { bg: "bg-aurora-blue/10", text: "text-aurora-blue", border: "border-aurora-blue/30" },
+  analysis: { bg: "bg-success-green/10", text: "text-success-green", border: "border-success-green/30" },
+};
+
 export default function ImmersiveReader({ article, onClose }: ImmersiveReaderProps) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [showTTSSettings, setShowTTSSettings] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
 
   // Text-to-speech hook
   const tts = useTextToSpeech({
     onSentenceChange: (index) => {
-      // Scroll to highlighted sentence
       const sentenceEl = contentRef.current?.querySelector(`[data-sentence="${index}"]`);
       sentenceEl?.scrollIntoView({ behavior: "smooth", block: "center" });
-    },
-    onComplete: () => {
-      // Optional: auto-close or show completion message
     },
   });
 
@@ -52,33 +58,15 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
-      } else if (e.key === " " && !e.target) {
+      } else if (e.key === " " && e.target === document.body) {
         e.preventDefault();
-        if (tts.isPlaying) {
-          tts.isPaused ? tts.resume() : tts.pause();
-        } else {
-          tts.speak(article.content);
-        }
+        handlePlayPause();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose, tts, article.content]);
-
-  // Handle scroll progress
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!contentRef.current) return;
-      const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
-      const progress = (scrollTop / (scrollHeight - clientHeight)) * 100;
-      setScrollProgress(Math.min(100, Math.max(0, progress)));
-    };
-
-    const content = contentRef.current;
-    content?.addEventListener("scroll", handleScroll);
-    return () => content?.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [onClose, tts]);
 
   // Handle share
   const handleShare = useCallback(async () => {
@@ -93,7 +81,6 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
         // User cancelled or error
       }
     } else {
-      // Fallback: copy to clipboard
       navigator.clipboard.writeText(article.url);
     }
   }, [article]);
@@ -110,152 +97,172 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
   // Format date
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
+      year: "numeric",
     });
   };
+
+  // Format time ago
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffHours < 1) return "Just now";
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return formatDate(dateString);
+  };
+
+  const categoryStyle = categoryColors[article.category] || categoryColors.market;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-bg-primary"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
+      onClick={onClose}
     >
-      {/* Progress bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-bg-secondary z-10">
-        <motion.div
-          className="h-full bg-gradient-to-r from-aurora-cyan to-aurora-purple"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-bg-primary/90 backdrop-blur-xl"
+      />
 
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-bg-primary/95 backdrop-blur-sm border-b border-border-default">
-        <div className="container max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
-          <button
-            onClick={onClose}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-bg-secondary transition-colors"
-            aria-label="Close reader"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="hidden sm:inline">Back</span>
-          </button>
+      {/* Modal */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        onClick={(e) => e.stopPropagation()}
+        className={cn(
+          "relative w-full max-w-4xl max-h-[90vh] overflow-hidden",
+          "bg-bg-secondary/95 backdrop-blur-sm",
+          "rounded-3xl border border-border-default",
+          "shadow-2xl shadow-black/50",
+          "flex flex-col"
+        )}
+      >
+        {/* Header with image */}
+        <div className="relative">
+          {/* Featured Image */}
+          <div className="relative h-48 md:h-64 overflow-hidden">
+            {article.image && !imageError ? (
+              <img
+                src={article.image}
+                alt={article.title}
+                className="w-full h-full object-cover"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-aurora-cyan/20 via-aurora-purple/20 to-aurora-pink/20 flex items-center justify-center">
+                <BookOpen className="w-16 h-16 text-text-muted/30" />
+              </div>
+            )}
 
-          <div className="flex items-center gap-2 text-sm text-text-muted">
-            <span className="hidden sm:inline">{Math.round(scrollProgress)}% read</span>
-          </div>
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-bg-secondary via-bg-secondary/60 to-transparent" />
 
-          <div className="flex items-center gap-2">
-            <a
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-bg-secondary transition-colors"
-              aria-label="Open original article"
-            >
-              <ExternalLink className="w-5 h-5" />
-            </a>
-            <button
-              onClick={handleShare}
-              className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-bg-secondary transition-colors"
-              aria-label="Share article"
-            >
-              <Share2 className="w-5 h-5" />
-            </button>
+            {/* Close button */}
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-bg-secondary transition-colors"
+              className="absolute top-4 right-4 p-2 rounded-xl bg-bg-primary/80 backdrop-blur-sm border border-border-default text-text-muted hover:text-text-primary hover:bg-bg-primary transition-all"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
             </button>
+
+            {/* Source badge */}
+            <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-bg-primary/80 backdrop-blur-sm border border-border-default">
+              {article.sourceIcon && (
+                <img
+                  src={article.sourceIcon}
+                  alt={article.sourceName}
+                  className="w-4 h-4 rounded"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+              <span className="text-sm font-medium text-text-primary">{article.sourceName}</span>
+            </div>
+
+            {/* Category badge */}
+            <div className={cn(
+              "absolute bottom-4 left-4 px-3 py-1 rounded-lg text-xs font-semibold",
+              categoryStyle.bg,
+              categoryStyle.text,
+              "border",
+              categoryStyle.border
+            )}>
+              {article.category.charAt(0).toUpperCase() + article.category.slice(1)}
+            </div>
           </div>
         </div>
-      </header>
 
-      {/* Content */}
-      <div
-        ref={contentRef}
-        className="h-[calc(100vh-64px-80px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border-default"
-      >
-        <article className="container max-w-3xl mx-auto px-4 py-8">
-          {/* Source */}
-          <div className="flex items-center gap-3 mb-6">
-            {article.sourceIcon && (
-              <img
-                src={article.sourceIcon}
-                alt={article.sourceName}
-                className="w-6 h-6 rounded"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
-              />
-            )}
-            <span className="text-sm font-medium text-aurora-cyan">{article.sourceName}</span>
-          </div>
-
+        {/* Content */}
+        <div
+          ref={contentRef}
+          className="flex-1 overflow-y-auto px-6 md:px-8 py-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border-default"
+        >
           {/* Title */}
-          <h1 className="text-3xl md:text-4xl font-bold text-text-primary leading-tight mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary leading-tight mb-4">
             {article.title}
           </h1>
 
-          {/* Meta */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-text-muted mb-8 pb-8 border-b border-border-default">
+          {/* Meta info */}
+          <div className="flex flex-wrap items-center gap-4 text-sm text-text-muted mb-6 pb-6 border-b border-border-default">
             {article.author && (
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5">
                 <User className="w-4 h-4" />
-                {article.author}
+                <span className="text-text-secondary">{article.author}</span>
               </span>
             )}
-            <span className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              {formatDate(article.publishedAt)}
+            <span className="flex items-center gap-1.5">
+              <Calendar className="w-4 h-4" />
+              <span>{formatTimeAgo(article.publishedAt)}</span>
             </span>
-            <span className="px-3 py-1 rounded-full bg-bg-secondary text-text-secondary">
-              {article.readingTime} min read
+            <span className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4" />
+              <span>{article.readingTime} min read</span>
             </span>
           </div>
 
-          {/* Featured image */}
-          {article.image && (
-            <div className="mb-8 rounded-2xl overflow-hidden">
-              <img
-                src={article.image}
-                alt={article.title}
-                className="w-full h-auto"
-              />
-            </div>
-          )}
-
           {/* Article content with sentence highlighting */}
-          <div className="prose prose-invert max-w-none">
-            {sentences.map((sentence, index) => (
-              <span
-                key={index}
-                data-sentence={index}
-                className={cn(
-                  "transition-all duration-200",
-                  tts.isPlaying && tts.currentSentence === index
-                    ? "bg-aurora-cyan/10 border-l-2 border-aurora-cyan pl-4 -ml-4 block py-1"
-                    : ""
-                )}
-              >
-                {sentence}{" "}
-              </span>
-            ))}
+          <div className="prose prose-invert prose-lg max-w-none">
+            <p className="text-text-secondary leading-relaxed text-base md:text-lg">
+              {sentences.map((sentence, index) => (
+                <span
+                  key={index}
+                  data-sentence={index}
+                  className={cn(
+                    "transition-all duration-200",
+                    tts.isPlaying && tts.currentSentence === index
+                      ? "bg-aurora-cyan/20 text-aurora-cyan rounded px-1 -mx-1"
+                      : ""
+                  )}
+                >
+                  {sentence}{" "}
+                </span>
+              ))}
+            </p>
           </div>
 
           {/* Tags */}
           {article.tags && article.tags.length > 0 && (
-            <div className="mt-8 pt-8 border-t border-border-default">
+            <div className="mt-6 pt-6 border-t border-border-default">
               <div className="flex flex-wrap gap-2">
                 {article.tags.map((tag, i) => (
                   <span
                     key={i}
-                    className="px-3 py-1 rounded-full bg-bg-secondary text-text-muted text-sm"
+                    className="px-3 py-1 rounded-full bg-bg-tertiary text-text-muted text-sm hover:text-text-primary transition-colors"
                   >
                     #{tag}
                   </span>
@@ -263,22 +270,36 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
               </div>
             </div>
           )}
-        </article>
-      </div>
 
-      {/* TTS Controls Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-bg-secondary/95 backdrop-blur-sm border-t border-border-default">
-        <div className="container max-w-3xl mx-auto px-4 py-4">
+          {/* Read full article CTA */}
+          <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-aurora-cyan/10 to-aurora-purple/10 border border-aurora-cyan/20">
+            <p className="text-text-secondary mb-4">
+              Want to read the full article with all the details?
+            </p>
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-aurora-cyan text-bg-primary font-semibold hover:bg-aurora-cyan/90 transition-colors"
+            >
+              Read Full Article
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+
+        {/* Footer with TTS controls */}
+        <div className="border-t border-border-default bg-bg-tertiary/50 backdrop-blur-sm px-6 py-4">
           <div className="flex items-center justify-between gap-4">
-            {/* Playback controls */}
-            <div className="flex items-center gap-2">
+            {/* TTS Controls */}
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => tts.skipBackward()}
                 disabled={!tts.isPlaying}
-                className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-bg-tertiary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 aria-label="Previous sentence"
               >
-                <SkipBack className="w-5 h-5" />
+                <SkipBack className="w-4 h-4" />
               </button>
 
               <motion.button
@@ -286,12 +307,12 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
                 whileTap={{ scale: 0.95 }}
                 onClick={handlePlayPause}
                 className={cn(
-                  "p-3 rounded-xl transition-colors",
-                  tts.isPlaying
-                    ? "bg-aurora-cyan text-bg-primary"
-                    : "bg-aurora-cyan/20 text-aurora-cyan border border-aurora-cyan/30"
+                  "p-3 rounded-xl transition-all",
+                  tts.isPlaying && !tts.isPaused
+                    ? "bg-aurora-cyan text-bg-primary shadow-glow"
+                    : "bg-aurora-cyan/20 text-aurora-cyan border border-aurora-cyan/30 hover:bg-aurora-cyan/30"
                 )}
-                aria-label={tts.isPlaying && !tts.isPaused ? "Pause" : "Play"}
+                aria-label={tts.isPlaying && !tts.isPaused ? "Pause" : "Listen to article"}
               >
                 {tts.isPlaying && !tts.isPaused ? (
                   <Pause className="w-5 h-5" />
@@ -303,148 +324,95 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
               <button
                 onClick={() => tts.skipForward()}
                 disabled={!tts.isPlaying}
-                className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-bg-tertiary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 aria-label="Next sentence"
               >
-                <SkipForward className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Progress */}
-            <div className="flex-1 mx-4">
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-text-muted w-10">
-                  {tts.currentSentence + 1}/{tts.totalSentences || sentences.length}
-                </span>
-                <div className="flex-1 h-1 bg-bg-tertiary rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-aurora-cyan"
-                    style={{ width: `${tts.progress}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Speed & Voice settings */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  const currentIndex = TTS_SPEED_PRESETS.findIndex((p) => p.value === tts.rate);
-                  const nextIndex = (currentIndex + 1) % TTS_SPEED_PRESETS.length;
-                  tts.setRate(TTS_SPEED_PRESETS[nextIndex].value);
-                }}
-                className="px-3 py-1.5 rounded-lg bg-bg-tertiary text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-                aria-label="Change playback speed"
-              >
-                {tts.rate}x
+                <SkipForward className="w-4 h-4" />
               </button>
 
+              {/* Speed selector */}
               <div className="relative">
                 <button
-                  onClick={() => setShowTTSSettings(!showTTSSettings)}
-                  className="p-2 rounded-xl text-text-muted hover:text-text-primary hover:bg-bg-tertiary transition-colors"
-                  aria-label="TTS settings"
+                  onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+                  className="px-3 py-1.5 rounded-lg bg-bg-secondary text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
                 >
-                  <Settings className="w-5 h-5" />
+                  {tts.rate}x
                 </button>
 
                 <AnimatePresence>
-                  {showTTSSettings && (
+                  {showSpeedMenu && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute bottom-full right-0 mb-2 w-64 p-4 rounded-xl bg-bg-secondary border border-border-default shadow-xl"
+                      className="absolute bottom-full left-0 mb-2 p-2 rounded-xl bg-bg-secondary border border-border-default shadow-xl"
                     >
-                      <h4 className="text-sm font-medium text-text-primary mb-3">Voice Settings</h4>
-
-                      {/* Voice selector */}
-                      <div className="mb-4">
-                        <label className="text-xs text-text-muted block mb-2">Voice</label>
-                        <div className="relative">
-                          <select
-                            value={tts.voice?.voiceURI || ""}
-                            onChange={(e) => {
-                              const voice = tts.availableVoices.find(
-                                (v) => v.voiceURI === e.target.value
-                              );
-                              if (voice) tts.setVoice(voice);
-                            }}
-                            className="w-full px-3 py-2 rounded-lg bg-bg-tertiary border border-border-default text-sm text-text-primary appearance-none cursor-pointer"
-                          >
-                            {tts.availableVoices.map((voice) => (
-                              <option key={voice.voiceURI} value={voice.voiceURI}>
-                                {voice.name}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-                        </div>
-                      </div>
-
-                      {/* Speed selector */}
-                      <div>
-                        <label className="text-xs text-text-muted block mb-2">Speed</label>
-                        <div className="flex gap-1">
-                          {TTS_SPEED_PRESETS.map((preset) => (
-                            <button
-                              key={preset.value}
-                              onClick={() => tts.setRate(preset.value)}
-                              className={cn(
-                                "flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                                tts.rate === preset.value
-                                  ? "bg-aurora-cyan/20 text-aurora-cyan border border-aurora-cyan/30"
-                                  : "bg-bg-tertiary text-text-muted hover:text-text-primary"
-                              )}
-                            >
-                              {preset.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {!tts.isSupported && (
-                        <p className="mt-3 text-xs text-nova-red">
-                          Text-to-speech is not supported in your browser.
-                        </p>
-                      )}
+                      {TTS_SPEED_PRESETS.map((preset) => (
+                        <button
+                          key={preset.value}
+                          onClick={() => {
+                            tts.setRate(preset.value);
+                            setShowSpeedMenu(false);
+                          }}
+                          className={cn(
+                            "block w-full px-4 py-2 text-sm text-left rounded-lg transition-colors",
+                            tts.rate === preset.value
+                              ? "bg-aurora-cyan/20 text-aurora-cyan"
+                              : "text-text-secondary hover:bg-bg-tertiary hover:text-text-primary"
+                          )}
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
-              <Volume2 className="w-5 h-5 text-text-muted hidden sm:block" />
+              {/* TTS indicator */}
+              {tts.isPlaying && !tts.isPaused && (
+                <div className="flex items-center gap-1 ml-2">
+                  {[...Array(3)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="w-1 bg-aurora-cyan rounded-full"
+                      animate={{ height: [4, 16, 4] }}
+                      transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.15 }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Progress indicator */}
+            {tts.isPlaying && (
+              <div className="hidden sm:flex items-center gap-2 text-xs text-text-muted">
+                <span>{tts.currentSentence + 1} / {sentences.length}</span>
+              </div>
+            )}
+
+            {/* Action buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleShare}
+                className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-secondary transition-all"
+                aria-label="Share article"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+              <a
+                href={article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-secondary transition-all"
+                aria-label="Open original"
+              >
+                <ExternalLink className="w-4 h-4" />
+              </a>
             </div>
           </div>
-
-          {/* Waveform animation (visible when playing) */}
-          <AnimatePresence>
-            {tts.isPlaying && !tts.isPaused && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="flex items-center justify-center gap-1 mt-3"
-              >
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="w-1 bg-aurora-cyan rounded-full"
-                    animate={{
-                      height: [8, 24, 8],
-                    }}
-                    transition={{
-                      duration: 0.5,
-                      repeat: Infinity,
-                      delay: i * 0.1,
-                    }}
-                  />
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
