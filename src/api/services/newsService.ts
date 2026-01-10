@@ -42,6 +42,58 @@ const RSS_FEEDS: Record<Exclude<NewsSource, "all">, { url: string; name: string;
   },
 };
 
+// Fallback images for articles without thumbnails (high-quality Unsplash images)
+const CATEGORY_FALLBACK_IMAGES: Record<Exclude<NewsCategory, "all">, string[]> = {
+  market: [
+    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&q=80", // Trading charts
+    "https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=800&q=80", // Bitcoin gold
+    "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=800&q=80", // Crypto coins
+    "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800&q=80", // Stock market
+  ],
+  defi: [
+    "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80", // Ethereum
+    "https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=800&q=80", // DeFi abstract
+    "https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?w=800&q=80", // Blockchain
+    "https://images.unsplash.com/photo-1516245834210-c4c142787335?w=800&q=80", // Network
+  ],
+  nft: [
+    "https://images.unsplash.com/photo-1646463535616-6fe0b503fb0c?w=800&q=80", // NFT art
+    "https://images.unsplash.com/photo-1637611331620-51149c7ceb94?w=800&q=80", // Digital art
+    "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?w=800&q=80", // Metaverse
+    "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=800&q=80", // Abstract digital
+  ],
+  regulation: [
+    "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80", // Gavel/law
+    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80", // Business suit
+    "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80", // Documents
+    "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&q=80", // Office work
+  ],
+  technology: [
+    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80", // Server room
+    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80", // Code matrix
+    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80", // Cybersecurity
+    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80", // Tech globe
+  ],
+  analysis: [
+    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80", // Analytics dashboard
+    "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80", // Data analysis
+    "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80", // Charts
+    "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80", // Strategy
+  ],
+};
+
+// Get a consistent fallback image based on article ID (so same article always gets same image)
+function getFallbackImage(articleId: string, category: Exclude<NewsCategory, "all">): string {
+  const images = CATEGORY_FALLBACK_IMAGES[category] || CATEGORY_FALLBACK_IMAGES.market;
+  // Use article ID hash to pick a consistent image
+  let hash = 0;
+  for (let i = 0; i < articleId.length; i++) {
+    hash = ((hash << 5) - hash) + articleId.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return images[Math.abs(hash) % images.length];
+}
+
 // Category keywords for AI-free categorization
 const CATEGORY_KEYWORDS: Record<Exclude<NewsCategory, "all">, string[]> = {
   market: ["price", "bitcoin", "ethereum", "btc", "eth", "market", "trading", "rally", "crash", "bull", "bear", "ath", "dump", "pump", "whale", "volume", "liquidation"],
@@ -234,20 +286,25 @@ function calculateReadingTime(content: string): number {
 
 function rssItemToArticle(item: RSSItem, source: Exclude<NewsSource, "all">): NewsArticle {
   const sourceInfo = RSS_FEEDS[source];
+  const articleId = generateArticleId(source, item.link);
+  const category = categorizeArticle(item);
+
+  // Use original thumbnail or fallback to category-based image
+  const image = item.thumbnail || getFallbackImage(articleId, category);
 
   return {
-    id: generateArticleId(source, item.link),
+    id: articleId,
     title: item.title,
     description: item.description.slice(0, 300) + (item.description.length > 300 ? "..." : ""),
     content: item.content || item.description,
     url: item.link,
-    image: item.thumbnail,
+    image,
     source,
     sourceName: sourceInfo.name,
     sourceIcon: sourceInfo.icon,
     author: item.creator || undefined,
     publishedAt: new Date(item.pubDate).toISOString(),
-    category: categorizeArticle(item),
+    category,
     tags: item.categories,
     readingTime: calculateReadingTime(item.content || item.description),
   };

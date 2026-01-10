@@ -39,10 +39,10 @@ newsRoutes.get("/feed", async (c) => {
       articles = await fetchAllFeeds();
     }
 
-    // Cache the fetched articles
+    // Cache the fetched articles (24 hours TTL - auto-deletes after expiration)
     if (articles.length > 0) {
       await c.env.CACHE.put(cacheKey, JSON.stringify(articles), {
-        expirationTtl: 300, // 5 minutes
+        expirationTtl: 86400, // 24 hours - news auto-deleted after this
       });
     }
   }
@@ -95,9 +95,9 @@ newsRoutes.get("/article/:id", async (c) => {
     return c.json({ error: "Article not found" }, 404);
   }
 
-  // Cache the article
+  // Cache the article (24 hours TTL - auto-deletes after expiration)
   await c.env.CACHE.put(cacheKey, JSON.stringify(article), {
-    expirationTtl: 3600, // 1 hour
+    expirationTtl: 86400, // 24 hours - auto-deleted after this
   });
 
   return c.json({ data: article, meta: { cached: false } });
