@@ -9,7 +9,7 @@ import { pricesRoutes } from "./routes/prices";
 import aiRoutes from "./routes/ai";
 import type { Env } from "./types";
 
-const api = new Hono<{ Bindings: Env }>().basePath("/api");
+const api = new Hono<{ Bindings: Env }>();
 
 // ============================================
 // MIDDLEWARE
@@ -71,16 +71,34 @@ api.notFound((c) => {
 // ============================================
 const app = new Hono<{ Bindings: Env }>();
 
-// Mount API routes
-app.route("/", api);
+// Mount API routes at /api
+app.route("/api", api);
 
-// Serve static assets for SPA
+// Serve static assets and SPA fallback for all other routes
 app.get("*", async (c) => {
-  // Try to serve from assets binding
-  if (c.env.ASSETS) {
+  if (!c.env.ASSETS) {
+    return c.text("Not Found", 404);
+  }
+
+  const url = new URL(c.req.url);
+  const pathname = url.pathname;
+
+  // Check if this is a static asset request (has file extension)
+  const hasExtension = /\.[a-zA-Z0-9]+$/.test(pathname);
+
+  if (hasExtension) {
+    // Serve static file directly
     return c.env.ASSETS.fetch(c.req.raw);
   }
-  return c.text("Not Found", 404);
+
+  // For SPA client-side routes (no extension), always serve index.html
+  // This handles routes like /security, /learn, /asset/:slug
+  const indexUrl = new URL("/index.html", url.origin);
+  const indexRequest = new Request(indexUrl.toString(), {
+    method: "GET",
+    headers: c.req.raw.headers,
+  });
+  return c.env.ASSETS.fetch(indexRequest);
 });
 
 export default app;
