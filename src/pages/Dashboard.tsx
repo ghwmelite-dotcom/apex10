@@ -19,6 +19,7 @@ import { TimeGreeting, TimeBasedSuggestions } from "@/components/TimeAwareUI";
 import { XPProgressBar } from "@/components/AchievementSystem";
 import { AmbientToggle } from "@/components/AmbientMode";
 import { CommunityPulse, CommunityPulseMini } from "@/components/CommunityPulse";
+import { FeatureShowcase } from "@/components/FeatureShowcase";
 
 type ViewMode = "table" | "grid" | "orbital";
 
@@ -82,6 +83,11 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+      </FadeInOnScroll>
+
+      {/* New Features Showcase */}
+      <FadeInOnScroll direction="up" delay={0.1}>
+        <FeatureShowcase />
       </FadeInOnScroll>
 
       {/* Info Banner */}
