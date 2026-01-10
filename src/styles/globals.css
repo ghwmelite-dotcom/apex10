@@ -604,3 +604,46 @@
     animation: none;
   }
 }
+
+/* ============================================
+   CLS PREVENTION UTILITIES
+   ============================================ */
+
+/* CSS Containment for layout stability */
+.contain-layout {
+  contain: layout;
+}
+
+.contain-strict {
+  contain: strict;
+}
+
+.contain-content {
+  contain: content;
+}
+
+/* GPU-accelerated float animation - uses transform only (no layout shift) */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateZ(0);
+  }
+  50% {
+    transform: translateY(-10px) translateZ(0);
+  }
+}
+
+/* Reserve space for dynamic content to prevent CLS */
+.min-h-content {
+  min-height: var(--content-height, auto);
+}
+
+/* Aspect ratio containers for images/media */
+.aspect-card {
+  aspect-ratio: 16 / 9;
+}
+
+/* Font loading optimization - prevent FOIT/FOUT */
+.font-loading {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}

@@ -249,3 +249,6 @@ export function OrbitalView({ assets, onAssetClick }: OrbitalViewProps) {
     </motion.div>
   );
 }
+
+// Default export for lazy loading
+export default OrbitalView;

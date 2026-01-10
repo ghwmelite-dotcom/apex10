@@ -20,3 +20,6 @@ export { ScoreBar, ScoreGrid } from "./ScoreBar";
 export { TiltCard } from "./TiltCard";
 export { MagneticButton, MagneticAuroraButton, MagneticGhostButton } from "./MagneticButton";
 export { FlipNumber, FlipPrice, FlipPercent } from "./FlipNumber";
+
+// Loading states
+export { PageLoader } from "./PageLoader";

@@ -85,8 +85,12 @@ export default function Layout({ children }: LayoutProps) {
         {/* Scroll progress bar */}
         <ScrollProgress />
 
-        {/* Particle background */}
-        <div className="fixed inset-0 z-0 pointer-events-none">
+        {/* Particle background - contained to prevent CLS */}
+        <div
+          className="fixed inset-0 z-0 pointer-events-none"
+          style={{ contain: "strict" }}
+          aria-hidden="true"
+        >
           <ParticleBackground variant="calm" className="w-full h-full opacity-50" />
         </div>
 
@@ -94,12 +98,16 @@ export default function Layout({ children }: LayoutProps) {
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header onDiscoveryClick={handleDiscoveryClick} />
 
-          {/* Page content with transitions */}
+          {/* Page content with transitions - using opacity only to prevent CLS */}
           <motion.main
             className="flex-1"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            style={{
+              // Prevent layout shift during animation
+              contain: "layout",
+            }}
           >
             {children}
           </motion.main>

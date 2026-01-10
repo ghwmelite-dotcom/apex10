@@ -4,7 +4,15 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border-default bg-bg-secondary/50">
+    <footer
+      className="border-t border-border-default bg-bg-secondary/50"
+      style={{
+        // Prevent layout shift from font loading
+        contain: "layout style",
+        // Reserve minimum height to prevent CLS
+        minHeight: "280px",
+      }}
+    >
       <div className="container-custom py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}

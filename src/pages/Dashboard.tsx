@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import { TrendingUp, Info, BarChart3, Grid, List, Orbit, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useTop10Assets, usePrices } from "@/hooks/useAssets";
 import { AssetCard } from "@/components/AssetCard";
 import { AssetTable } from "@/components/AssetTable";
-import { OrbitalView } from "@/components/OrbitalView";
+
+// Lazy load Three.js heavy component
+const OrbitalView = lazy(() => import("@/components/OrbitalView"));
 import { MarketPulse } from "@/components/MarketPulse";
 import { FloatingOrbs } from "@/components/ParticleBackground";
 import { TiltCard } from "@/components/ui/TiltCard";
@@ -188,7 +190,16 @@ export default function Dashboard() {
               transition={{ duration: 0.3 }}
             >
               {viewMode === "orbital" ? (
-                <OrbitalView assets={assets} />
+                <Suspense fallback={
+                  <div className="h-[500px] rounded-2xl bg-bg-secondary border border-border-default flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-10 h-10 border-2 border-aurora-cyan border-t-transparent rounded-full animate-spin" />
+                      <span className="text-sm text-text-muted">Loading 3D View...</span>
+                    </div>
+                  </div>
+                }>
+                  <OrbitalView assets={assets} />
+                </Suspense>
               ) : viewMode === "grid" ? (
                 <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" staggerDelay={0.08}>
                   {assets.map((asset, index) => (

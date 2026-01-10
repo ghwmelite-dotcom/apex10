@@ -129,53 +129,106 @@ export function ParticleBackground({
 }
 
 // Floating orbs for hero sections
+// Uses CSS containment and will-change to prevent layout shifts
+// Deferred render to prevent CLS
 export function FloatingOrbs() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Large cyan orb */}
+  const [isReady, setIsReady] = useState(false);
+
+  // Defer orb rendering until after initial paint to prevent CLS
+  useEffect(() => {
+    // Wait for fonts to load and initial paint to complete
+    const timer = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setIsReady(true);
+      });
+    });
+    return () => cancelAnimationFrame(timer);
+  }, []);
+
+  // Don't render anything during initial paint
+  if (!isReady) {
+    return (
       <div
-        className="absolute w-96 h-96 rounded-full animate-float-slow"
+        className="absolute inset-0 pointer-events-none"
+        style={{ contain: "strict" }}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  return (
+    <div
+      className="absolute inset-0 overflow-hidden pointer-events-none"
+      style={{
+        // Isolate this container from layout calculations
+        contain: "strict",
+        // Ensure it doesn't affect parent layout
+        zIndex: 0,
+      }}
+      aria-hidden="true"
+    >
+      {/* Large cyan orb - fixed position with transform animation only */}
+      <div
+        className="absolute rounded-full"
         style={{
+          width: "384px",
+          height: "384px",
           background: "radial-gradient(circle, rgba(0, 255, 209, 0.15) 0%, transparent 70%)",
           top: "10%",
           left: "10%",
           filter: "blur(40px)",
+          willChange: "transform",
+          animation: "float 8s ease-in-out infinite",
+          // Use transform for initial position to avoid layout
+          transform: "translateZ(0)",
         }}
       />
 
       {/* Purple orb */}
       <div
-        className="absolute w-80 h-80 rounded-full animate-float"
+        className="absolute rounded-full"
         style={{
+          width: "320px",
+          height: "320px",
           background: "radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)",
           top: "30%",
           right: "5%",
           filter: "blur(40px)",
-          animationDelay: "-2s",
+          willChange: "transform",
+          animation: "float 6s ease-in-out infinite -2s",
+          transform: "translateZ(0)",
         }}
       />
 
       {/* Pink orb */}
       <div
-        className="absolute w-64 h-64 rounded-full animate-float-slow"
+        className="absolute rounded-full"
         style={{
+          width: "256px",
+          height: "256px",
           background: "radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%)",
           bottom: "20%",
           left: "30%",
           filter: "blur(40px)",
-          animationDelay: "-4s",
+          willChange: "transform",
+          animation: "float 8s ease-in-out infinite -4s",
+          transform: "translateZ(0)",
         }}
       />
 
       {/* Blue orb */}
       <div
-        className="absolute w-72 h-72 rounded-full animate-float"
+        className="absolute rounded-full"
         style={{
+          width: "288px",
+          height: "288px",
           background: "radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%)",
           bottom: "10%",
           right: "20%",
           filter: "blur(40px)",
-          animationDelay: "-1s",
+          willChange: "transform",
+          animation: "float 6s ease-in-out infinite -1s",
+          transform: "translateZ(0)",
         }}
       />
     </div>

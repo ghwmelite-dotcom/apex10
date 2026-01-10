@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Layout from "./components/layout/Layout";
@@ -8,11 +8,14 @@ import { AmbientProvider } from "./components/AmbientMode";
 import { SplashScreen } from "./components/SplashScreen";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { OfflineIndicator } from "./components/OfflineIndicator";
-import Dashboard from "./pages/Dashboard";
-import AssetDetail from "./pages/AssetDetail";
-import SecurityHub from "./pages/SecurityHub";
-import LearnCenter from "./pages/LearnCenter";
-import NotFound from "./pages/NotFound";
+import { PageLoader } from "./components/ui/PageLoader";
+
+// Lazy load pages for code splitting
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const AssetDetail = lazy(() => import("./pages/AssetDetail"));
+const SecurityHub = lazy(() => import("./pages/SecurityHub"));
+const LearnCenter = lazy(() => import("./pages/LearnCenter"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -57,15 +60,17 @@ export default function App() {
 
           {/* Main App */}
           <Layout>
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/asset/:slug" element={<AssetDetail />} />
-                <Route path="/security" element={<SecurityHub />} />
-                <Route path="/learn" element={<LearnCenter />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AnimatePresence>
+            <Suspense fallback={<PageLoader />}>
+              <AnimatePresence mode="wait">
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/asset/:slug" element={<AssetDetail />} />
+                  <Route path="/security" element={<SecurityHub />} />
+                  <Route path="/learn" element={<LearnCenter />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AnimatePresence>
+            </Suspense>
           </Layout>
 
           {/* PWA Install Prompt */}

@@ -97,6 +97,22 @@ export default defineConfig({
   build: {
     minify: "esbuild",
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React core
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          // Animation libraries
+          "vendor-animation": ["framer-motion"],
+          // Three.js (heavy, lazy loaded)
+          "vendor-three": ["three", "@react-three/fiber", "@react-three/drei"],
+          // TanStack Query
+          "vendor-query": ["@tanstack/react-query"],
+          // Utilities
+          "vendor-utils": ["clsx", "tailwind-merge", "lucide-react"],
+        },
+      },
+    },
   },
   server: {
     port: 5173,

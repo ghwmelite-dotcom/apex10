@@ -54,10 +54,51 @@
     <!-- iPhone SE -->
     <link rel="apple-touch-startup-image" href="/apple-splash/apple-splash-640-1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
 
-    <!-- Preconnect to external resources -->
+    <!-- Preconnect to font origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- Load fonts asynchronously to prevent CLS - font will apply after paint -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=optional" /></noscript>
+
+    <!-- Inline critical font-face to prevent CLS from font loading -->
+    <style>
+      /* Use font-display: optional to prevent CLS entirely */
+      /* This may show system fonts on slow connections but eliminates layout shift */
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-display: optional;
+        src: local('Inter'), local('Inter-Regular');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-display: optional;
+        src: local('Inter Medium'), local('Inter-Medium');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 600;
+        font-display: optional;
+        src: local('Inter SemiBold'), local('Inter-SemiBold');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-display: optional;
+        src: local('Inter Bold'), local('Inter-Bold');
+      }
+      /* Reserve space to prevent layout shift */
+      #root {
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+    </style>
 
     <title>Apex10 | CryptoDiscover</title>
   </head>
