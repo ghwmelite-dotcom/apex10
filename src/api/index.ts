@@ -11,6 +11,7 @@ import { scannerRoutes } from "./routes/scanner";
 import { walletGuardianRoutes } from "./routes/walletGuardian";
 import { credentialsRoutes } from "./routes/credentials";
 import { newsRoutes } from "./routes/news";
+import { preferencesRoutes } from "./routes/preferences";
 import aiRoutes from "./routes/ai";
 import type { Env } from "./types";
 
@@ -57,6 +58,7 @@ api.route("/scanner", scannerRoutes);
 api.route("/wallet-guardian", walletGuardianRoutes);
 api.route("/credentials", credentialsRoutes);
 api.route("/news", newsRoutes);
+api.route("/preferences", preferencesRoutes);
 
 // ============================================
 // ERROR HANDLING

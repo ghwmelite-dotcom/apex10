@@ -12,10 +12,13 @@ import {
   SkipForward,
   BookOpen,
   Calendar,
+  Cloud,
+  CloudOff,
+  Loader2,
 } from "lucide-react";
 import { createPortal } from "react-dom";
 import type { NewsArticle } from "@/api/types";
-import { useTextToSpeech, TTS_SPEED_PRESETS } from "@/hooks/useTextToSpeech";
+import { useCloudTTS, TTS_SPEED_PRESETS } from "@/hooks/useCloudTTS";
 import { cn } from "@/lib/utils";
 
 interface ImmersiveReaderProps {
@@ -37,7 +40,7 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
   const [imageError, setImageError] = useState(false);
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
 
-  const tts = useTextToSpeech({
+  const tts = useCloudTTS({
     onSentenceChange: (index) => {
       const sentenceEl = contentRef.current?.querySelector(`[data-sentence="${index}"]`);
       sentenceEl?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -261,9 +264,21 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
               </div>
             </div>
 
-            {tts.isPlaying && (
-              <span className="text-xs text-gray-500">{tts.currentSentence + 1}/{sentences.length}</span>
-            )}
+            <div className="flex items-center gap-3">
+              {tts.isPlaying && (
+                <span className="text-xs text-gray-500">{tts.currentSentence + 1}/{sentences.length}</span>
+              )}
+              {/* Cloud sync indicator */}
+              <div className="flex items-center gap-1" title={tts.isWalletConnected ? "Synced to wallet" : "Synced to device"}>
+                {tts.isSyncingPreferences ? (
+                  <Loader2 className="w-3.5 h-3.5 text-cyan-400 animate-spin" />
+                ) : tts.isWalletConnected ? (
+                  <Cloud className="w-3.5 h-3.5 text-cyan-400" />
+                ) : (
+                  <CloudOff className="w-3.5 h-3.5 text-gray-500" />
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
