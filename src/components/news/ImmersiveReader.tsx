@@ -130,36 +130,29 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100]"
+      className="fixed inset-0 z-[100] overflow-y-auto"
+      onClick={onClose}
     >
       {/* Backdrop */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/85 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/85 backdrop-blur-sm" />
 
       {/* Modal Container */}
-      <div className="absolute inset-0 overflow-y-auto overscroll-contain">
-        <div className="min-h-full flex items-start sm:items-center justify-center p-3 sm:p-4 md:p-6">
-          {/* Modal */}
-          <motion.article
-            initial={{ opacity: 0, scale: 0.96, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 20 }}
-            transition={{ type: "spring", damping: 30, stiffness: 400 }}
-            onClick={(e) => e.stopPropagation()}
-            className={cn(
-              "relative w-full my-2 sm:my-4",
-              "max-w-[calc(100vw-24px)] sm:max-w-lg md:max-w-xl lg:max-w-2xl",
-              "bg-bg-primary rounded-xl sm:rounded-2xl",
-              "border border-border-default",
-              "shadow-2xl shadow-black/50",
-              "overflow-hidden"
-            )}
-          >
+      <div className="relative min-h-full flex items-center justify-center p-4 sm:p-6 md:p-8">
+        {/* Modal */}
+        <motion.article
+          initial={{ opacity: 0, scale: 0.96, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 20 }}
+          transition={{ type: "spring", damping: 30, stiffness: 400 }}
+          onClick={(e) => e.stopPropagation()}
+          className={cn(
+            "relative w-full max-w-lg md:max-w-xl lg:max-w-2xl",
+            "bg-bg-primary rounded-2xl",
+            "border border-border-default",
+            "shadow-2xl shadow-black/50",
+            "overflow-hidden"
+          )}
+        >
             {/* Close button */}
             <button
               onClick={onClose}
@@ -395,10 +388,9 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
                     {tts.currentSentence + 1}/{sentences.length}
                   </span>
                 )}
-              </div>
             </div>
-          </motion.article>
-        </div>
+          </div>
+        </motion.article>
       </div>
     </motion.div>
   );
