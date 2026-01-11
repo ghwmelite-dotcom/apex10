@@ -89,26 +89,35 @@ export default function Header({ onDiscoveryClick }: HeaderProps) {
             </div>
           </Link>
 
-          {/* Desktop Navigation - Clean pill style */}
+          {/* Desktop Navigation - Clean pill style with icons */}
           <nav className="hidden lg:flex items-center">
             <div className="flex items-center bg-bg-secondary/50 rounded-2xl p-1 border border-border-default/50">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path;
+                const Icon = item.icon;
 
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="relative px-4 py-2 rounded-xl"
+                    className="relative px-3 py-2 rounded-xl group"
                   >
                     <span
                       className={cn(
-                        "text-sm font-medium transition-colors relative z-10",
+                        "flex items-center gap-2 text-sm font-medium transition-all relative z-10",
                         isActive
                           ? "text-text-primary"
-                          : "text-text-muted hover:text-text-secondary"
+                          : "text-text-muted group-hover:text-text-secondary"
                       )}
                     >
+                      <Icon
+                        className={cn(
+                          "w-4 h-4 transition-all",
+                          isActive
+                            ? "text-aurora-cyan"
+                            : "text-text-muted/70 group-hover:text-aurora-cyan/70"
+                        )}
+                      />
                       {item.label}
                     </span>
                     {isActive && (
