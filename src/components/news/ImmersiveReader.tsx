@@ -10,8 +10,6 @@ import {
   Pause,
   SkipBack,
   SkipForward,
-  Volume2,
-  VolumeX,
   BookOpen,
   Calendar,
 } from "lucide-react";
@@ -52,6 +50,15 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
     .replace(/([.!?])\s+/g, "$1|SPLIT|")
     .split("|SPLIT|")
     .filter((s) => s.trim().length > 0);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
 
   // Handle keyboard shortcuts
   useEffect(() => {
@@ -94,15 +101,6 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
     }
   }, [tts, article.content]);
 
-  // Format date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
   // Format time ago
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -114,7 +112,7 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
     if (diffHours < 1) return "Just now";
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
-    return formatDate(dateString);
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   };
 
   const categoryStyle = categoryColors[article.category] || categoryColors.market;
@@ -124,36 +122,36 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
-      onClick={onClose}
+      className="fixed inset-0 z-[100] overflow-y-auto"
     >
       {/* Backdrop */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-bg-primary/90 backdrop-blur-xl"
+      <div
+        className="fixed inset-0 bg-black/80 backdrop-blur-md"
+        onClick={onClose}
       />
 
-      {/* Modal */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        onClick={(e) => e.stopPropagation()}
-        className={cn(
-          "relative w-full max-w-4xl max-h-[90vh] overflow-hidden",
-          "bg-bg-secondary/95 backdrop-blur-sm",
-          "rounded-3xl border border-border-default",
-          "shadow-2xl shadow-black/50",
-          "flex flex-col"
-        )}
-      >
-        {/* Header with image */}
-        <div className="relative">
-          {/* Featured Image */}
-          <div className="relative h-48 md:h-64 overflow-hidden">
+      {/* Modal Container - Centers the modal */}
+      <div className="min-h-screen px-4 py-8 flex items-center justify-center">
+        {/* Modal */}
+        <motion.article
+          initial={{ opacity: 0, scale: 0.95, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 30 }}
+          transition={{ type: "spring", damping: 30, stiffness: 400 }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-2xl bg-bg-primary rounded-2xl border border-border-default shadow-2xl overflow-hidden"
+        >
+          {/* Close button - Always visible */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/50 backdrop-blur-sm text-white/80 hover:text-white hover:bg-black/70 transition-all"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {/* Featured Image - Compact */}
+          <div className="relative h-40 sm:h-48 overflow-hidden">
             {article.image && !imageError ? (
               <img
                 src={article.image}
@@ -163,81 +161,68 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-aurora-cyan/20 via-aurora-purple/20 to-aurora-pink/20 flex items-center justify-center">
-                <BookOpen className="w-16 h-16 text-text-muted/30" />
+                <BookOpen className="w-12 h-12 text-text-muted/30" />
               </div>
             )}
 
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-bg-secondary via-bg-secondary/60 to-transparent" />
-
-            {/* Close button */}
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 p-2 rounded-xl bg-bg-primary/80 backdrop-blur-sm border border-border-default text-text-muted hover:text-text-primary hover:bg-bg-primary transition-all"
-              aria-label="Close"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-transparent to-transparent" />
 
             {/* Source badge */}
-            <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-bg-primary/80 backdrop-blur-sm border border-border-default">
+            <div className="absolute top-4 left-4 flex items-center gap-2 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-sm">
               {article.sourceIcon && (
                 <img
                   src={article.sourceIcon}
                   alt={article.sourceName}
-                  className="w-4 h-4 rounded"
+                  className="w-4 h-4 rounded-sm"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
               )}
-              <span className="text-sm font-medium text-text-primary">{article.sourceName}</span>
+              <span className="text-xs font-medium text-white">{article.sourceName}</span>
             </div>
 
             {/* Category badge */}
             <div className={cn(
-              "absolute bottom-4 left-4 px-3 py-1 rounded-lg text-xs font-semibold",
+              "absolute bottom-4 left-4 px-2.5 py-1 rounded-full text-xs font-semibold",
               categoryStyle.bg,
               categoryStyle.text,
               "border",
-              categoryStyle.border
+              categoryStyle.border,
+              "backdrop-blur-sm"
             )}>
               {article.category.charAt(0).toUpperCase() + article.category.slice(1)}
             </div>
           </div>
-        </div>
 
-        {/* Content */}
-        <div
-          ref={contentRef}
-          className="flex-1 overflow-y-auto px-6 md:px-8 py-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border-default"
-        >
-          {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-text-primary leading-tight mb-4">
-            {article.title}
-          </h1>
+          {/* Content */}
+          <div ref={contentRef} className="p-5 sm:p-6">
+            {/* Title */}
+            <h1 className="text-xl sm:text-2xl font-bold text-text-primary leading-tight mb-3">
+              {article.title}
+            </h1>
 
-          {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-text-muted mb-6 pb-6 border-b border-border-default">
-            {article.author && (
-              <span className="flex items-center gap-1.5">
-                <User className="w-4 h-4" />
-                <span className="text-text-secondary">{article.author}</span>
+            {/* Meta info */}
+            <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted mb-4 pb-4 border-b border-border-default">
+              {article.author && (
+                <span className="flex items-center gap-1">
+                  <User className="w-3.5 h-3.5" />
+                  <span>{article.author.split(' by ').pop()}</span>
+                </span>
+              )}
+              <span className="flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>{formatTimeAgo(article.publishedAt)}</span>
               </span>
-            )}
-            <span className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4" />
-              <span>{formatTimeAgo(article.publishedAt)}</span>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4" />
-              <span>{article.readingTime} min read</span>
-            </span>
-          </div>
+              <span className="flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" />
+                <span>{article.readingTime} min read</span>
+              </span>
+            </div>
 
-          {/* Article content with sentence highlighting */}
-          <div className="prose prose-invert prose-lg max-w-none">
-            <p className="text-text-secondary leading-relaxed text-base md:text-lg">
+            {/* Article content */}
+            <div className="text-text-secondary leading-relaxed text-sm sm:text-base mb-5">
               {sentences.map((sentence, index) => (
                 <span
                   key={index}
@@ -252,167 +237,149 @@ export default function ImmersiveReader({ article, onClose }: ImmersiveReaderPro
                   {sentence}{" "}
                 </span>
               ))}
-            </p>
-          </div>
+            </div>
 
-          {/* Tags */}
-          {article.tags && article.tags.length > 0 && (
-            <div className="mt-6 pt-6 border-t border-border-default">
-              <div className="flex flex-wrap gap-2">
-                {article.tags.map((tag, i) => (
+            {/* Tags */}
+            {article.tags && article.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-5">
+                {article.tags.slice(0, 5).map((tag, i) => (
                   <span
                     key={i}
-                    className="px-3 py-1 rounded-full bg-bg-tertiary text-text-muted text-sm hover:text-text-primary transition-colors"
+                    className="px-2 py-0.5 rounded-full bg-bg-secondary text-text-muted text-xs"
                   >
                     #{tag}
                   </span>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Read full article CTA */}
-          <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-aurora-cyan/10 to-aurora-purple/10 border border-aurora-cyan/20">
-            <p className="text-text-secondary mb-4">
-              Want to read the full article with all the details?
-            </p>
-            <a
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-aurora-cyan text-bg-primary font-semibold hover:bg-aurora-cyan/90 transition-colors"
-            >
-              Read Full Article
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </div>
-        </div>
-
-        {/* Footer with TTS controls */}
-        <div className="border-t border-border-default bg-bg-tertiary/50 backdrop-blur-sm px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
-            {/* TTS Controls */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => tts.skipBackward()}
-                disabled={!tts.isPlaying}
-                className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                aria-label="Previous sentence"
-              >
-                <SkipBack className="w-4 h-4" />
-              </button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handlePlayPause}
-                className={cn(
-                  "p-3 rounded-xl transition-all",
-                  tts.isPlaying && !tts.isPaused
-                    ? "bg-aurora-cyan text-bg-primary shadow-glow"
-                    : "bg-aurora-cyan/20 text-aurora-cyan border border-aurora-cyan/30 hover:bg-aurora-cyan/30"
-                )}
-                aria-label={tts.isPlaying && !tts.isPaused ? "Pause" : "Listen to article"}
-              >
-                {tts.isPlaying && !tts.isPaused ? (
-                  <Pause className="w-5 h-5" />
-                ) : (
-                  <Play className="w-5 h-5 ml-0.5" />
-                )}
-              </motion.button>
-
-              <button
-                onClick={() => tts.skipForward()}
-                disabled={!tts.isPlaying}
-                className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all"
-                aria-label="Next sentence"
-              >
-                <SkipForward className="w-4 h-4" />
-              </button>
-
-              {/* Speed selector */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-                  className="px-3 py-1.5 rounded-lg bg-bg-secondary text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-                >
-                  {tts.rate}x
-                </button>
-
-                <AnimatePresence>
-                  {showSpeedMenu && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute bottom-full left-0 mb-2 p-2 rounded-xl bg-bg-secondary border border-border-default shadow-xl"
-                    >
-                      {TTS_SPEED_PRESETS.map((preset) => (
-                        <button
-                          key={preset.value}
-                          onClick={() => {
-                            tts.setRate(preset.value);
-                            setShowSpeedMenu(false);
-                          }}
-                          className={cn(
-                            "block w-full px-4 py-2 text-sm text-left rounded-lg transition-colors",
-                            tts.rate === preset.value
-                              ? "bg-aurora-cyan/20 text-aurora-cyan"
-                              : "text-text-secondary hover:bg-bg-tertiary hover:text-text-primary"
-                          )}
-                        >
-                          {preset.label}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* TTS indicator */}
-              {tts.isPlaying && !tts.isPaused && (
-                <div className="flex items-center gap-1 ml-2">
-                  {[...Array(3)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="w-1 bg-aurora-cyan rounded-full"
-                      animate={{ height: [4, 16, 4] }}
-                      transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.15 }}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Progress indicator */}
-            {tts.isPlaying && (
-              <div className="hidden sm:flex items-center gap-2 text-xs text-text-muted">
-                <span>{tts.currentSentence + 1} / {sentences.length}</span>
-              </div>
             )}
 
             {/* Action buttons */}
             <div className="flex items-center gap-2">
-              <button
-                onClick={handleShare}
-                className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-secondary transition-all"
-                aria-label="Share article"
-              >
-                <Share2 className="w-4 h-4" />
-              </button>
               <a
                 href={article.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-secondary transition-all"
-                aria-label="Open original"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-aurora-cyan text-bg-primary font-semibold text-sm hover:bg-aurora-cyan/90 transition-colors"
               >
+                Read Full Article
                 <ExternalLink className="w-4 h-4" />
               </a>
+              <button
+                onClick={handleShare}
+                className="p-2.5 rounded-xl bg-bg-secondary border border-border-default text-text-muted hover:text-text-primary hover:border-border-default transition-all"
+                aria-label="Share article"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
             </div>
           </div>
-        </div>
-      </motion.div>
+
+          {/* TTS Controls - Compact footer */}
+          <div className="border-t border-border-default bg-bg-secondary/50 px-5 py-3">
+            <div className="flex items-center justify-between">
+              {/* TTS Controls */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => tts.skipBackward()}
+                  disabled={!tts.isPlaying}
+                  className="p-1.5 rounded-lg text-text-muted hover:text-text-primary disabled:opacity-40 transition-all"
+                  aria-label="Previous"
+                >
+                  <SkipBack className="w-4 h-4" />
+                </button>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handlePlayPause}
+                  className={cn(
+                    "p-2.5 rounded-xl transition-all",
+                    tts.isPlaying && !tts.isPaused
+                      ? "bg-aurora-cyan text-bg-primary"
+                      : "bg-aurora-cyan/20 text-aurora-cyan border border-aurora-cyan/30"
+                  )}
+                  aria-label={tts.isPlaying && !tts.isPaused ? "Pause" : "Listen"}
+                >
+                  {tts.isPlaying && !tts.isPaused ? (
+                    <Pause className="w-4 h-4" />
+                  ) : (
+                    <Play className="w-4 h-4 ml-0.5" />
+                  )}
+                </motion.button>
+
+                <button
+                  onClick={() => tts.skipForward()}
+                  disabled={!tts.isPlaying}
+                  className="p-1.5 rounded-lg text-text-muted hover:text-text-primary disabled:opacity-40 transition-all"
+                  aria-label="Next"
+                >
+                  <SkipForward className="w-4 h-4" />
+                </button>
+
+                {/* Speed */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+                    className="px-2 py-1 rounded-lg bg-bg-tertiary text-xs font-medium text-text-secondary hover:text-text-primary transition-colors"
+                  >
+                    {tts.rate}x
+                  </button>
+
+                  <AnimatePresence>
+                    {showSpeedMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 5 }}
+                        className="absolute bottom-full left-0 mb-1 p-1 rounded-lg bg-bg-secondary border border-border-default shadow-lg"
+                      >
+                        {TTS_SPEED_PRESETS.map((preset) => (
+                          <button
+                            key={preset.value}
+                            onClick={() => {
+                              tts.setRate(preset.value);
+                              setShowSpeedMenu(false);
+                            }}
+                            className={cn(
+                              "block w-full px-3 py-1 text-xs text-left rounded transition-colors",
+                              tts.rate === preset.value
+                                ? "bg-aurora-cyan/20 text-aurora-cyan"
+                                : "text-text-secondary hover:bg-bg-tertiary"
+                            )}
+                          >
+                            {preset.label}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Playing indicator */}
+                {tts.isPlaying && !tts.isPaused && (
+                  <div className="flex items-center gap-0.5 ml-1">
+                    {[...Array(3)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="w-0.5 bg-aurora-cyan rounded-full"
+                        animate={{ height: [3, 12, 3] }}
+                        transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.1 }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Progress */}
+              {tts.isPlaying && (
+                <span className="text-xs text-text-muted">
+                  {tts.currentSentence + 1}/{sentences.length}
+                </span>
+              )}
+            </div>
+          </div>
+        </motion.article>
+      </div>
     </motion.div>
   );
 }
