@@ -194,6 +194,11 @@ export const CACHE_TTL = {
   WALLET_APPROVALS: 300, // 5 minutes
   WALLET_RISK: 600, // 10 minutes
   GOPLUS_CHECK: 3600, // 1 hour
+  // News cache TTLs - shorter to keep content fresh
+  NEWS_FEED: 900, // 15 minutes - ensures current news
+  NEWS_ARTICLE: 3600, // 1 hour - individual articles
+  NEWS_SOURCES: 21600, // 6 hours - sources rarely change
+  NEWS_SUMMARY: 3600, // 1 hour - AI summaries
 } as const;
 
 // ============================================

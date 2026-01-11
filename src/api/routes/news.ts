@@ -39,10 +39,10 @@ newsRoutes.get("/feed", async (c) => {
       articles = await fetchAllFeeds();
     }
 
-    // Cache the fetched articles (24 hours TTL - auto-deletes after expiration)
+    // Cache the fetched articles with short TTL for fresh news
     if (articles.length > 0) {
       await c.env.CACHE.put(cacheKey, JSON.stringify(articles), {
-        expirationTtl: 86400, // 24 hours - news auto-deleted after this
+        expirationTtl: CACHE_TTL.NEWS_FEED,
       });
     }
   }
@@ -95,9 +95,9 @@ newsRoutes.get("/article/:id", async (c) => {
     return c.json({ error: "Article not found" }, 404);
   }
 
-  // Cache the article (24 hours TTL - auto-deletes after expiration)
+  // Cache the article with moderate TTL
   await c.env.CACHE.put(cacheKey, JSON.stringify(article), {
-    expirationTtl: 86400, // 24 hours - auto-deleted after this
+    expirationTtl: CACHE_TTL.NEWS_ARTICLE,
   });
 
   return c.json({ data: article, meta: { cached: false } });
@@ -118,7 +118,7 @@ newsRoutes.get("/sources", async (c) => {
   const sources = getAvailableSources();
 
   await c.env.CACHE.put(cacheKey, JSON.stringify(sources), {
-    expirationTtl: 86400, // 24 hours
+    expirationTtl: CACHE_TTL.NEWS_SOURCES,
   });
 
   return c.json({ data: sources, meta: { cached: false } });
@@ -157,7 +157,7 @@ newsRoutes.post("/summarize", async (c) => {
 
     // Cache the summary
     await c.env.CACHE.put(summaryCacheKey, summary, {
-      expirationTtl: 3600, // 1 hour
+      expirationTtl: CACHE_TTL.NEWS_SUMMARY,
     });
 
     return c.json({ data: { summary }, meta: { cached: false } });
