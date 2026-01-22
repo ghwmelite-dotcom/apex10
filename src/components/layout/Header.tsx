@@ -13,6 +13,8 @@ import {
   Newspaper,
   ChevronDown,
   Command,
+  Zap,
+  Home,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -22,7 +24,9 @@ interface HeaderProps {
 }
 
 const navItems = [
-  { path: "/", label: "Rankings", icon: TrendingUp },
+  { path: "/", label: "Home", icon: Home },
+  { path: "/xrp", label: "XRP Hub", icon: Zap, highlight: true },
+  { path: "/rankings", label: "Top 10", icon: TrendingUp },
   { path: "/news", label: "News", icon: Newspaper },
   { path: "/security", label: "Security", icon: Shield },
   { path: "/scanner", label: "Scanner", icon: ScanLine },
@@ -95,19 +99,25 @@ export default function Header({ onDiscoveryClick }: HeaderProps) {
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path;
                 const Icon = item.icon;
+                const isHighlight = 'highlight' in item && item.highlight;
 
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="relative px-3 py-2 rounded-xl group"
+                    className={cn(
+                      "relative px-3 py-2 rounded-xl group",
+                      isHighlight && !isActive && "shadow-xrp-glow-sm"
+                    )}
                   >
                     <span
                       className={cn(
                         "flex items-center gap-2 text-sm font-medium transition-all relative z-10",
                         isActive
                           ? "text-text-primary"
-                          : "text-text-muted group-hover:text-text-secondary"
+                          : isHighlight
+                            ? "text-xrp-cyan group-hover:text-xrp-cyan"
+                            : "text-text-muted group-hover:text-text-secondary"
                       )}
                     >
                       <Icon
@@ -115,7 +125,9 @@ export default function Header({ onDiscoveryClick }: HeaderProps) {
                           "w-4 h-4 transition-all",
                           isActive
                             ? "text-aurora-cyan"
-                            : "text-text-muted/70 group-hover:text-aurora-cyan/70"
+                            : isHighlight
+                              ? "text-xrp-cyan"
+                              : "text-text-muted/70 group-hover:text-aurora-cyan/70"
                         )}
                       />
                       {item.label}
@@ -123,7 +135,12 @@ export default function Header({ onDiscoveryClick }: HeaderProps) {
                     {isActive && (
                       <motion.div
                         layoutId="activeNavPill"
-                        className="absolute inset-0 bg-bg-primary rounded-xl shadow-sm border border-border-default"
+                        className={cn(
+                          "absolute inset-0 rounded-xl shadow-sm border",
+                          isHighlight
+                            ? "bg-xrp-navy border-xrp-cyan/30 shadow-xrp-glow-sm"
+                            : "bg-bg-primary border-border-default"
+                        )}
                         transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
                       />
                     )}
@@ -254,6 +271,7 @@ export default function Header({ onDiscoveryClick }: HeaderProps) {
                 {navItems.map((item, index) => {
                   const isActive = location.pathname === item.path;
                   const Icon = item.icon;
+                  const isHighlight = 'highlight' in item && item.highlight;
 
                   return (
                     <motion.div
@@ -268,16 +286,24 @@ export default function Header({ onDiscoveryClick }: HeaderProps) {
                         className={cn(
                           "flex items-center gap-4 px-4 py-4 rounded-2xl transition-all",
                           isActive
-                            ? "bg-aurora-cyan/10 text-aurora-cyan"
-                            : "text-text-secondary hover:bg-bg-secondary hover:text-text-primary"
+                            ? isHighlight
+                              ? "bg-xrp-cyan/10 text-xrp-cyan shadow-xrp-glow-sm"
+                              : "bg-aurora-cyan/10 text-aurora-cyan"
+                            : isHighlight
+                              ? "text-xrp-cyan hover:bg-xrp-cyan/5"
+                              : "text-text-secondary hover:bg-bg-secondary hover:text-text-primary"
                         )}
                       >
                         <div
                           className={cn(
                             "w-10 h-10 rounded-xl flex items-center justify-center",
                             isActive
-                              ? "bg-aurora-cyan/20"
-                              : "bg-bg-secondary"
+                              ? isHighlight
+                                ? "bg-xrp-cyan/20"
+                                : "bg-aurora-cyan/20"
+                              : isHighlight
+                                ? "bg-xrp-cyan/10"
+                                : "bg-bg-secondary"
                           )}
                         >
                           <Icon className="w-5 h-5" />

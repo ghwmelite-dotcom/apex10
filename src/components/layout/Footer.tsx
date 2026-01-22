@@ -18,14 +18,14 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-xrp-cyan to-xrp-teal flex items-center justify-center">
                 <span className="text-bg-primary font-bold text-sm">A10</span>
               </div>
               <span className="font-bold text-xl text-text-primary">Apex10</span>
             </div>
             <p className="text-text-muted text-sm max-w-md">
-              Discover high-potential crypto assets with security-first education.
-              Make informed decisions with transparent rankings and comprehensive guides.
+              Deep XRP analytics and intelligence for serious holders.
+              Plus coverage of 9 essential cryptocurrencies with security-first education.
             </p>
           </div>
 
@@ -34,7 +34,12 @@ export default function Footer() {
             <h3 className="font-semibold text-text-primary mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/" className="text-text-muted hover:text-accent-primary transition-colors text-sm">
+                <a href="/xrp" className="text-xrp-cyan hover:text-xrp-teal transition-colors text-sm font-medium">
+                  XRP Hub
+                </a>
+              </li>
+              <li>
+                <a href="/rankings" className="text-text-muted hover:text-accent-primary transition-colors text-sm">
                   Top 10 Rankings
                 </a>
               </li>

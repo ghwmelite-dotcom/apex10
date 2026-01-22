@@ -12,9 +12,14 @@ DELETE FROM assets;
 DELETE FROM users;
 
 -- ============================================
--- ASSETS: Top 10 Crypto Assets
+-- ASSETS: Top 10 Crypto Assets (XRP as flagship)
 -- ============================================
 INSERT INTO assets (symbol, name, slug, category, description, short_description, website, coingecko_id) VALUES
+('XRP', 'XRP', 'xrp', 'Payment',
+ 'XRP is the native digital asset of the XRP Ledger, designed for fast, low-cost cross-border payments. Created by Ripple Labs, XRP enables On-Demand Liquidity (ODL) for financial institutions worldwide. The XRP Ledger processes transactions in 3-5 seconds with minimal fees, making it ideal for international remittances and enterprise payments. With strategic partnerships across major banks and payment providers, XRP continues to expand its utility in the global financial system. Monthly escrow releases of 1 billion XRP ensure predictable supply management.',
+ 'Fast cross-border payments and enterprise liquidity',
+ 'https://xrpl.org', 'ripple'),
+
 ('BTC', 'Bitcoin', 'bitcoin', 'L1',
  'Bitcoin is the first decentralized cryptocurrency, created in 2009 by an anonymous entity known as Satoshi Nakamoto. It operates on a peer-to-peer network using blockchain technology, enabling secure, transparent transactions without intermediaries.',
  'The original cryptocurrency and digital gold standard',
@@ -66,46 +71,50 @@ INSERT INTO assets (symbol, name, slug, category, description, short_description
  'https://polygon.technology', 'matic-network');
 
 -- ============================================
--- RANKINGS: Asset Scores
+-- RANKINGS: Asset Scores (XRP is flagship, separate from numbered rankings)
 -- ============================================
 INSERT INTO rankings (asset_id, rank, overall_score, potential_score, utility_score, developer_score, adoption_score, risk_level, strengths, weaknesses) VALUES
-(1, 1, 95, 90, 85, 92, 98, 'low',
+(1, 0, 90, 88, 94, 82, 86, 'medium',
+ '["Fast 3-5 second transactions", "Enterprise partnerships", "ODL adoption growing", "Regulatory clarity improving", "Escrow provides supply predictability"]',
+ '["Centralization concerns", "Regulatory uncertainty in some regions", "Competition from CBDCs"]'),
+
+(2, 1, 95, 90, 85, 92, 98, 'low',
  '["Strongest network effect", "Institutional adoption", "Proven security track record", "Digital gold narrative"]',
  '["Limited programmability", "Slow transaction speed", "Energy consumption concerns"]'),
 
-(2, 2, 92, 88, 95, 96, 94, 'low',
+(3, 2, 92, 88, 95, 96, 94, 'low',
  '["Largest developer ecosystem", "Smart contract pioneer", "Strong institutional interest", "DeFi dominance"]',
  '["High gas fees during congestion", "Scaling challenges", "Competition from alt-L1s"]'),
 
-(3, 3, 88, 92, 88, 85, 82, 'medium',
+(4, 3, 88, 92, 88, 85, 82, 'medium',
  '["Exceptional throughput", "Low transaction costs", "Growing DeFi ecosystem", "NFT market presence"]',
  '["Network outage history", "Centralization concerns", "Validator requirements"]'),
 
-(4, 4, 85, 88, 84, 82, 78, 'medium',
+(5, 4, 85, 88, 84, 82, 78, 'medium',
  '["Subnet architecture", "EVM compatibility", "Fast finality", "Enterprise adoption"]',
  '["Smaller ecosystem than competitors", "Marketing challenges", "Complex tokenomics"]'),
 
-(5, 5, 84, 85, 92, 88, 80, 'medium',
+(6, 5, 84, 85, 92, 88, 80, 'medium',
  '["Essential DeFi infrastructure", "Cross-chain capabilities", "Strong partnerships", "Revenue generating"]',
  '["Token utility debates", "Competition emerging", "Centralization concerns"]'),
 
-(6, 6, 82, 84, 88, 85, 78, 'medium',
+(7, 6, 82, 84, 88, 85, 78, 'medium',
  '["DeFi lending pioneer", "Multi-chain presence", "Flash loan innovation", "Strong governance"]',
  '["Regulatory uncertainty", "Smart contract risks", "Competition from new protocols"]'),
 
-(7, 7, 80, 82, 86, 84, 76, 'medium',
+(8, 7, 80, 82, 86, 84, 76, 'medium',
  '["DEX market leader", "AMM innovation", "Strong brand recognition", "Consistent development"]',
  '["Fee switch debates", "V4 adoption uncertainty", "Competition from aggregators"]'),
 
-(8, 8, 79, 85, 82, 80, 72, 'medium',
+(9, 8, 79, 85, 82, 80, 72, 'medium',
  '["Leading L2 by TVL", "Strong DeFi ecosystem", "Ethereum security inheritance", "Developer friendly"]',
  '["Token distribution concerns", "Sequencer centralization", "Competition from other L2s"]'),
 
-(9, 9, 77, 82, 78, 82, 70, 'medium',
+(10, 9, 77, 82, 78, 82, 70, 'medium',
  '["Public goods focus", "OP Stack adoption", "Superchain vision", "Strong team"]',
  '["Smaller ecosystem than Arbitrum", "Token utility questions", "Governance complexity"]'),
 
-(10, 10, 75, 78, 80, 76, 74, 'medium',
+(11, 10, 75, 78, 80, 76, 74, 'medium',
  '["Enterprise adoption", "zkEVM development", "Broad scaling solutions", "Brand recognition"]',
  '["Token inflation concerns", "Complex product lineup", "Competition on all fronts"]');
 

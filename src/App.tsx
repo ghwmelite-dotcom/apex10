@@ -22,6 +22,8 @@ const ContractScanner = lazy(() => import("./pages/ContractScanner"));
 const WalletGuardian = lazy(() => import("./pages/WalletGuardian"));
 const VerifyPage = lazy(() => import("./pages/VerifyPage"));
 const NewsHub = lazy(() => import("./pages/NewsHub"));
+const XRPHub = lazy(() => import("./pages/XRPHub"));
+const Rankings = lazy(() => import("./pages/Rankings"));
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -82,6 +84,8 @@ export default function App() {
                     <AnimatePresence mode="wait">
                       <Routes>
                         <Route path="/" element={<Dashboard />} />
+                        <Route path="/xrp" element={<XRPHub />} />
+                        <Route path="/rankings" element={<Rankings />} />
                         <Route path="/asset/:slug" element={<AssetDetail />} />
                         <Route path="/security" element={<SecurityHub />} />
                         <Route path="/learn" element={<LearnCenter />} />

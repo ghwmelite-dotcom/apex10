@@ -76,6 +76,16 @@ export default {
           positive: "#10B981",
           negative: "#EF4444",
         },
+
+        // XRP Brand Colors
+        xrp: {
+          navy: "#23292F",      // Primary dark background
+          cyan: "#00AAE4",      // Primary accent
+          teal: "#00C2C7",      // Secondary accent
+          white: "#FFFFFF",
+          "navy-dark": "#1a1f25",
+          "cyan-glow": "rgba(0, 170, 228, 0.4)",
+        },
       },
 
       fontFamily: {
@@ -97,6 +107,11 @@ export default {
         "glow-lg": "0 0 40px rgba(0, 255, 209, 0.4)",
         "glow-purple": "0 0 20px rgba(139, 92, 246, 0.3)",
         "glow-gold": "0 0 20px rgba(255, 215, 0, 0.3)",
+
+        // XRP-specific glows
+        "xrp-glow": "0 0 30px rgba(0, 170, 228, 0.4)",
+        "xrp-pulse": "0 0 20px rgba(0, 170, 228, 0.6), 0 0 40px rgba(0, 170, 228, 0.3)",
+        "xrp-glow-sm": "0 0 15px rgba(0, 170, 228, 0.3)",
 
         // Elevated surfaces
         "glass": "0 8px 32px rgba(0, 0, 0, 0.3)",
@@ -133,6 +148,15 @@ export default {
         "rank-gold": "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)",
         "rank-silver": "linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%)",
         "rank-bronze": "linear-gradient(135deg, #CD7F32 0%, #A0522D 100%)",
+
+        // XRP gradients
+        "xrp-gradient": "linear-gradient(135deg, #00AAE4 0%, #00C2C7 100%)",
+        "xrp-hero": "linear-gradient(180deg, #23292F 0%, #1a1f25 100%)",
+        "xrp-mesh": `
+          radial-gradient(at 20% 30%, rgba(0, 170, 228, 0.15) 0px, transparent 50%),
+          radial-gradient(at 80% 20%, rgba(0, 194, 199, 0.1) 0px, transparent 50%),
+          radial-gradient(at 50% 80%, rgba(0, 170, 228, 0.08) 0px, transparent 50%)
+        `,
       },
 
       animation: {
@@ -164,6 +188,11 @@ export default {
 
         // Heartbeat
         "heartbeat": "heartbeat 1s ease-in-out infinite",
+
+        // XRP animations
+        "xrp-pulse": "xrp-pulse 2s ease-in-out infinite",
+        "xrp-ring": "xrp-ring 3s ease-in-out infinite",
+        "signal-pulse": "signal-pulse 1.5s ease-in-out infinite",
       },
 
       keyframes: {
@@ -225,6 +254,18 @@ export default {
           "28%": { transform: "scale(1)" },
           "42%": { transform: "scale(1.1)" },
           "70%": { transform: "scale(1)" },
+        },
+        "xrp-pulse": {
+          "0%, 100%": { boxShadow: "0 0 20px rgba(0, 170, 228, 0.3)" },
+          "50%": { boxShadow: "0 0 40px rgba(0, 170, 228, 0.6)" },
+        },
+        "xrp-ring": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "signal-pulse": {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.7", transform: "scale(1.05)" },
         },
       },
 
