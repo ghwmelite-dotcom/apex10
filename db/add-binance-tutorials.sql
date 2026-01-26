@@ -1,966 +1,1123 @@
 -- ============================================
 -- BINANCE TUTORIALS: Comprehensive Setup Guides
--- Run this to add Binance tutorials to existing database
+-- Fun & Engaging Version
 -- ============================================
+
+-- First, remove old tutorials if they exist
+DELETE FROM security_content WHERE category LIKE 'binance_%';
 
 -- Desktop/Web Browser Setup
 INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
 ('acquisition_guide', 'binance_desktop', 'Binance Desktop Setup: Complete Guide',
-'## Setting Up Binance on Your Computer (Web Browser)
+'## 🚀 Let''s Get You Started on Binance!
 
-### Before You Begin
-- Use a desktop computer or laptop with a secure internet connection
-- Have a valid government-issued ID ready (passport, driver''s license, or national ID)
-- Prepare a phone number and email address you have access to
-- Allow 15-30 minutes for the complete setup process
+Welcome to your crypto journey! Setting up Binance on your computer is easier than ordering pizza online. Grab a coffee, and let''s do this together!
 
-### Step 1: Access the Official Binance Website
-1. Open your preferred web browser (Chrome, Firefox, Safari, or Edge)
-2. Type **binance.com** directly in the address bar - NEVER click links from emails
-3. Verify you see the padlock icon and "https://" in the URL
-4. Bookmark this page immediately to avoid phishing sites in the future
-5. If you''re in the US, you''ll be redirected to **binance.us** - this is normal
+### 📋 What You''ll Need (Your Crypto Starter Pack)
+- ☕ A comfy spot with good internet
+- 🪪 Your ID (passport, driver''s license, or national ID)
+- 📱 Your phone for verification codes
+- ⏱️ About 15-30 minutes of your time
 
-### Step 2: Create Your Account
-1. Click the yellow **"Register"** or **"Sign Up"** button in the top right
-2. Choose your registration method:
-   - **Email**: Recommended for most users
-   - **Phone Number**: Alternative option
-   - **Apple/Google Account**: Fastest but links external account
-3. Enter your email address - use a dedicated email for crypto if possible
-4. Create a strong password with:
-   - Minimum 8 characters
-   - At least one uppercase letter (A-Z)
-   - At least one lowercase letter (a-z)
-   - At least one number (0-9)
-   - At least one special character (!@#$%^&*)
-5. Check the Terms of Service box after reading
-6. Click **"Create Account"**
+*Pro tip: Put on some good music - this is the start of something exciting!*
 
-### Step 3: Verify Your Email
-1. Check your email inbox for a message from Binance
-2. Look in spam/junk folder if not visible within 2 minutes
-3. Click the verification link in the email (valid for 30 minutes)
-4. You''ll be redirected back to Binance with "Email Verified" confirmation
-5. If the link expires, request a new verification email
+---
 
-### Step 4: Secure Your Account (Critical)
-1. After logging in, click on your profile icon → **"Security"**
-2. Set up **Two-Factor Authentication (2FA)** immediately:
+## Step 1: Find the Real Binance 🎯
 
-   **Option A: Google Authenticator (Recommended)**
-   - Download Google Authenticator or Authy on your phone
-   - Click "Enable" next to Authenticator App
-   - Scan the QR code with your authenticator app
-   - Write down the backup key on paper and store safely
-   - Enter the 6-digit code from the app to confirm
+**This is super important!** Scammers create fake websites that look identical to Binance. Here''s how to stay safe:
 
-   **Option B: SMS Authentication**
-   - Click "Enable" next to SMS Authentication
-   - Enter your phone number with country code
-   - Enter the verification code sent via SMS
-   - Note: Less secure than authenticator apps
+1. Open your browser (Chrome, Firefox, Safari - they all work great)
+2. Type **binance.com** directly - don''t Google it, don''t click email links
+3. Look for the 🔒 padlock icon in your browser bar
+4. **Bookmark it immediately!** This is your safe passage forever
 
-3. Set up **Anti-Phishing Code**:
-   - Go to Security → Anti-Phishing Code
-   - Create a 4-8 character code you''ll remember
-   - This code will appear in all legitimate Binance emails
-   - If an email doesn''t have your code, it''s fake
+🇺🇸 *US friends: You''ll land on binance.us - that''s totally normal!*
 
-4. Enable **Withdrawal Whitelist** (optional but recommended):
-   - Only allows withdrawals to pre-approved addresses
-   - Adds 24-hour delay for new addresses
-   - Prevents hackers from withdrawing even if they access your account
+---
 
-### Step 5: Complete Identity Verification (KYC)
-1. Click profile icon → **"Identification"** or look for "Verify" banner
-2. Select your country of residence
-3. Choose **"Verify"** for Personal Verification
+## Step 2: Create Your Account ✨
 
-**Basic Verification (Verified):**
-- Enter your legal name exactly as on your ID
-- Enter your date of birth
-- Enter your residential address
-- Submit for review (usually instant)
+Time to join millions of crypto enthusiasts!
 
-**Intermediate Verification (Verified Plus):**
-- Upload government-issued ID (front and back)
-- Supported documents: Passport, Driver''s License, National ID
-- Ensure photos are:
-  - Clear and in focus
-  - All corners visible
-  - No glare or shadows
-  - Taken in good lighting
-- Complete facial verification:
-  - Follow on-screen instructions
-  - Look directly at camera
-  - Ensure good lighting on your face
-  - Remove glasses if prompted
-- Review time: Usually 1-3 business days
+1. Hit that big yellow **"Register"** button (can''t miss it!)
+2. Pick how you want to sign up:
+   - 📧 **Email** - The classic choice (recommended!)
+   - 📱 **Phone** - Quick and easy
+   - 🍎 **Apple/Google** - Fastest if you''re in a hurry
 
-### Step 6: Add Payment Method
-1. Go to **"Buy Crypto"** → **"Payment Methods"** or **"Wallet"** → **"Fiat and Spot"**
-2. Click **"Add Payment Method"**
-3. Choose your preferred option:
+3. **Create a password that''s basically uncrackable:**
+   - At least 8 characters (longer = stronger 💪)
+   - Mix it up: `MyD0g$parkle$2024!` beats `password123`
+   - Uppercase + lowercase + numbers + symbols = chef''s kiss
 
-   **Bank Transfer (ACH/SEPA):**
-   - Lowest fees (often free deposits)
-   - Takes 1-5 business days to process
-   - Link your bank account details
-   - May require micro-deposit verification
+4. Check the Terms box and hit **"Create Account"**
 
-   **Debit/Credit Card:**
-   - Instant purchases
-   - Higher fees (1.8%-2% typically)
-   - Enter card details securely
-   - 3D Secure verification may be required
+🎉 *You just took your first step into crypto! How does it feel?*
 
-   **Third-Party Payments:**
-   - Apple Pay, Google Pay (where available)
-   - Varies by region
+---
 
-4. Complete any required verification for your payment method
+## Step 3: Verify Your Email 📬
 
-### Step 7: Make Your First Purchase
-1. Click **"Buy Crypto"** in the top navigation
-2. Select **"Buy Crypto with Card/Cash"** or **"Bank Deposit"**
-3. Choose the cryptocurrency you want (e.g., BTC, ETH, XRP)
-4. Enter the amount in your local currency
-5. Select your payment method
-6. Review the transaction details:
-   - Amount of crypto you''ll receive
-   - Exchange rate
-   - Fees breakdown
-7. Click **"Buy"** and confirm with your 2FA code
-8. Your crypto will appear in your Spot Wallet
+1. Check your inbox for Binance''s welcome email
+2. Not there? Peek in your spam folder (it happens to the best of us)
+3. Click the verification link - you''ve got 30 minutes!
+4. See "Email Verified"? **You''re officially in!**
 
-### Important Security Reminders
-- Never share your password, 2FA codes, or seed phrases
-- Binance staff will NEVER ask for your password
-- Always verify you''re on the official website
-- Log out when using shared computers
-- Regularly review your account activity
-- Enable all available security features',
-'info', 10, '{"platform": "desktop", "difficulty": "beginner", "timeRequired": "30 minutes", "requirements": ["Computer with internet", "Valid ID", "Email address", "Phone number"]}');
+---
+
+## Step 4: Lock It Down Like Fort Knox 🏰
+
+This is where we make your account basically unhackable. Trust us, future you will be SO grateful!
+
+### 🔐 Two-Factor Authentication (Your New Best Friend)
+
+**Option A: Authenticator App (The Gold Standard)**
+1. Download **Google Authenticator** or **Authy** on your phone
+2. In Binance: Security → Enable Authenticator
+3. Scan the QR code with your app
+4. **STOP! Write down the backup key on PAPER** 📝
+   - Not in your notes app
+   - Not in a screenshot
+   - On actual paper, stored somewhere safe
+5. Enter the 6-digit code and you''re protected!
+
+**Option B: SMS** (Better than nothing, but apps are safer)
+
+### 🎣 Anti-Phishing Code (Your Secret Handshake)
+
+This is genius - you create a secret code that appears in ALL real Binance emails:
+
+1. Go to Security → Anti-Phishing Code
+2. Create something memorable: `MOONLAMBO` or `CRYPTO4LIFE`
+3. Now if you get an email WITHOUT your code? It''s fake. Delete it! 🗑️
+
+### 🏠 Withdrawal Whitelist (The Ultimate Safety Net)
+
+Even if hackers somehow get in, they can only send crypto to YOUR addresses:
+- Enable it in Security settings
+- Add your personal wallet addresses
+- New addresses need 24 hours to activate
+- Sleep peacefully knowing your crypto is safe 😴
+
+---
+
+## Step 5: Verify Your Identity (KYC) 🪪
+
+Time to prove you''re a real human! This unlocks higher limits and more features.
+
+### Basic Verification:
+- Your name (exactly as it appears on your ID)
+- Birthday 🎂
+- Address
+- Usually approved in seconds!
+
+### Intermediate Verification:
+1. Choose your ID type
+2. Take clear photos:
+   - Good lighting (face a window!)
+   - All corners visible
+   - No glare or shadows
+   - Hold steady - no blurry pics!
+
+3. Selfie time! 📸
+   - Look at the camera
+   - Remove glasses
+   - Follow the prompts (you might need to blink or turn your head)
+
+⏳ *Review takes 1-3 days, but often it''s way faster!*
+
+---
+
+## Step 6: Add Your Money Source 💳
+
+Time to fund your crypto adventures!
+
+### Bank Transfer (Cheapest Option) 🏦
+- Often FREE deposits
+- Takes 1-5 days to arrive
+- Best for larger amounts
+
+### Debit/Credit Card (Instant Gratification) 💳
+- Buy crypto in seconds!
+- 1.8-2% fee (worth it for the speed)
+- Perfect for "I need crypto NOW" moments
+
+### Apple Pay / Google Pay 📱
+- Super convenient
+- Available in many regions
+
+---
+
+## Step 7: Buy Your First Crypto! 🎊
+
+**This is the moment you''ve been waiting for!**
+
+1. Click **"Buy Crypto"**
+2. Pick your crypto (BTC? ETH? XRP? So many choices!)
+3. Enter how much you want to spend
+4. Select your payment method
+5. Review everything (fees, amount you''ll get)
+6. Hit **"Buy"** and confirm with your 2FA
+
+🎉 **CONGRATULATIONS!** You now own cryptocurrency!
+
+Check your Spot Wallet - see those numbers? That''s YOUR crypto!
+
+---
+
+## 🛡️ Golden Rules to Remember
+
+1. **Binance will NEVER ask for your password** - Anyone who does is a scammer
+2. **Bookmark = Safety** - Always use your bookmark
+3. **No seed phrase sharing** - Ever. Ever. EVER.
+4. **When in doubt, log out** - Especially on shared computers
+5. **Start small** - Get comfortable before going big
+
+---
+
+## 🚀 What''s Next?
+
+You''re all set up! Here''s what most people do next:
+- Explore the markets and watchlist your favorite coins
+- Learn about limit orders vs market orders
+- Consider moving large holdings to a personal wallet
+- Join the Binance community to learn from others
+
+Welcome to the crypto family! 🎉',
+'info', 10, '{"platform": "desktop", "difficulty": "beginner", "timeRequired": "15-30 minutes", "requirements": ["Computer with internet", "Valid ID", "Email address", "Phone number"]}');
 
 -- Mobile App Setup (iOS/Android)
 INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
 ('acquisition_guide', 'binance_mobile', 'Binance Mobile App Setup: Complete Guide',
-'## Setting Up Binance on Your Phone (iOS & Android)
+'## 📱 Crypto in Your Pocket - Let''s Go!
 
-### Before You Begin
-- Ensure your phone has the latest operating system updates
-- Have at least 200MB of free storage space
-- Prepare a valid government-issued ID
-- Have access to your email and phone number
-- Allow 20-30 minutes for complete setup
+Having Binance on your phone means you can check prices in bed, buy the dip at lunch, and flex your portfolio at parties. Let''s set it up!
 
-### Step 1: Download the Official Binance App
+### 📋 Before We Start
+- 📱 Phone with latest updates (iOS 12+ or Android 8+)
+- 🪪 Your ID ready for selfies
+- 📶 Good internet connection
+- ⏱️ About 20-25 minutes
 
-**For iPhone (iOS):**
-1. Open the **App Store** on your iPhone
-2. Tap the **Search** icon at the bottom
-3. Type **"Binance"** in the search bar
-4. Look for the official app by **"Binance Inc."**
-5. Verify it has millions of downloads and high ratings
-6. Tap **"Get"** and authenticate with Face ID/Touch ID/Password
-7. Wait for the download and installation to complete
+---
 
-**For Android:**
-1. Open the **Google Play Store**
-2. Tap the search bar at the top
-3. Type **"Binance"** and press search
-4. Select the official app by **"Binance Inc."**
-5. Verify the developer and reviews
-6. Tap **"Install"** and accept permissions
-7. Wait for download and installation
+## Step 1: Download the Real App 📲
 
-**Alternative: Direct APK Download (Android Only)**
-- If Play Store isn''t available in your region:
-- Visit binance.com on your phone browser
-- Navigate to Downloads → Android
-- Enable "Install from unknown sources" in settings
-- Download and install the APK
-- ONLY do this from the official Binance website
+### iPhone Gang 🍎
+1. Open the **App Store**
+2. Search **"Binance"**
+3. Look for the official one by **"Binance Inc."**
+   - Millions of downloads ✓
+   - High ratings ✓
+4. Tap **Get** → Face ID/Touch ID → Done!
 
-### Step 2: Open App and Create Account
-1. Launch the Binance app
-2. Tap **"Register"** or **"Sign Up"**
-3. Select your country/region from the list
-4. Choose registration method:
-   - **Email** (recommended)
-   - **Phone Number**
-   - **Continue with Apple** (iOS only)
-   - **Continue with Google**
+### Android Crew 🤖
+1. Open **Google Play Store**
+2. Search **"Binance"**
+3. Find the official **"Binance Inc."** app
+4. Tap **Install** → Accept → You''re golden!
 
-5. If using Email:
-   - Enter your email address carefully
-   - Create a strong password (8+ characters, mixed case, numbers, symbols)
-   - Tap the checkbox to agree to Terms of Service
-   - Tap **"Create Account"**
-   - Check your email for verification code
-   - Enter the 6-digit code in the app
+⚠️ *Never download from random websites or links in DMs. Scammers gonna scam!*
 
-6. If using Phone:
-   - Enter your phone number with country code
-   - Receive SMS verification code
-   - Enter the code to verify
-   - Create a strong password
+---
 
-### Step 3: Set Up Biometric Security
-1. After account creation, you''ll be prompted for biometrics
-2. **Enable Face ID / Touch ID (iOS) or Fingerprint (Android):**
-   - Tap "Enable" when prompted
-   - Authenticate with your biometric
-   - This allows quick, secure access to the app
-3. If skipped, go to: Profile → Security → Biometric Authentication
+## Step 2: Create Your Account 🎯
 
-### Step 4: Enable Two-Factor Authentication (2FA)
-1. Tap the **Profile icon** (bottom right or top left)
-2. Go to **"Security"**
-3. Find **"Authenticator App"** or **"Google Authentication"**
-4. Tap **"Enable"**
+1. Open the shiny new Binance app
+2. Tap **"Register"**
+3. Pick your country 🌍
+4. Choose how to sign up:
+   - 📧 Email (solid choice!)
+   - 📱 Phone number
+   - 🍎 Apple ID (iPhone only)
+   - 🔵 Google account
 
-**Setting up Google Authenticator:**
-1. Download **Google Authenticator** app if you haven''t:
-   - iOS: App Store → "Google Authenticator"
+5. **Create an epic password:**
+   - 8+ characters minimum
+   - Mix of everything: `Cr¥pt0K!ng2024`
+   - The weirder, the better!
+
+6. Verify with the code sent to your email/phone
+
+🎊 *Account created! You''re in the game!*
+
+---
+
+## Step 3: Set Up Face/Fingerprint 🔐
+
+Your face or fingerprint = the fastest, safest way to log in!
+
+**When prompted:**
+1. Tap **"Enable"** for Face ID / Touch ID / Fingerprint
+2. Authenticate once
+3. Now you can access your crypto with just a glance!
+
+*Skipped it? No worries - find it in Profile → Security → Biometric Authentication*
+
+---
+
+## Step 4: The MOST Important Step - 2FA 🛡️
+
+**Seriously, don''t skip this.** It''s like adding a second lock to your treasure chest.
+
+### Setting Up Google Authenticator:
+
+1. **Download the app first:**
+   - iPhone: App Store → "Google Authenticator"
    - Android: Play Store → "Google Authenticator"
-2. In Binance app, tap **"Link"** or **"Enable"**
-3. You''ll see a QR code and a backup key
-4. **CRITICAL: Write down the backup key on paper**
-   - Store in a safe place (not digitally)
-   - This recovers 2FA if you lose your phone
-5. Open Google Authenticator app
-6. Tap **"+"** → **"Scan QR code"**
-7. Scan the QR code shown in Binance
-8. Enter the 6-digit code from Authenticator into Binance
-9. 2FA is now active
 
-### Step 5: Set Up Additional Security Features
-1. **SMS Authentication** (backup 2FA):
-   - Security → Phone Number Verification
-   - Enter phone number
-   - Verify with SMS code
+2. **In Binance app:**
+   - Tap Profile → Security
+   - Find "Authenticator App" → Enable
 
-2. **Anti-Phishing Code:**
-   - Security → Anti-Phishing Code
-   - Create a memorable 4-8 character code
-   - This appears in legitimate Binance emails
+3. **You''ll see a QR code and backup key**
 
-3. **Device Management:**
-   - Security → Device Management
-   - Review all devices logged into your account
-   - Remove any unrecognized devices
+4. **🚨 CRITICAL MOMENT 🚨**
+   - Write the backup key on PAPER
+   - Store it somewhere super safe
+   - This saves you if you lose your phone!
 
-4. **App Lock:**
-   - Security → App Lock
-   - Require biometric/PIN to open app
-   - Set auto-lock timer (recommended: 1 minute)
+5. **Scan the QR with Google Authenticator**
 
-### Step 6: Complete Identity Verification (KYC)
-1. Tap **Profile** → **"Verification"** or **"Identity"**
-2. Select **"Verify"** to start the process
-3. Confirm your country of residence
+6. **Enter the 6-digit code** → Done!
 
-**Personal Information:**
-- Enter your full legal name (exactly as on ID)
-- Enter date of birth
-- Enter residential address
-- Tap "Continue"
+*Every time you log in or withdraw, you''ll use this code. It changes every 30 seconds - hackers hate it!*
 
-**Document Verification:**
-1. Select ID type: Passport, Driver''s License, or National ID
-2. For Passport:
-   - Position passport in the frame
-   - Ensure all text is readable
-   - Capture photo when aligned
-3. For Driver''s License/National ID:
-   - Capture front of document
-   - Capture back of document
-   - Ensure good lighting, no glare
+---
 
-**Facial Verification:**
-1. Position your face in the oval frame
-2. Ensure adequate lighting (face a window if possible)
-3. Remove glasses, hats, or face coverings
-4. Follow the instructions (blink, turn head, etc.)
-5. Wait for "Verification Successful" message
+## Step 5: More Security Goodies 🍬
 
-**Verification Processing:**
-- Basic: Usually instant to a few hours
-- Intermediate: 1-3 business days
-- You''ll receive notification when approved
+### Anti-Phishing Code
+Create your secret word that appears in all real Binance emails:
+- Security → Anti-Phishing Code
+- Pick something fun: `TOTHEMOON` 🚀
 
-### Step 7: Add Payment Method
-1. Tap **"Buy Crypto"** on home screen
-2. Or go to **Wallet** → **"Deposit"** → **"Fiat"**
-3. Select **"Add Payment Method"**
+### App Lock
+Make sure nobody can open Binance even if they grab your phone:
+- Security → App Lock → Enable
+- Set to lock after 1 minute of inactivity
 
-**Credit/Debit Card:**
+### Device Management
+See every device logged into your account:
+- Security → Device Management
+- See something sketchy? Remove it instantly!
+
+---
+
+## Step 6: Prove You''re Human (KYC) 🤖❌
+
+Time for the verification selfies!
+
+### Personal Info:
+- Full legal name (match your ID exactly!)
+- Birthday
+- Address
+
+### Document Time 📸
+1. Choose: Passport, Driver''s License, or National ID
+2. Take clear photos:
+   - **Pro tips for perfect shots:**
+   - Natural lighting (near a window = chef''s kiss)
+   - Plain background
+   - All four corners visible
+   - No shadows or glare
+
+### Selfie Verification 🤳
+1. Position your face in the oval
+2. Good lighting on your face
+3. No sunglasses or hats
+4. Follow prompts: blink, turn head, smile!
+
+⏳ Usually approved within hours, sometimes days
+
+---
+
+## Step 7: Add Payment Methods 💰
+
+### Credit/Debit Card 💳
 - Tap "Add New Card"
-- Enter card number, expiry, CVV
-- Enter billing address
-- Complete 3D Secure verification if prompted
-- Card is saved for future purchases
+- Enter card details
+- Verify with your bank if prompted
+- Instant purchases ready!
 
-**Bank Transfer:**
-- Select "Bank Transfer"
-- Choose your bank or enter details manually
-- For ACH (US): Enter routing and account numbers
-- For SEPA (EU): Enter IBAN
-- Verify with micro-deposits if required
+### Bank Transfer 🏦
+- Lower fees, takes longer
+- Enter your bank details
+- Perfect for larger deposits
 
-**Apple Pay (iOS):**
-- Tap Apple Pay option
-- Authenticate with Face ID/Touch ID
-- Cards from your Apple Wallet are available
+### Apple Pay / Google Pay 📱
+- Tap, authenticate, done!
+- Super quick purchases
 
-**Google Pay (Android):**
-- Tap Google Pay option
-- Select card from Google Pay
-- Authenticate as required
+---
 
-### Step 8: Make Your First Purchase
-1. From home screen, tap **"Buy Crypto"**
-2. Alternatively: Markets → Select coin → "Buy"
-3. Select the cryptocurrency (BTC, ETH, XRP, etc.)
-4. Enter amount in your currency (e.g., $100)
-5. Select payment method
-6. Review order details:
-   - Crypto amount you''ll receive
+## Step 8: Your First Purchase! 🎉
+
+**The moment of truth!**
+
+1. From home screen → **"Buy Crypto"**
+2. Pick your coin (XRP? BTC? ETH? You choose!)
+3. Enter amount (start with what you''re comfortable losing)
+4. Select payment method
+5. Check the details:
+   - Amount you''ll get
+   - Fees
    - Exchange rate
-   - Network fee
-   - Payment fee
-7. Tap **"Buy [Crypto Name]"**
-8. Confirm with Face ID/Touch ID and 2FA code
-9. Success! Check your Spot Wallet
+6. Tap **"Buy"**
+7. Confirm with Face ID + 2FA code
 
-### Step 9: Navigate the App
-**Home Screen:**
-- Quick access to Buy, Sell, Trade
-- Price charts and market overview
-- Announcements and promotions
+**🎊 YOU DID IT! Check your wallet - that''s YOUR crypto!**
 
-**Markets Tab:**
-- View all available trading pairs
-- Search for specific cryptocurrencies
-- Add favorites for quick access
+---
 
-**Trade Tab:**
-- Spot Trading: Buy/sell with current balances
-- Margin Trading: Trade with leverage (advanced)
-- Convert: Simple crypto-to-crypto swaps
+## 🗺️ App Navigation Quick Guide
 
-**Wallet Tab:**
-- Overview: Total portfolio value
-- Spot: Regular holdings
-- Funding: For P2P and other services
-- Earn: Staking and savings products
+| Tab | What It Does |
+|-----|-------------|
+| **Home** | Quick buy/sell, prices, news |
+| **Markets** | All coins, charts, favorites |
+| **Trade** | Spot trading, Convert |
+| **Wallet** | Your holdings, deposit/withdraw |
+| **Profile** | Settings, security, verification |
 
-**Profile/Settings:**
-- Security settings
-- Verification status
-- Preferences and notifications
-- Support and help
+---
 
-### Mobile Security Best Practices
-- Keep your phone''s OS and Binance app updated
-- Never screenshot 2FA QR codes or backup keys
-- Don''t use Binance on jailbroken/rooted devices
-- Enable app lock with biometrics
-- Don''t save password in browser or notes apps
-- Use a strong, unique phone passcode
-- Enable "Find My iPhone/Phone" for remote wipe capability
-- Log out when not using the app regularly
-- Review login history periodically',
-'info', 11, '{"platform": "mobile", "difficulty": "beginner", "timeRequired": "25 minutes", "requirements": ["Smartphone (iOS 12+ or Android 8+)", "Valid ID", "Email address", "Phone number", "200MB storage"]}');
+## 📱 Mobile Security Commandments
+
+1. 📲 **Keep your app updated** - New version? Update immediately!
+2. 🔒 **Use app lock** - Even with phone locked
+3. 🚫 **No jailbreaking/rooting** - It breaks security
+4. 📸 **Never screenshot 2FA codes** - Write them on paper
+5. 🔍 **Check login history** - Review it weekly
+6. 📍 **Enable Find My Phone** - Just in case
+
+---
+
+## 🚀 You''re Ready!
+
+You''ve got Binance in your pocket, secured like a vault, and ready to trade. Welcome to the mobile crypto lifestyle!
+
+*Next up: Learn how to buy, sell, and maybe even trade like a pro!*',
+'info', 11, '{"platform": "mobile", "difficulty": "beginner", "timeRequired": "20-25 minutes", "requirements": ["Smartphone (iOS 12+ or Android 8+)", "Valid ID", "Email address", "Phone number", "200MB storage"]}');
 
 -- Security Deep Dive
 INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
-('acquisition_guide', 'binance_security', 'Binance Security Setup: Advanced Protection',
-'## Comprehensive Security Guide for Your Binance Account
+('acquisition_guide', 'binance_security', 'Binance Security: Protect Your Crypto Like a Pro',
+'## 🏰 Turn Your Account Into a Fortress
 
-### Why Security Matters
-Cryptocurrency transactions are irreversible. Once funds are stolen, recovery is nearly impossible. Taking 15 minutes to properly secure your account can protect your entire investment.
+Let''s be real: crypto is valuable, and bad actors want it. But here''s the good news - with the right setup, your account becomes basically unhackable. Let''s make you a security ninja! 🥷
 
-### Tier 1: Essential Security (Must Do)
+---
 
-**1. Strong Password Creation**
-- Use a password manager (Bitwarden, 1Password, LastPass)
-- Generate a random password: 16+ characters minimum
-- Never reuse passwords from other sites
-- Example of strong password structure: Xj#9kL$mN2pQ&vR8
-- Change password every 6 months
+## 🎯 Why This Matters (Real Talk)
 
-**2. Email Security**
-Your email is the key to your account. Secure it first:
-- Use a dedicated email for crypto (e.g., yourname.crypto@gmail.com)
-- Enable 2FA on your email account
-- Don''t use this email for other services
-- Check for data breaches at haveibeenpwned.com
+- Crypto transactions are **irreversible** - once it''s gone, it''s gone
+- Hackers are smart, but we can be smarter
+- 15 minutes of setup = years of peace of mind
+- Your future self will high-five you for this
 
-**3. Two-Factor Authentication (2FA)**
-Priority order from most to least secure:
-1. **Hardware Security Key** (YubiKey) - Most secure
-2. **Authenticator App** (Google Authenticator, Authy) - Recommended
-3. **SMS** - Least secure, vulnerable to SIM swapping
+---
 
-**Setting up Hardware Key:**
-- Go to Security → Security Key
-- Insert YubiKey or similar device
-- Follow prompts to register
-- Name your key for identification
-- Test the key before relying on it
+## 🥇 Level 1: The Essentials (Do These NOW)
 
-**Authenticator App Backup:**
-- Write down backup key on paper
+### 1. Password That Would Make Hackers Cry 😭
+
+**Bad passwords:**
+- `password123` (please no)
+- `bitcoin2024` (too obvious)
+- Your birthday (they can find this)
+
+**Good passwords:**
+- `Tr0ub4dor&3#Horse!`
+- Random stuff only you''d know
+- Use a password manager (Bitwarden, 1Password)
+
+**Pro move:** Change it every 6 months!
+
+### 2. Dedicated Email = Big Brain Move 🧠
+
+Create an email JUST for crypto:
+- `yourname.crypto@gmail.com`
+- Enable 2FA on this email too
+- Never use it for anything else
+- Check it at haveibeenpwned.com
+
+*If hackers get your main email, your crypto email stays safe!*
+
+### 3. Two-Factor Authentication (2FA) 🔐
+
+**Security ranking:**
+1. 🥇 **Hardware Key** (YubiKey) - Unhackable
+2. 🥈 **Authenticator App** - Excellent (recommended!)
+3. 🥉 **SMS** - Okay, but vulnerable to SIM swapping
+
+**Authenticator Backup - DON''T SKIP:**
+- Write backup key on paper
 - Store in fireproof safe or safety deposit box
-- Never store digitally (no photos, no cloud)
-- Test recovery process before you need it
+- Test recovery BEFORE you need it
 
-### Tier 2: Intermediate Security (Highly Recommended)
+---
 
-**1. Anti-Phishing Code**
-- Creates a unique code shown in all legitimate Binance emails
-- Go to Security → Anti-Phishing Code
-- Create 4-8 character code (e.g., "MYCODE")
-- Memorize it - don''t write it where hackers can find it
-- Any email without this code is FAKE
+## 🥈 Level 2: Intermediate Security (Highly Recommended)
 
-**2. Withdrawal Address Whitelist**
-- Only allows withdrawals to pre-approved addresses
-- Security → Withdrawal Whitelist → Enable
-- Add your personal wallet addresses
-- New addresses require 24-hour waiting period
-- Even if hacked, funds can only go to your addresses
+### Anti-Phishing Code 🎣🚫
 
-**3. Device Management**
-- Security → Device Management
-- Review all logged-in devices
-- Shows: Device type, location, last active time
-- Remove any devices you don''t recognize
-- Removing a device logs it out immediately
+This is genius - create a secret code that shows in ALL real Binance emails:
 
-**4. Login Notifications**
-- Get alerted for every login attempt
-- Security → Security Activity
-- Enable email and app notifications
-- Investigate any login you didn''t make
+1. Go to Security → Anti-Phishing Code
+2. Create something memorable: `DIAMONDHANDS` 💎🙌
+3. **Any email without your code = FAKE**
 
-### Tier 3: Advanced Security (Power Users)
+*It''s like a secret handshake between you and Binance!*
 
-**1. IP Whitelist (For Advanced Users)**
-- Restricts account access to specific IP addresses
-- Only enable if you have a static IP
-- Go to Security → IP Whitelist
-- Add your home/office IP addresses
-- Note: This can lock you out if your IP changes
+### Withdrawal Whitelist 📋
 
-**2. Disable Withdrawals for New Devices**
-- Security → Account Activity → Withdrawal Settings
-- Enable 24-hour withdrawal restriction for new devices
-- Provides time to react if account is compromised
+The ultimate "oops" protection:
+- Only YOUR addresses can receive withdrawals
+- New addresses need 24-hour waiting period
+- Even if hacked, money only goes to you!
 
-**3. API Key Security (For Traders)**
-If you use trading bots or third-party apps:
-- Create separate API keys for each application
-- Never enable withdrawal permission unless absolutely necessary
-- Set IP restrictions on API keys
-- Regularly review and delete unused API keys
-- Monitor API key activity
+**Enable it:** Security → Withdrawal Whitelist → On
 
-### Recognizing Phishing Attempts
+### Device Management 📱💻
 
-**Red Flags in Emails:**
+Your security command center:
+- See all devices logged in
+- Location and last active time
+- One-click remove suspicious devices
+
+**Check it weekly!** Profile → Security → Device Management
+
+### Login Notifications 🔔
+
+Get pinged for every login:
+- Know immediately if someone''s trying to get in
+- Investigate logins you didn''t make
+- Sleep better at night
+
+---
+
+## 🥉 Level 3: Advanced Security (Power User Mode)
+
+### IP Whitelist 🌐
+*Only if you have a static IP:*
+- Restricts access to specific IP addresses
+- Great for office/home with fixed IP
+- Can lock you out if IP changes!
+
+### New Device Withdrawal Lock ⏰
+- 24-hour withdrawal freeze on new devices
+- Gives you time to react if compromised
+- Enable in Security settings
+
+### API Key Hygiene 🔑
+*For trading bots and apps:*
+- Create separate keys for each app
+- NEVER enable withdrawal permission
+- Set IP restrictions
+- Delete unused keys regularly
+
+---
+
+## 🎣 Spot the Scam: Phishing 101
+
+### Fake Emails Red Flags 🚩
 - Missing your anti-phishing code
-- Urgent language ("Act now!", "Suspended!")
-- Suspicious sender address
-- Links that don''t go to binance.com
-- Requests for password or 2FA codes
-- Poor grammar or spelling
+- "URGENT! Act now!" (fear tactics)
+- Weird sender address
+- Links to strange URLs
+- Asking for password or 2FA codes
+- Bad grammar/spelling
 
-**Red Flags in Websites:**
-- URL is not exactly binance.com (or binance.us)
-- Examples of fake URLs:
-  - blnance.com (lowercase L instead of i)
-  - binance-secure.com
-  - binance.com.fake-site.com
-- No padlock in browser
-- Prompts to download software
-- Pop-ups asking for 2FA backup codes
+### Fake Websites Red Flags 🚩
+- URL isn''t exactly `binance.com`
+- Sneaky fakes: `blnance.com`, `binance-secure.com`
+- No padlock 🔒 in browser
+- Asking you to download stuff
+- Pop-ups wanting your backup codes
 
-**Red Flags in Apps:**
+### Fake Apps Red Flags 🚩
 - Not from official app store
-- Low download count/reviews
+- Low download numbers
 - Different developer name
-- Requests unusual permissions
-- Asks for seed phrases (NEVER legitimate)
+- Wants weird permissions
+- Asks for seed phrases (NEVER LEGIT!)
 
-### What To Do If You Suspect Compromise
+---
 
-**Immediate Actions:**
-1. Change password immediately
-2. Disable all API keys
-3. Reset 2FA (get new backup codes)
-4. Enable withdrawal whitelist if not active
-5. Review recent transactions
-6. Remove unfamiliar trusted devices
+## 🚨 OH NO! What If I''m Compromised?
 
-**Contact Binance Support:**
-1. Use in-app chat (verified secure)
-2. Or official support at binance.com/en/support
-3. Never trust "support" reaching out to you first
-4. Binance will never ask for your password
+**Don''t panic! Move fast:**
 
-**If Funds Were Stolen:**
-1. Document everything (screenshots, times, amounts)
-2. File report with Binance immediately
-3. Report to local law enforcement
-4. Report to FBI IC3 (if in US)
-5. Do not pay any "recovery services" - they are scams
+1. 🔑 Change password IMMEDIATELY
+2. 🔌 Disable all API keys
+3. 🔄 Reset 2FA (get new backup codes)
+4. 📋 Enable withdrawal whitelist if not on
+5. 👀 Review recent transactions
+6. 🗑️ Remove unknown devices
 
-### Security Checklist (Review Monthly)
-- Password changed in last 6 months
-- 2FA backup codes stored safely
-- Email account has 2FA enabled
-- All devices in Device Management are recognized
-- No suspicious login activity
-- API keys reviewed (delete unused)
-- Withdrawal whitelist is enabled
-- Anti-phishing code is set
-- App is updated to latest version
-- Recovery email/phone is current',
-'critical', 12, '{"platform": "all", "difficulty": "intermediate", "timeRequired": "15-30 minutes", "requirements": ["Binance account", "Authenticator app", "Secure email"]}');
+**Contact Real Support:**
+- Use in-app chat (verified secure)
+- Official: binance.com/en/support
+- NEVER trust "support" contacting YOU first
+
+**If funds were stolen:**
+1. Screenshot everything
+2. Report to Binance immediately
+3. File police report
+4. Report to FBI IC3 (if US)
+5. ⚠️ Ignore "recovery services" - they''re scams!
+
+---
+
+## ✅ Monthly Security Checklist
+
+Do this every month:
+
+- [ ] Password still strong? Changed recently?
+- [ ] 2FA backup codes stored safely?
+- [ ] Email account has 2FA?
+- [ ] All devices recognized?
+- [ ] No weird login activity?
+- [ ] Unused API keys deleted?
+- [ ] Withdrawal whitelist enabled?
+- [ ] Anti-phishing code working?
+- [ ] App updated to latest?
+- [ ] Recovery info up to date?
+
+---
+
+## 🎓 Security Mantras
+
+Repeat after me:
+
+> "I will NEVER share my password"
+
+> "I will NEVER share my 2FA codes"
+
+> "I will NEVER click links in DMs"
+
+> "When in doubt, I log out"
+
+> "If it sounds too good to be true, it''s a scam"
+
+---
+
+## 🏆 You''re Now a Security Pro!
+
+With these measures in place, your account is locked down tighter than Fort Knox. Hackers will take one look and move on to easier targets.
+
+Sleep well, crypto holder. You''ve earned it! 😴💎',
+'critical', 12, '{"platform": "all", "difficulty": "intermediate", "timeRequired": "15-20 minutes", "requirements": ["Binance account", "Authenticator app", "Secure email"]}');
 
 -- Buying and Trading Guide
 INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
-('acquisition_guide', 'binance_trading', 'Binance: How to Buy, Sell & Trade Crypto',
-'## Complete Guide to Buying, Selling, and Trading on Binance
+('acquisition_guide', 'binance_trading', 'Binance Trading: Buy, Sell & Swap Like a Boss',
+'## 💰 Time to Make Moves!
 
-### Understanding Binance Products
+You''ve got your account secured. Now let''s put it to work! Whether you want to buy your first Bitcoin or trade like a Wall Street pro, this guide has you covered.
 
-**Spot Trading:**
-- Buy and sell crypto at current market prices
-- You own the actual cryptocurrency
-- Suitable for beginners and long-term holders
+---
 
-**Convert (Simple Trade):**
-- Easiest way to swap one crypto for another
-- No charts or order types needed
-- Preview exact amount before confirming
+## 🎓 Quick Vocab Lesson
 
-**P2P Trading:**
-- Buy/sell directly with other users
-- Multiple payment methods available
-- Escrow protection for safety
+| Term | What It Means |
+|------|---------------|
+| **Spot Trading** | Buy and own actual crypto |
+| **Market Order** | Buy/sell instantly at current price |
+| **Limit Order** | Set your own price, wait for it to hit |
+| **Convert** | Swap one crypto for another easily |
+| **P2P** | Trade directly with other people |
 
-### Method 1: Quick Buy (Easiest)
+---
 
-**On Desktop:**
-1. Click **"Buy Crypto"** in top menu
-2. Select **"Buy Crypto with Card"**
-3. Choose the crypto you want (BTC, ETH, XRP, etc.)
-4. Enter amount in your currency
-5. Select payment method
-6. Review fees and final amount
-7. Click **"Buy"**
-8. Complete 2FA verification
-9. Done! Crypto arrives in Spot Wallet
+## 🛒 Method 1: Quick Buy (Easiest!)
 
-**On Mobile:**
-1. Open Binance app
-2. Tap **"Buy Crypto"** on home screen
-3. Select cryptocurrency
-4. Enter amount (switch between crypto/fiat with arrow)
-5. Choose payment method
-6. Tap **"Buy [Coin]"**
-7. Confirm with biometrics + 2FA
-8. Success! Check wallet
+**Perfect for:** Beginners, quick purchases, "I just want some crypto!"
 
-### Method 2: Bank Deposit + Spot Trading (Lowest Fees)
+### On Desktop 🖥️
+1. Click **"Buy Crypto"** up top
+2. Pick your coin (BTC, ETH, XRP... so many choices!)
+3. Type how much you want to spend
+4. Choose payment method
+5. Review (check the fees!)
+6. Click **"Buy"** → Enter 2FA
+7. 🎉 Check your wallet - you''re a crypto owner!
 
-**Step 1: Deposit Fiat Currency**
-1. Go to Wallet → **"Fiat and Spot"**
-2. Click **"Deposit"**
-3. Select your currency (USD, EUR, GBP, etc.)
-4. Choose **"Bank Transfer"**
-5. Copy the bank details provided:
-   - Account name
-   - Account number/IBAN
-   - Reference code (IMPORTANT - include this!)
-6. Log into your bank
-7. Send transfer to Binance
-8. Wait 1-5 business days for arrival
+### On Mobile 📱
+1. Open app → **"Buy Crypto"**
+2. Select your crypto
+3. Enter amount (tap the arrows to switch between $ and crypto)
+4. Pick payment method
+5. **"Buy [Coin]"**
+6. Face ID + 2FA code
+7. Boom! Done! 💥
 
-**Step 2: Buy on Spot Market**
-1. Go to **"Trade"** → **"Spot"**
-2. Search for your trading pair (e.g., XRP/USD)
-3. You will see:
-   - Price chart
-   - Order book (buy/sell orders)
-   - Trading interface
+---
 
-**Order Types Explained:**
+## 🏦 Method 2: Bank Deposit + Spot Trading (Lowest Fees!)
 
-**Market Order (Instant):**
-- Buys/sells immediately at best available price
-- Fastest execution
-- Price may vary slightly from displayed
-- Best for: Quick purchases, small amounts
+**Perfect for:** Saving money on fees, larger purchases
+
+### Part 1: Deposit Cash
+1. Wallet → **"Fiat and Spot"**
+2. **"Deposit"** → Select your currency
+3. Choose **"Bank Transfer"**
+4. Copy the bank details EXACTLY (including reference code!)
+5. Send from your bank
+6. Wait 1-5 days ⏳
+
+### Part 2: Trade on Spot Market
+1. Trade → **"Spot"**
+2. Search your pair (like `XRP/USD`)
+3. You''ll see a price chart and order book
+
+**Market Order (Quick & Easy):**
+- Select "Market"
+- Enter amount
+- Click "Buy"
+- Fills instantly at best available price!
 
 **Limit Order (Set Your Price):**
-- You specify the exact price
-- Order fills when market reaches your price
-- May take time or never fill
-- Best for: Getting a specific price, patience
+- Select "Limit"
+- Enter YOUR price (maybe lower than current?)
+- Enter amount
+- Click "Buy"
+- Waits until price hits your target
+- Great for buying the dip! 📉
 
-**Stop-Limit Order (Advanced):**
-- Triggers when price reaches your stop price
-- Then places a limit order
-- Used for automated selling or buying
-- Best for: Risk management
+---
 
-**Placing a Market Order:**
-1. Select **"Market"** tab
-2. Enter amount to buy/sell
-3. Review the estimated total
-4. Click **"Buy [Coin]"** or **"Sell [Coin]"**
-5. Confirm the order
-6. Order executes immediately
+## 🔄 Method 3: Convert (Crypto to Crypto)
 
-**Placing a Limit Order:**
-1. Select **"Limit"** tab
-2. Enter your desired price
-3. Enter quantity to buy/sell
-4. Review total cost/proceeds
-5. Click **"Buy"** or **"Sell"**
-6. Order appears in "Open Orders"
-7. Executes when price is reached (or cancel anytime)
+**Perfect for:** Swapping coins without the trading screen complexity
 
-### Method 3: Convert (Crypto to Crypto)
-
-**When to Use Convert:**
-- Swapping one crypto for another
-- Don''t want to deal with order books
-- Want guaranteed price preview
-
-**How to Convert:**
-1. Go to **"Trade"** → **"Convert"**
-2. Select coin you HAVE (From)
-3. Select coin you WANT (To)
+1. Trade → **"Convert"**
+2. Select what you HAVE (like USDT)
+3. Select what you WANT (like XRP)
 4. Enter amount
-5. Click **"Preview Conversion"**
-6. You will see:
-   - Exact amount you will receive
-   - Exchange rate
-   - No hidden fees
-7. Rate locks for 5-10 seconds
-8. Click **"Convert"** to confirm
-9. Conversion is instant
+5. **"Preview Conversion"**
+6. See exactly what you''ll get (no surprises!)
+7. Rate locks for ~10 seconds
+8. **"Convert"** → Instant swap! ⚡
 
-### Method 4: P2P Trading (Person to Person)
+*Love this for quick swaps without worrying about order books!*
 
-**Benefits of P2P:**
-- More payment options (PayPal, bank transfer, cash)
-- Sometimes better rates
-- Works in more countries
-- Direct trades with verified users
+---
 
-**How to Buy via P2P:**
-1. Go to **"Trade"** → **"P2P"**
-2. Select **"Buy"** tab
-3. Choose cryptocurrency
-4. Choose your payment method from filter
-5. Browse available sellers:
-   - Check completion rate (>95% is good)
-   - Check number of orders
-   - Compare prices
-6. Click **"Buy"** on your chosen offer
-7. Enter amount you want to spend
-8. Click **"Buy [Coin]"**
-9. You have a time limit (usually 15 min) to pay
-10. Make payment through agreed method
-11. Upload payment proof if required
-12. Click **"Payment Completed"**
-13. Seller releases crypto from escrow
-14. Crypto appears in your wallet
+## 👥 Method 4: P2P Trading (Person to Person)
 
-**P2P Safety Tips:**
+**Perfect for:** More payment options, sometimes better rates
+
+### How It Works:
+- Trade directly with real people
+- Binance holds crypto in escrow (safe!)
+- More payment methods (PayPal, bank, etc.)
+
+### Buying via P2P:
+1. Trade → **"P2P"** → "Buy"
+2. Pick your crypto
+3. Filter by payment method
+4. Browse sellers:
+   - ✅ Look for: >95% completion rate
+   - ✅ Look for: Lots of orders completed
+5. Click **"Buy"** on a good offer
+6. You have ~15 mins to pay
+7. Make payment through their method
+8. Click **"Payment Completed"**
+9. Seller releases crypto from escrow
+10. Crypto lands in your wallet! 🎯
+
+### ⚠️ P2P Safety Rules:
 - Only trade with verified merchants
-- Never release payment confirmation until you paid
-- Keep all communication in Binance chat
-- Never share personal info outside platform
-- Use escrow - never send crypto first
-- Report suspicious users immediately
+- Keep ALL chat in Binance app
+- Never send crypto first
+- Don''t share personal info outside
+- Report sketchy users immediately
 
-### Selling Your Crypto
+---
 
-**Quick Sell:**
-1. Go to **"Sell Crypto"**
-2. Select the cryptocurrency
-3. Enter amount to sell
-4. Choose how to receive funds:
-   - Bank account
-   - Card (if supported)
-5. Review and confirm
-6. Funds arrive in 1-5 days (bank) or instantly (card)
+## 📊 Selling Your Crypto
 
-**Sell on Spot Market:**
-1. Trade → Spot
-2. Search your pair (e.g., BTC/USD)
-3. Select **"Sell"** side
-4. Choose Market or Limit order
-5. Enter amount
-6. Confirm the sale
-7. Funds go to Fiat balance
-8. Withdraw to bank when ready
+### Quick Sell:
+1. Sell Crypto → Pick coin → Enter amount
+2. Choose: Bank or card
+3. Review and confirm
+4. Money on the way! 💸
 
-### Fee Structure
+### Sell on Spot Market:
+1. Trade → Spot → Find your pair
+2. Switch to "Sell" side
+3. Market order for instant, limit for specific price
+4. Funds go to Fiat balance
+5. Withdraw to bank when ready
 
-**Deposit Fees:**
-- Bank Transfer: Usually FREE
-- Card: 1.8% - 2%
-- Crypto deposit: FREE (network fees apply)
+---
 
-**Trading Fees:**
-- Spot: 0.1% (maker and taker)
-- Reduced with BNB payment: 0.075%
-- Further reduced with VIP levels
+## 💸 Understanding Fees
 
-**Withdrawal Fees:**
-- Fiat: Varies by method ($0-$25)
-- Crypto: Network dependent (shown before confirming)
+| Action | Fee | Pro Tip |
+|--------|-----|---------|
+| Bank Deposit | Usually FREE | Best for large amounts |
+| Card Purchase | 1.8-2% | Worth it for speed |
+| Spot Trading | 0.1% | Already super low |
+| With BNB | 0.075% | Hold BNB to save 25%! |
+| Withdrawal | Varies | Check before confirming |
 
-**Pro Tip:** Hold some BNB and enable "Use BNB for fees" to save 25% on all trading fees!
+### 🌟 BNB Fee Hack:
+1. Buy a little BNB
+2. Settings → "Use BNB for Fees" → ON
+3. Save 25% on ALL trading fees forever!
 
-### After Your Purchase
+---
 
-**Security Best Practices:**
-1. Don''t leave large amounts on exchange
-2. Withdraw to hardware wallet for long-term holding
-3. Keep trading amounts for active trading
-4. Enable withdrawal whitelist
-5. Document all transactions for taxes',
-'info', 13, '{"platform": "all", "difficulty": "beginner", "timeRequired": "10-20 minutes per method", "requirements": ["Verified Binance account", "Funded account or payment method"]}');
+## 📈 Order Types Explained (With Examples!)
+
+### Market Order 🏃‍♂️
+*"I want it NOW!"*
+- You: "Buy $100 of BTC at whatever price"
+- Binance: "Done! Here''s your 0.0015 BTC"
+- Instant execution
+- Price might vary slightly
+
+### Limit Order 🎯
+*"I''ll wait for my price"*
+- BTC is $65,000
+- You: "Buy if it drops to $60,000"
+- Set order and wait
+- Might fill in hours, days, or never!
+- Great for buying dips
+
+### Stop-Limit Order 🛑
+*"Protect me from disaster"*
+- You own BTC at $65,000
+- You: "If it drops to $60,000, sell at $59,500"
+- Automatic protection while you sleep
+
+---
+
+## 🎮 Practice Mode
+
+**Not sure yet? Use Convert to practice:**
+1. Buy $10 of USDT (stablecoin, doesn''t move much)
+2. Convert small amounts between coins
+3. Get comfortable with the process
+4. No pressure, learn at your pace!
+
+---
+
+## 🏆 After Your First Trade
+
+**What most successful traders do:**
+
+1. 📊 **Set up a watchlist** - Track coins you''re interested in
+2. 📚 **Learn chart basics** - Candles aren''t just for birthdays
+3. 🔔 **Set price alerts** - Get notified for opportunities
+4. 📝 **Keep records** - Important for taxes!
+5. 🧘 **Stay calm** - Prices go up AND down. That''s normal!
+
+---
+
+## 🚫 Common Newbie Mistakes
+
+1. **FOMO buying** - Price pumping? Probably too late
+2. **Panic selling** - Red days happen. Zoom out.
+3. **No stop-loss** - Protect your downside!
+4. **Trading money you need** - Only risk what you can lose
+5. **Checking every minute** - Bad for your health AND decisions
+
+---
+
+## 🚀 You''re Ready to Trade!
+
+You know how to:
+- ✅ Quick buy with card
+- ✅ Deposit and spot trade
+- ✅ Convert between cryptos
+- ✅ Use P2P safely
+- ✅ Understand order types
+
+Go make some moves! But remember: start small, learn the ropes, and never invest more than you can afford to lose.
+
+*May your buys be low and your sells be high!* 📈🎉',
+'info', 13, '{"platform": "all", "difficulty": "beginner", "timeRequired": "10-15 minutes to learn", "requirements": ["Verified Binance account", "Funded account or payment method"]}');
 
 -- Withdrawing to Personal Wallet
 INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
-('acquisition_guide', 'binance_withdraw', 'Binance: Withdrawing to Your Personal Wallet',
-'## How to Safely Withdraw Crypto from Binance to Your Own Wallet
+('acquisition_guide', 'binance_withdraw', 'Withdraw to Your Wallet: Take True Ownership',
+'## 🔐 Your Keys, Your Crypto!
 
-### Why Withdraw to a Personal Wallet?
-- **"Not your keys, not your crypto"** - Exchange hacks have lost billions
-- Full control over your assets
-- No withdrawal limits or restrictions
-- Access even if exchange has issues
-- Better for long-term holding (HODLing)
+There''s a saying in crypto: *"Not your keys, not your crypto."* When crypto sits on an exchange, technically the exchange holds it. Let''s get YOUR crypto into YOUR wallet where only YOU control it!
 
-### Before You Withdraw
+---
 
-**1. Have a Wallet Ready:**
-- Hardware wallet (Ledger, Trezor) - Most secure
-- Software wallet (MetaMask, Trust Wallet, Phantom)
-- Make sure wallet supports the cryptocurrency
+## 🤔 Why Withdraw to Your Own Wallet?
 
-**2. Understand Networks:**
-Different cryptos use different networks. Using wrong network = lost funds!
+| Exchange | Your Wallet |
+|----------|-------------|
+| They hold your keys | YOU hold your keys |
+| Can freeze accounts | Unstoppable |
+| Hack risk (their security) | Your security |
+| "Trust us" | Trustless |
+| Good for trading | Perfect for holding |
 
-Common Networks:
-- **Bitcoin (BTC):** Bitcoin network only
-- **Ethereum (ETH):** ERC-20 (Ethereum network)
-- **XRP:** XRP Ledger (requires destination tag sometimes)
-- **Solana (SOL):** Solana network
-- **Multi-network tokens:** Can be on Ethereum, BSC, Polygon, etc.
+**Bottom line:** Trading? Keep some on exchange. Long-term holding? Get it in your wallet!
 
-**Example - USDT exists on:**
-- Ethereum (ERC-20) - Slower, higher fees
-- Tron (TRC-20) - Fast, low fees
-- BSC (BEP-20) - Fast, low fees
-- Solana (SPL) - Fast, very low fees
+---
 
-**CRITICAL:** Your receiving wallet MUST support the network you choose!
+## 🎒 What You''ll Need
 
-### Step-by-Step Withdrawal Process
+1. **A wallet that supports your crypto:**
+   - 🏆 Hardware (Ledger, Trezor) - Most secure
+   - 📱 Software (MetaMask, Trust Wallet) - Convenient
 
-**On Desktop:**
+2. **Your wallet''s receiving address**
 
-1. **Navigate to Withdrawal**
-   - Click **Wallet** → **Fiat and Spot**
-   - Find your cryptocurrency
+3. **Understanding of networks** (super important!)
+
+---
+
+## ⚠️ THE NETWORK THING (Please Read!)
+
+**This is where people lose crypto. Don''t be that person!**
+
+Different cryptos live on different networks. Send to wrong network = **money gone forever**.
+
+### Common Networks:
+| Crypto | Network | Note |
+|--------|---------|------|
+| BTC | Bitcoin | Only one option, easy! |
+| ETH | Ethereum (ERC-20) | The OG |
+| XRP | XRP Ledger | May need destination tag! |
+| SOL | Solana | Fast and cheap |
+| USDT | Multiple! | Be VERY careful |
+
+### Example - USDT Exists On:
+- Ethereum (ERC-20) - Slow, expensive
+- Tron (TRC-20) - Fast, cheap
+- BSC (BEP-20) - Fast, cheap
+- Solana (SPL) - Very fast, very cheap
+
+**GOLDEN RULE:** Your wallet network MUST match withdrawal network!
+
+---
+
+## 📋 The Withdrawal Process
+
+### On Desktop 🖥️
+
+1. **Navigate to Withdraw**
+   - Wallet → Fiat and Spot
+   - Find your crypto
    - Click **"Withdraw"**
 
-2. **Select Withdrawal Method**
-   - Choose **"Send via Crypto Network"**
-   - (Not "Send via Binance User" - that is internal transfer)
+2. **Choose "Send via Crypto Network"**
+   - (Not "Binance User" - that''s internal)
 
-3. **Select the Cryptocurrency**
-   - Confirm correct coin selected
-   - Double-check you are not withdrawing wrong asset
+3. **Get Your Wallet Address**
+   - Open YOUR wallet
+   - Find "Receive" or "Deposit"
+   - Copy the address
 
-4. **Enter Receiving Address**
-   - Go to YOUR wallet and copy the deposit address
-   - **On Ledger:** Open Ledger Live → Your account → Receive → Copy address
-   - **On MetaMask:** Click account name to copy address
-   - **On Trust Wallet:** Tap Receive → Select coin → Copy address
-   - Paste address into Binance
+   *Ledger? Ledger Live → Your Account → Receive*
+   *MetaMask? Click your account name to copy*
 
-5. **Select Network**
-   - Choose SAME network as your receiving wallet
-   - Common safe choices:
-     - BTC → Bitcoin
-     - ETH → Ethereum (ERC20)
-     - XRP → Ripple
-     - SOL → Solana
+4. **Paste Address in Binance**
+   - Right-click → Paste
+   - **VERIFY first 4 and last 4 characters match!**
+
+5. **Select the RIGHT Network**
+   - This must match your wallet
    - When in doubt, use the coin''s native network
+   - BTC → Bitcoin
+   - ETH → Ethereum (ERC20)
+   - XRP → Ripple
 
-6. **Enter Memo/Tag (If Required)**
-   - Some coins require additional identifier:
-     - **XRP:** Destination Tag
-     - **XLM:** Memo
-     - **EOS:** Memo
-     - **BNB (to exchanges):** Memo
-   - Your wallet will tell you if memo is needed
-   - Personal wallets usually do not need memos
-   - If sending to another exchange, ALWAYS include their memo
+6. **Memo/Tag (If Needed)**
+   - XRP often needs a **Destination Tag**
+   - Personal wallets usually don''t need one
+   - Sending to another exchange? ALWAYS include their memo!
 
 7. **Enter Amount**
-   - Type amount to withdraw
-   - Or click "Max" for entire balance
-   - Review the fee (deducted from amount)
-   - Check "You will receive" shows correct amount
+   - Type amount or click "Max"
+   - Check the fee
+   - See "You will receive" amount
 
-8. **Review Everything**
-   - Correct cryptocurrency
-   - Correct network
-   - Correct address (check first 4 and last 4 characters)
-   - Memo included if needed
-   - Amount is correct
-   - Fee is acceptable
+8. **Triple Check Everything:**
+   - ✅ Right cryptocurrency?
+   - ✅ Right network?
+   - ✅ Right address? (Check first AND last 4!)
+   - ✅ Memo if needed?
+   - ✅ Amount correct?
 
-9. **Submit Withdrawal**
+9. **Submit!**
    - Click **"Withdraw"**
-   - Complete email verification (click link in email)
+   - Confirm email link
    - Enter 2FA code
-   - Withdrawal submitted!
+   - 🚀 Withdrawal submitted!
 
-10. **Track Your Withdrawal**
-    - Go to Wallet → Transaction History
-    - Status will show: Processing → Completed
-    - Click for transaction hash (TXID)
-    - Use blockchain explorer to track:
-      - BTC: blockchain.com
-      - ETH: etherscan.io
-      - XRP: xrpscan.com
-      - SOL: solscan.io
+### On Mobile 📱
 
-**On Mobile App:**
+1. Wallets → Spot → Your Crypto → **Withdraw**
+2. Send via Crypto Network
+3. Paste/scan your wallet address (QR code works!)
+4. Select correct network
+5. Add memo if needed
+6. Enter amount
+7. **"Withdraw"**
+8. Email verification → 2FA → Biometrics
+9. Done! Track in history
 
-1. Open Binance app
-2. Tap **"Wallets"** (bottom navigation)
-3. Tap **"Spot"** tab
-4. Find and tap your cryptocurrency
-5. Tap **"Withdraw"**
-6. Select **"Send via Crypto Network"**
-7. Paste or scan your wallet address (QR code option available)
-8. Select correct network
-9. Enter memo/tag if needed
-10. Enter amount
-11. Tap **"Withdraw"**
-12. Verify via email link
-13. Enter 2FA code
-14. Confirm with biometrics
-15. Done! Track in transaction history
+---
 
-### Withdrawal Times by Network
+## ⏱️ How Long Will It Take?
 
-| Network | Typical Time | Confirmations Needed |
-|---------|-------------|---------------------|
+| Network | Time | Confirmations |
+|---------|------|---------------|
 | Bitcoin | 30-60 min | 2-6 blocks |
 | Ethereum | 5-15 min | 12-30 blocks |
-| XRP | 3-5 seconds | Near instant |
-| Solana | 1-2 seconds | Near instant |
+| XRP | 3-5 seconds! | Nearly instant |
+| Solana | 1-2 seconds! | Nearly instant |
 | BSC | 1-5 min | 15 blocks |
-| Polygon | 1-5 min | 128 blocks |
 
-### First Withdrawal Best Practices
+*XRP and Solana are FAST* ⚡
 
-**ALWAYS do a test transaction first!**
+---
 
-1. Send minimum amount possible (check minimum)
-2. Wait for it to arrive in your wallet
+## 🧪 THE TEST TRANSACTION (Don''t Skip!)
+
+**First time withdrawing to a new address? ALWAYS test first!**
+
+1. Send the minimum amount possible
+2. Wait for it to arrive
 3. Verify you can access it
-4. Then send the larger amount
+4. THEN send the rest
 
-This costs a small extra fee but protects against:
-- Wrong address
-- Wrong network
-- Missing memo
-- Wallet issues
+**Yes, you pay two fees. Yes, it''s worth it.**
 
-### Common Mistakes to Avoid
+Lost $10 in fees beats lost $10,000 in wrong address!
 
-**1. Wrong Network**
-- Sending ERC-20 tokens to BSC address = LOST
-- Solution: Triple-check network matches wallet
+---
 
-**2. Missing Memo/Tag**
-- For XRP, XLM, etc. to exchanges = stuck or lost
-- Solution: Always check if memo required
+## 🔍 Track Your Withdrawal
 
-**3. Wrong Address**
-- Typo in address = funds gone forever
-- Solution: Copy/paste, verify first and last 4 characters
+1. Wallet → Transaction History
+2. Find your withdrawal
+3. Status: Processing → Completed
+4. Click for **TXID** (transaction hash)
 
-**4. Sending to Contract Address**
-- Sending to a smart contract = potentially lost
-- Solution: Only send to wallet addresses
+**Check on blockchain explorers:**
+- BTC: blockchain.com
+- ETH: etherscan.io
+- XRP: xrpscan.com
+- SOL: solscan.io
 
-**5. Below Minimum Amount**
-- Some coins have minimums
-- Solution: Check minimum before entering amount
+*Paste your TXID to see exactly where your crypto is!*
 
-### If Your Withdrawal is Stuck
+---
 
-**Status: Processing**
-- Normal, especially during high network traffic
+## 😰 Common Mistakes & Fixes
+
+### 1. Wrong Network
+**Problem:** Sent ERC-20 to BSC address
+**Result:** Funds likely lost 😢
+**Prevention:** Triple-check network matches!
+
+### 2. Missing Memo/Tag
+**Problem:** Sent XRP without destination tag to exchange
+**Result:** Stuck in limbo
+**Fix:** Contact receiving exchange support (might recover)
+**Prevention:** Always check if memo needed
+
+### 3. Typo in Address
+**Problem:** Manually typed address with error
+**Result:** Gone forever
+**Prevention:** ALWAYS copy-paste, verify first & last 4 characters
+
+### 4. Sent to Contract Address
+**Problem:** Sent to smart contract instead of wallet
+**Result:** Possibly lost
+**Prevention:** Only send to wallet addresses
+
+### 5. Below Minimum
+**Problem:** Tried to withdraw less than minimum
+**Result:** Transaction fails
+**Prevention:** Check minimum before entering amount
+
+---
+
+## 🆘 Withdrawal Stuck?
+
+### Status: Processing
+- Normal during busy times
 - Wait 1-2 hours
-- If longer, contact support
+- Still stuck? Contact support
 
-**Status: Completed but Not in Wallet**
-- Use TXID to check blockchain explorer
-- If confirmed on blockchain, issue is with your wallet
-- Refresh your wallet or add token manually
+### Status: Completed But Not In Wallet
+- Check blockchain explorer with TXID
+- If confirmed on chain, issue is wallet-side
+- Refresh wallet or add token manually
+- Some wallets need you to "import" tokens
 
-**Status: Failed**
-- Funds returned to Binance account
-- Check reason (usually wrong memo or address format)
-- Try again with corrected info
+### Status: Failed
+- Funds returned to Binance
+- Check the error reason
+- Fix issue and try again
 
-### Withdrawal Limits
+---
 
-**Default Limits (Verified Account):**
+## 📊 Withdrawal Limits
+
+**Standard Verified Account:**
 - Usually 8 BTC equivalent per day
-- Higher limits with advanced verification
+- More with advanced verification
 - VIP levels increase limits
 
-**To Increase Limits:**
+**Need Higher Limits?**
 - Complete advanced verification
 - Build trading history
 - Apply for VIP status
 
-### Tax Considerations
-- Withdrawals themselves are not taxable
-- BUT keep records for:
-  - Cost basis tracking
-  - When you sell/trade later
-- Save all transaction confirmations
-- Consider crypto tax software
+---
 
-### Security Reminders
-- Enable Withdrawal Whitelist
-- Wait 24 hours after adding new address
-- Never share your wallet private keys
-- Verify you control the receiving wallet
-- Store hardware wallet recovery phrase safely
-- Do not withdraw to addresses given by strangers',
+## 💡 Pro Tips
+
+1. **Enable Withdrawal Whitelist**
+   - Pre-approve your addresses
+   - 24-hour delay for new addresses
+   - Ultimate protection against hackers
+
+2. **Consolidate Withdrawals**
+   - Fees are per transaction
+   - Better to withdraw once vs many times
+
+3. **Choose Cheap Networks When Possible**
+   - ETH mainnet can be expensive
+   - Many tokens exist on cheaper networks
+
+4. **Keep Some on Exchange**
+   - Don''t withdraw everything if you trade actively
+   - Balance security and convenience
+
+5. **Document Everything**
+   - Save TXIDs
+   - Screenshot confirmations
+   - Important for taxes!
+
+---
+
+## 🎉 You Did It!
+
+Your crypto is now in YOUR wallet, controlled by YOUR keys. This is true ownership - what crypto was made for!
+
+**Remember:**
+- Guard your wallet''s seed phrase with your life
+- Never share it with anyone
+- Store it offline in multiple secure places
+- Test your backup before you need it
+
+Welcome to self-sovereignty! 🏴‍☠️
+
+*"Be your own bank" - that''s not just a slogan, it''s your reality now!*',
 'info', 14, '{"platform": "all", "difficulty": "intermediate", "timeRequired": "5-10 minutes", "requirements": ["Verified Binance account", "Personal wallet set up", "Crypto to withdraw"]}');
