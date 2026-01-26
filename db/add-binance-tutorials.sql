@@ -1,225 +1,6 @@
 -- ============================================
--- APEX10 SEED DATA
--- Initial data for development
--- ============================================
-
--- Clear existing data
-DELETE FROM watchlists;
-DELETE FROM price_snapshots;
-DELETE FROM rankings;
-DELETE FROM security_content;
-DELETE FROM assets;
-DELETE FROM users;
-
--- ============================================
--- ASSETS: Top 10 Crypto Assets (XRP as flagship)
--- ============================================
-INSERT INTO assets (symbol, name, slug, category, description, short_description, website, coingecko_id) VALUES
-('XRP', 'XRP', 'xrp', 'Payment',
- 'XRP is the native digital asset of the XRP Ledger, designed for fast, low-cost cross-border payments. Created by Ripple Labs, XRP enables On-Demand Liquidity (ODL) for financial institutions worldwide. The XRP Ledger processes transactions in 3-5 seconds with minimal fees, making it ideal for international remittances and enterprise payments. With strategic partnerships across major banks and payment providers, XRP continues to expand its utility in the global financial system. Monthly escrow releases of 1 billion XRP ensure predictable supply management.',
- 'Fast cross-border payments and enterprise liquidity',
- 'https://xrpl.org', 'ripple'),
-
-('BTC', 'Bitcoin', 'bitcoin', 'L1',
- 'Bitcoin is the first decentralized cryptocurrency, created in 2009 by an anonymous entity known as Satoshi Nakamoto. It operates on a peer-to-peer network using blockchain technology, enabling secure, transparent transactions without intermediaries.',
- 'The original cryptocurrency and digital gold standard',
- 'https://bitcoin.org', 'bitcoin'),
-
-('ETH', 'Ethereum', 'ethereum', 'L1',
- 'Ethereum is a decentralized platform that enables smart contracts and decentralized applications (dApps). Founded by Vitalik Buterin, it introduced programmable blockchain technology and hosts the largest ecosystem of Web3 applications.',
- 'Programmable blockchain powering Web3',
- 'https://ethereum.org', 'ethereum'),
-
-('SOL', 'Solana', 'solana', 'L1',
- 'Solana is a high-performance blockchain supporting fast, low-cost transactions. Using Proof of History consensus combined with Proof of Stake, it achieves exceptional throughput while maintaining decentralization.',
- 'High-speed blockchain for scalable dApps',
- 'https://solana.com', 'solana'),
-
-('AVAX', 'Avalanche', 'avalanche', 'L1',
- 'Avalanche is a layer-1 blockchain platform known for its speed and low transaction costs. It features a unique subnet architecture allowing custom blockchain deployments and supports Ethereum-compatible smart contracts.',
- 'Blazingly fast, eco-friendly blockchain',
- 'https://avax.network', 'avalanche-2'),
-
-('LINK', 'Chainlink', 'chainlink', 'Infrastructure',
- 'Chainlink is a decentralized oracle network that enables smart contracts to securely access off-chain data feeds, web APIs, and traditional bank payments. It is essential infrastructure for DeFi and cross-chain applications.',
- 'Decentralized oracle network for smart contracts',
- 'https://chain.link', 'chainlink'),
-
-('AAVE', 'Aave', 'aave', 'DeFi',
- 'Aave is a decentralized lending protocol allowing users to lend, borrow, and earn interest on crypto assets. It pioneered flash loans and operates across multiple chains with innovative features like credit delegation.',
- 'Leading decentralized lending protocol',
- 'https://aave.com', 'aave'),
-
-('UNI', 'Uniswap', 'uniswap', 'DeFi',
- 'Uniswap is the largest decentralized exchange (DEX) using an automated market maker (AMM) model. It enables trustless token swaps and has been instrumental in the growth of decentralized finance.',
- 'Premier decentralized exchange protocol',
- 'https://uniswap.org', 'uniswap'),
-
-('ARB', 'Arbitrum', 'arbitrum', 'L2',
- 'Arbitrum is a Layer 2 scaling solution for Ethereum using optimistic rollups. It offers faster, cheaper transactions while inheriting Ethereum security, and hosts a thriving ecosystem of DeFi applications.',
- 'Leading Ethereum Layer 2 scaling solution',
- 'https://arbitrum.io', 'arbitrum'),
-
-('OP', 'Optimism', 'optimism', 'L2',
- 'Optimism is an Ethereum Layer 2 using optimistic rollups to scale transactions. It is known for its commitment to public goods funding and operates the OP Stack, which powers multiple L2 networks.',
- 'Ethereum L2 focused on public goods',
- 'https://optimism.io', 'optimism'),
-
-('MATIC', 'Polygon', 'polygon', 'L2',
- 'Polygon is a multi-chain scaling platform for Ethereum, offering various scaling solutions including PoS sidechains and zkEVM. It has broad adoption among enterprises and Web3 applications.',
- 'Multi-chain Ethereum scaling ecosystem',
- 'https://polygon.technology', 'matic-network');
-
--- ============================================
--- RANKINGS: Asset Scores (XRP is flagship, separate from numbered rankings)
--- ============================================
-INSERT INTO rankings (asset_id, rank, overall_score, potential_score, utility_score, developer_score, adoption_score, risk_level, strengths, weaknesses) VALUES
-(1, 0, 90, 88, 94, 82, 86, 'medium',
- '["Fast 3-5 second transactions", "Enterprise partnerships", "ODL adoption growing", "Regulatory clarity improving", "Escrow provides supply predictability"]',
- '["Centralization concerns", "Regulatory uncertainty in some regions", "Competition from CBDCs"]'),
-
-(2, 1, 95, 90, 85, 92, 98, 'low',
- '["Strongest network effect", "Institutional adoption", "Proven security track record", "Digital gold narrative"]',
- '["Limited programmability", "Slow transaction speed", "Energy consumption concerns"]'),
-
-(3, 2, 92, 88, 95, 96, 94, 'low',
- '["Largest developer ecosystem", "Smart contract pioneer", "Strong institutional interest", "DeFi dominance"]',
- '["High gas fees during congestion", "Scaling challenges", "Competition from alt-L1s"]'),
-
-(4, 3, 88, 92, 88, 85, 82, 'medium',
- '["Exceptional throughput", "Low transaction costs", "Growing DeFi ecosystem", "NFT market presence"]',
- '["Network outage history", "Centralization concerns", "Validator requirements"]'),
-
-(5, 4, 85, 88, 84, 82, 78, 'medium',
- '["Subnet architecture", "EVM compatibility", "Fast finality", "Enterprise adoption"]',
- '["Smaller ecosystem than competitors", "Marketing challenges", "Complex tokenomics"]'),
-
-(6, 5, 84, 85, 92, 88, 80, 'medium',
- '["Essential DeFi infrastructure", "Cross-chain capabilities", "Strong partnerships", "Revenue generating"]',
- '["Token utility debates", "Competition emerging", "Centralization concerns"]'),
-
-(7, 6, 82, 84, 88, 85, 78, 'medium',
- '["DeFi lending pioneer", "Multi-chain presence", "Flash loan innovation", "Strong governance"]',
- '["Regulatory uncertainty", "Smart contract risks", "Competition from new protocols"]'),
-
-(8, 7, 80, 82, 86, 84, 76, 'medium',
- '["DEX market leader", "AMM innovation", "Strong brand recognition", "Consistent development"]',
- '["Fee switch debates", "V4 adoption uncertainty", "Competition from aggregators"]'),
-
-(9, 8, 79, 85, 82, 80, 72, 'medium',
- '["Leading L2 by TVL", "Strong DeFi ecosystem", "Ethereum security inheritance", "Developer friendly"]',
- '["Token distribution concerns", "Sequencer centralization", "Competition from other L2s"]'),
-
-(10, 9, 77, 82, 78, 82, 70, 'medium',
- '["Public goods focus", "OP Stack adoption", "Superchain vision", "Strong team"]',
- '["Smaller ecosystem than Arbitrum", "Token utility questions", "Governance complexity"]'),
-
-(11, 10, 75, 78, 80, 76, 74, 'medium',
- '["Enterprise adoption", "zkEVM development", "Broad scaling solutions", "Brand recognition"]',
- '["Token inflation concerns", "Complex product lineup", "Competition on all fronts"]');
-
--- ============================================
--- SECURITY CONTENT: Tips
--- ============================================
-INSERT INTO security_content (type, category, title, content, severity, "order") VALUES
-('tip', 'wallet', 'Use a Hardware Wallet',
- 'Store significant holdings in a hardware wallet like Ledger or Trezor. Hardware wallets keep your private keys offline, protecting them from online attacks and malware.',
- 'info', 1),
-
-('tip', 'wallet', 'Secure Your Seed Phrase',
- 'Write your seed phrase on paper or metal, never digitally. Store it in multiple secure locations. Never share it with anyone—no legitimate service will ever ask for it.',
- 'critical', 2),
-
-('tip', 'wallet', 'Use Unique Passwords',
- 'Create strong, unique passwords for each exchange and wallet. Use a password manager like Bitwarden or 1Password to generate and store them securely.',
- 'warning', 3),
-
-('tip', 'transactions', 'Verify Addresses Carefully',
- 'Always double-check recipient addresses before sending. Use address whitelisting where available. Send a small test transaction first for large transfers.',
- 'warning', 4),
-
-('tip', 'transactions', 'Understand Gas Fees',
- 'Learn how gas fees work on each network. Use gas trackers to time transactions during low-fee periods. Set appropriate gas limits to avoid failed transactions.',
- 'info', 5),
-
-('tip', 'security', 'Enable Two-Factor Authentication',
- 'Use authenticator apps (Google Authenticator, Authy) instead of SMS for 2FA. Store backup codes securely. Consider hardware security keys for maximum protection.',
- 'critical', 6),
-
-('tip', 'security', 'Beware of Phishing',
- 'Bookmark official websites and only access them through bookmarks. Never click links in emails or messages claiming to be from exchanges or wallets.',
- 'critical', 7),
-
-('tip', 'defi', 'Research Before Interacting',
- 'Only interact with audited smart contracts. Check audit reports, team backgrounds, and community sentiment before using any DeFi protocol.',
- 'warning', 8);
-
--- ============================================
--- SECURITY CONTENT: Threats
--- ============================================
-INSERT INTO security_content (type, category, title, content, severity, "order") VALUES
-('threat', 'social', 'Phishing Attacks',
- 'Attackers create fake websites, emails, and social media accounts impersonating legitimate services. They trick users into revealing private keys or seed phrases. Always verify URLs and never enter sensitive information from clicked links.',
- 'critical', 1),
-
-('threat', 'social', 'Social Engineering',
- 'Scammers pose as support staff, influencers, or fellow community members. They build trust before requesting funds or sensitive information. Remember: no legitimate entity will ever ask for your private keys.',
- 'critical', 2),
-
-('threat', 'technical', 'Clipboard Hijacking',
- 'Malware monitors your clipboard and replaces copied crypto addresses with attacker-controlled addresses. Always verify the full address after pasting, especially the first and last characters.',
- 'warning', 3),
-
-('threat', 'technical', 'Malicious Smart Contracts',
- 'Some contracts contain hidden functions that can drain your wallet. Use token approval checkers regularly and revoke unnecessary approvals. Only interact with verified, audited contracts.',
- 'critical', 4),
-
-('threat', 'scam', 'Rug Pulls',
- 'Project creators abandon a project after collecting investor funds. Warning signs include anonymous teams, unrealistic promises, and locked liquidity that can be unlocked. Research thoroughly before investing.',
- 'warning', 5),
-
-('threat', 'scam', 'Pump and Dump Schemes',
- 'Coordinated groups artificially inflate token prices before selling, leaving later buyers with worthless tokens. Be skeptical of sudden price spikes and social media hype.',
- 'warning', 6);
-
--- ============================================
--- SECURITY CONTENT: Wallet Guides
--- ============================================
-INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
-('wallet_guide', 'hardware', 'Ledger Hardware Wallets',
- 'Ledger devices store private keys in a secure chip, isolated from internet-connected devices. They support thousands of cryptocurrencies and integrate with popular software wallets. Best for long-term storage of significant holdings.',
- 'info', 1, '{"pros": ["Industry-leading security", "Wide asset support", "Mobile app available"], "cons": ["Cost of device", "Learning curve", "Past data breach concerns"], "priceRange": "$79-$149"}'),
-
-('wallet_guide', 'hardware', 'Trezor Hardware Wallets',
- 'Trezor pioneered hardware wallets with open-source firmware. They offer transparent security and support major cryptocurrencies. The Trezor Suite provides a clean interface for managing assets.',
- 'info', 2, '{"pros": ["Open-source firmware", "Proven track record", "Easy to use"], "cons": ["Fewer supported assets", "No Bluetooth option", "Plastic build"], "priceRange": "$69-$219"}'),
-
-('wallet_guide', 'software', 'MetaMask',
- 'The most popular Ethereum wallet, available as browser extension and mobile app. Essential for interacting with DeFi and NFT platforms. Supports multiple networks including L2s.',
- 'info', 3, '{"pros": ["Widely supported", "Easy DeFi access", "Multi-network"], "cons": ["Hot wallet risks", "Phishing targets", "Browser dependency"], "priceRange": "Free"}'),
-
-('wallet_guide', 'software', 'Phantom',
- 'Leading wallet for Solana ecosystem, with clean UI and fast transactions. Also supports Ethereum and Polygon. Popular for NFT collectors and DeFi users.',
- 'info', 4, '{"pros": ["Excellent UX", "Fast transactions", "Multi-chain support"], "cons": ["Newer than competitors", "Limited hardware wallet support"], "priceRange": "Free"}');
-
--- ============================================
--- SECURITY CONTENT: Acquisition Guides
--- ============================================
-INSERT INTO security_content (type, category, title, content, severity, "order") VALUES
-('acquisition_guide', 'centralized', 'Buying on Centralized Exchanges',
- 'Centralized exchanges (CEXs) like Coinbase, Kraken, and Binance offer the easiest on-ramp for beginners. Create an account, complete identity verification (KYC), link a payment method, and purchase crypto. Remember to withdraw to your own wallet for long-term storage.',
- 'info', 1),
-
-('acquisition_guide', 'decentralized', 'Using Decentralized Exchanges',
- 'DEXs like Uniswap allow direct wallet-to-wallet trading without intermediaries. Connect your wallet, ensure you have native tokens for gas fees, and swap tokens directly. Higher learning curve but greater privacy and control.',
- 'info', 2),
-
-('acquisition_guide', 'onramp', 'Fiat On-Ramps',
- 'Services like MoonPay, Ramp, and Transak allow direct crypto purchases with cards or bank transfers. Often integrated into wallets and dApps for convenience. Compare fees as they vary significantly between providers.',
- 'info', 3);
-
--- ============================================
 -- BINANCE TUTORIALS: Comprehensive Setup Guides
+-- Run this to add Binance tutorials to existing database
 -- ============================================
 
 -- Desktop/Web Browser Setup
@@ -236,7 +17,7 @@ INSERT INTO security_content (type, category, title, content, severity, "order",
 ### Step 1: Access the Official Binance Website
 1. Open your preferred web browser (Chrome, Firefox, Safari, or Edge)
 2. Type **binance.com** directly in the address bar - NEVER click links from emails
-3. Verify you see the padlock icon (🔒) and "https://" in the URL
+3. Verify you see the padlock icon and "https://" in the URL
 4. Bookmark this page immediately to avoid phishing sites in the future
 5. If you''re in the US, you''ll be redirected to **binance.us** - this is normal
 
@@ -360,9 +141,10 @@ INSERT INTO security_content (type, category, title, content, severity, "order",
 - Log out when using shared computers
 - Regularly review your account activity
 - Enable all available security features',
-'info', 10, '{"platform": "desktop", "difficulty": "beginner", "timeRequired": "30 minutes", "requirements": ["Computer with internet", "Valid ID", "Email address", "Phone number"]}'),
+'info', 10, '{"platform": "desktop", "difficulty": "beginner", "timeRequired": "30 minutes", "requirements": ["Computer with internet", "Valid ID", "Email address", "Phone number"]}');
 
 -- Mobile App Setup (iOS/Android)
+INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
 ('acquisition_guide', 'binance_mobile', 'Binance Mobile App Setup: Complete Guide',
 '## Setting Up Binance on Your Phone (iOS & Android)
 
@@ -591,9 +373,10 @@ INSERT INTO security_content (type, category, title, content, severity, "order",
 - Enable "Find My iPhone/Phone" for remote wipe capability
 - Log out when not using the app regularly
 - Review login history periodically',
-'info', 11, '{"platform": "mobile", "difficulty": "beginner", "timeRequired": "25 minutes", "requirements": ["Smartphone (iOS 12+ or Android 8+)", "Valid ID", "Email address", "Phone number", "200MB storage"]}'),
+'info', 11, '{"platform": "mobile", "difficulty": "beginner", "timeRequired": "25 minutes", "requirements": ["Smartphone (iOS 12+ or Android 8+)", "Valid ID", "Email address", "Phone number", "200MB storage"]}');
 
 -- Security Deep Dive
+INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
 ('acquisition_guide', 'binance_security', 'Binance Security Setup: Advanced Protection',
 '## Comprehensive Security Guide for Your Binance Account
 
@@ -606,7 +389,7 @@ Cryptocurrency transactions are irreversible. Once funds are stolen, recovery is
 - Use a password manager (Bitwarden, 1Password, LastPass)
 - Generate a random password: 16+ characters minimum
 - Never reuse passwords from other sites
-- Example of strong password structure: `Xj#9kL$mN2pQ&vR8`
+- Example of strong password structure: Xj#9kL$mN2pQ&vR8
 - Change password every 6 months
 
 **2. Email Security**
@@ -702,7 +485,7 @@ If you use trading bots or third-party apps:
   - blnance.com (lowercase L instead of i)
   - binance-secure.com
   - binance.com.fake-site.com
-- No padlock (🔒) in browser
+- No padlock in browser
 - Prompts to download software
 - Pop-ups asking for 2FA backup codes
 
@@ -734,22 +517,23 @@ If you use trading bots or third-party apps:
 2. File report with Binance immediately
 3. Report to local law enforcement
 4. Report to FBI IC3 (if in US)
-5. Do not pay any "recovery services" - they''re scams
+5. Do not pay any "recovery services" - they are scams
 
 ### Security Checklist (Review Monthly)
-□ Password changed in last 6 months
-□ 2FA backup codes stored safely
-□ Email account has 2FA enabled
-□ All devices in Device Management are recognized
-□ No suspicious login activity
-□ API keys reviewed (delete unused)
-□ Withdrawal whitelist is enabled
-□ Anti-phishing code is set
-□ App is updated to latest version
-□ Recovery email/phone is current',
-'critical', 12, '{"platform": "all", "difficulty": "intermediate", "timeRequired": "15-30 minutes", "requirements": ["Binance account", "Authenticator app", "Secure email"]}'),
+- Password changed in last 6 months
+- 2FA backup codes stored safely
+- Email account has 2FA enabled
+- All devices in Device Management are recognized
+- No suspicious login activity
+- API keys reviewed (delete unused)
+- Withdrawal whitelist is enabled
+- Anti-phishing code is set
+- App is updated to latest version
+- Recovery email/phone is current',
+'critical', 12, '{"platform": "all", "difficulty": "intermediate", "timeRequired": "15-30 minutes", "requirements": ["Binance account", "Authenticator app", "Secure email"]}');
 
 -- Buying and Trading Guide
+INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
 ('acquisition_guide', 'binance_trading', 'Binance: How to Buy, Sell & Trade Crypto',
 '## Complete Guide to Buying, Selling, and Trading on Binance
 
@@ -811,7 +595,7 @@ If you use trading bots or third-party apps:
 **Step 2: Buy on Spot Market**
 1. Go to **"Trade"** → **"Spot"**
 2. Search for your trading pair (e.g., XRP/USD)
-3. You''ll see:
+3. You will see:
    - Price chart
    - Order book (buy/sell orders)
    - Trading interface
@@ -866,8 +650,8 @@ If you use trading bots or third-party apps:
 3. Select coin you WANT (To)
 4. Enter amount
 5. Click **"Preview Conversion"**
-6. You''ll see:
-   - Exact amount you''ll receive
+6. You will see:
+   - Exact amount you will receive
    - Exchange rate
    - No hidden fees
 7. Rate locks for 5-10 seconds
@@ -957,9 +741,10 @@ If you use trading bots or third-party apps:
 3. Keep trading amounts for active trading
 4. Enable withdrawal whitelist
 5. Document all transactions for taxes',
-'info', 13, '{"platform": "all", "difficulty": "beginner", "timeRequired": "10-20 minutes per method", "requirements": ["Verified Binance account", "Funded account or payment method"]}'),
+'info', 13, '{"platform": "all", "difficulty": "beginner", "timeRequired": "10-20 minutes per method", "requirements": ["Verified Binance account", "Funded account or payment method"]}');
 
 -- Withdrawing to Personal Wallet
+INSERT INTO security_content (type, category, title, content, severity, "order", metadata) VALUES
 ('acquisition_guide', 'binance_withdraw', 'Binance: Withdrawing to Your Personal Wallet',
 '## How to Safely Withdraw Crypto from Binance to Your Own Wallet
 
@@ -993,7 +778,7 @@ Common Networks:
 - BSC (BEP-20) - Fast, low fees
 - Solana (SPL) - Fast, very low fees
 
-⚠️ **CRITICAL:** Your receiving wallet MUST support the network you choose!
+**CRITICAL:** Your receiving wallet MUST support the network you choose!
 
 ### Step-by-Step Withdrawal Process
 
@@ -1006,11 +791,11 @@ Common Networks:
 
 2. **Select Withdrawal Method**
    - Choose **"Send via Crypto Network"**
-   - (Not "Send via Binance User" - that''s internal transfer)
+   - (Not "Send via Binance User" - that is internal transfer)
 
 3. **Select the Cryptocurrency**
    - Confirm correct coin selected
-   - Double-check you''re not withdrawing wrong asset
+   - Double-check you are not withdrawing wrong asset
 
 4. **Enter Receiving Address**
    - Go to YOUR wallet and copy the deposit address
@@ -1035,7 +820,7 @@ Common Networks:
      - **EOS:** Memo
      - **BNB (to exchanges):** Memo
    - Your wallet will tell you if memo is needed
-   - Personal wallets usually don''t need memos
+   - Personal wallets usually do not need memos
    - If sending to another exchange, ALWAYS include their memo
 
 7. **Enter Amount**
@@ -1045,12 +830,12 @@ Common Networks:
    - Check "You will receive" shows correct amount
 
 8. **Review Everything**
-   - ✓ Correct cryptocurrency
-   - ✓ Correct network
-   - ✓ Correct address (check first 4 and last 4 characters)
-   - ✓ Memo included if needed
-   - ✓ Amount is correct
-   - ✓ Fee is acceptable
+   - Correct cryptocurrency
+   - Correct network
+   - Correct address (check first 4 and last 4 characters)
+   - Memo included if needed
+   - Amount is correct
+   - Fee is acceptable
 
 9. **Submit Withdrawal**
    - Click **"Withdraw"**
@@ -1124,7 +909,7 @@ This costs a small extra fee but protects against:
 
 **3. Wrong Address**
 - Typo in address = funds gone forever
-- Solution: Copy/paste, verify first & last 4 characters
+- Solution: Copy/paste, verify first and last 4 characters
 
 **4. Sending to Contract Address**
 - Sending to a smart contract = potentially lost
@@ -1164,7 +949,7 @@ This costs a small extra fee but protects against:
 - Apply for VIP status
 
 ### Tax Considerations
-- Withdrawals themselves aren''t taxable
+- Withdrawals themselves are not taxable
 - BUT keep records for:
   - Cost basis tracking
   - When you sell/trade later
@@ -1174,8 +959,8 @@ This costs a small extra fee but protects against:
 ### Security Reminders
 - Enable Withdrawal Whitelist
 - Wait 24 hours after adding new address
-- Never share your wallet''s private keys
+- Never share your wallet private keys
 - Verify you control the receiving wallet
 - Store hardware wallet recovery phrase safely
-- Don''t withdraw to addresses given by strangers',
-'info', 14, '{"platform": "all", "difficulty": "intermediate", "timeRequired": "5-10 minutes", "requirements": ["Verified Binance account", "Personal wallet set up", "Crypto to withdraw"]}')
+- Do not withdraw to addresses given by strangers',
+'info', 14, '{"platform": "all", "difficulty": "intermediate", "timeRequired": "5-10 minutes", "requirements": ["Verified Binance account", "Personal wallet set up", "Crypto to withdraw"]}');
