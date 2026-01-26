@@ -1,9 +1,9 @@
 import { useRef, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 import {
   X, Clock, Monitor, Smartphone, Shield, ArrowRightLeft,
-  ArrowUpRight, CheckCircle2, AlertTriangle, Lightbulb,
-  ChevronRight, Sparkles, Lock
+  ArrowUpRight, Sparkles, Lock
 } from "lucide-react";
 import { Badge } from "@/components/ui";
 
@@ -43,458 +43,6 @@ function getTutorialIcon(category: string) {
   }
 }
 
-// Parse markdown content into structured sections
-function parseContent(content: string) {
-  const sections: Array<{
-    type: 'hero' | 'section' | 'subsection' | 'steps' | 'tip' | 'warning' | 'table' | 'checklist' | 'paragraph';
-    title?: string;
-    content: string;
-    items?: string[];
-  }> = [];
-
-  const lines = content.split('\n');
-  let currentSection: typeof sections[0] | null = null;
-  let buffer: string[] = [];
-
-  const flushBuffer = () => {
-    if (buffer.length > 0 && currentSection) {
-      currentSection.content = buffer.join('\n').trim();
-      if (currentSection.content) {
-        sections.push(currentSection);
-      }
-    }
-    buffer = [];
-  };
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const trimmed = line.trim();
-
-    // Main title (H1)
-    if (trimmed.startsWith('# ')) {
-      flushBuffer();
-      currentSection = {
-        type: 'hero',
-        title: trimmed.replace('# ', ''),
-        content: ''
-      };
-      continue;
-    }
-
-    // Section (H2)
-    if (trimmed.startsWith('## ')) {
-      flushBuffer();
-      currentSection = {
-        type: 'section',
-        title: trimmed.replace('## ', ''),
-        content: ''
-      };
-      continue;
-    }
-
-    // Subsection (H3)
-    if (trimmed.startsWith('### ')) {
-      flushBuffer();
-      currentSection = {
-        type: 'subsection',
-        title: trimmed.replace('### ', ''),
-        content: ''
-      };
-      continue;
-    }
-
-    // Horizontal rule - section break
-    if (trimmed === '---') {
-      flushBuffer();
-      currentSection = null;
-      continue;
-    }
-
-    // Blockquote (tip)
-    if (trimmed.startsWith('> ')) {
-      flushBuffer();
-      const quoteContent = trimmed.replace('> ', '');
-      const isWarning = quoteContent.toLowerCase().includes('warning') ||
-                       quoteContent.toLowerCase().includes('important') ||
-                       quoteContent.toLowerCase().includes('critical');
-      sections.push({
-        type: isWarning ? 'warning' : 'tip',
-        content: quoteContent.replace(/^\*\*([^*]+)\*\*:?\s*/, '$1: ')
-      });
-      currentSection = null;
-      continue;
-    }
-
-    // Table detection
-    if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
-      if (!currentSection || currentSection.type !== 'table') {
-        flushBuffer();
-        currentSection = {
-          type: 'table',
-          content: ''
-        };
-      }
-      buffer.push(line);
-      continue;
-    }
-
-    // Checklist
-    if (trimmed.startsWith('- [ ]') || trimmed.startsWith('- [x]')) {
-      if (!currentSection || currentSection.type !== 'checklist') {
-        flushBuffer();
-        currentSection = {
-          type: 'checklist',
-          content: '',
-          items: []
-        };
-      }
-      currentSection.items?.push(trimmed.replace(/^- \[.\] /, ''));
-      continue;
-    }
-
-    // Numbered list (steps)
-    if (/^\d+\.\s/.test(trimmed)) {
-      if (!currentSection || currentSection.type !== 'steps') {
-        flushBuffer();
-        currentSection = {
-          type: 'steps',
-          content: '',
-          items: []
-        };
-      }
-      currentSection.items?.push(trimmed.replace(/^\d+\.\s/, ''));
-      continue;
-    }
-
-    // Regular content
-    if (currentSection) {
-      buffer.push(line);
-    } else if (trimmed) {
-      currentSection = {
-        type: 'paragraph',
-        content: ''
-      };
-      buffer.push(line);
-    }
-  }
-
-  flushBuffer();
-  return sections;
-}
-
-// Format inline markdown
-function formatInline(text: string): React.ReactNode {
-  // Handle bold
-  let parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} className="text-white font-semibold">{part.slice(2, -2)}</strong>;
-    }
-    // Handle inline code
-    const codeParts = part.split(/(`[^`]+`)/g);
-    return codeParts.map((codePart, j) => {
-      if (codePart.startsWith('`') && codePart.endsWith('`')) {
-        return (
-          <code key={`${i}-${j}`} className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 font-mono text-sm">
-            {codePart.slice(1, -1)}
-          </code>
-        );
-      }
-      return codePart;
-    });
-  });
-}
-
-// Render table
-function TableRenderer({ content }: { content: string }) {
-  const rows = content.trim().split('\n').filter(row => !row.includes('---'));
-  const headers = rows[0]?.split('|').filter(Boolean).map(h => h.trim()) || [];
-  const bodyRows = rows.slice(1);
-
-  return (
-    <div className="overflow-x-auto my-6">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr>
-            {headers.map((header, i) => (
-              <th
-                key={i}
-                className="px-4 py-3 text-left text-sm font-semibold text-amber-400 bg-amber-500/5 border-b border-amber-500/20 first:rounded-tl-lg last:rounded-tr-lg"
-              >
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {bodyRows.map((row, i) => {
-            const cells = row.split('|').filter(Boolean).map(c => c.trim());
-            return (
-              <tr key={i} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-                {cells.map((cell, j) => (
-                  <td key={j} className="px-4 py-3 text-sm text-gray-300">
-                    {formatInline(cell)}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-// Step list renderer
-function StepsRenderer({ items, startNum = 1 }: { items: string[]; startNum?: number }) {
-  return (
-    <div className="space-y-4 my-6">
-      {items.map((item, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.05 }}
-          className="flex gap-4 group"
-        >
-          <div className="flex-shrink-0 relative">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center border border-amber-500/30 group-hover:border-amber-500/50 transition-colors">
-              <span className="text-sm font-bold text-amber-400">{startNum + i}</span>
-            </div>
-            {i < items.length - 1 && (
-              <div className="absolute top-8 left-1/2 w-px h-6 bg-gradient-to-b from-amber-500/30 to-transparent" />
-            )}
-          </div>
-          <div className="flex-1 pt-1">
-            <p className="text-gray-300 leading-relaxed">{formatInline(item)}</p>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
-// Checklist renderer
-function ChecklistRenderer({ items }: { items: string[] }) {
-  return (
-    <div className="space-y-3 my-6 p-5 rounded-xl bg-gradient-to-br from-emerald-500/5 to-transparent border border-emerald-500/20">
-      <div className="flex items-center gap-2 mb-4">
-        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-        <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wider">Checklist</span>
-      </div>
-      {items.map((item, i) => (
-        <motion.label
-          key={i}
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.03 }}
-          className="flex items-start gap-3 cursor-pointer group"
-        >
-          <div className="mt-0.5 w-5 h-5 rounded border-2 border-emerald-500/40 group-hover:border-emerald-500/60 transition-colors flex items-center justify-center">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400 opacity-0 group-hover:opacity-50 transition-opacity" />
-          </div>
-          <span className="text-gray-300 text-sm leading-relaxed">{formatInline(item)}</span>
-        </motion.label>
-      ))}
-    </div>
-  );
-}
-
-// Tip/Warning box
-function CalloutBox({ type, content }: { type: 'tip' | 'warning'; content: string }) {
-  const isTip = type === 'tip';
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className={`my-6 p-5 rounded-xl border ${
-        isTip
-          ? 'bg-gradient-to-br from-cyan-500/5 to-transparent border-cyan-500/20'
-          : 'bg-gradient-to-br from-red-500/5 to-transparent border-red-500/20'
-      }`}
-    >
-      <div className="flex items-start gap-3">
-        <div className={`flex-shrink-0 p-2 rounded-lg ${isTip ? 'bg-cyan-500/10' : 'bg-red-500/10'}`}>
-          {isTip ? (
-            <Lightbulb className="w-4 h-4 text-cyan-400" />
-          ) : (
-            <AlertTriangle className="w-4 h-4 text-red-400" />
-          )}
-        </div>
-        <div>
-          <span className={`text-xs font-semibold uppercase tracking-wider ${isTip ? 'text-cyan-400' : 'text-red-400'}`}>
-            {isTip ? 'Pro Tip' : 'Important'}
-          </span>
-          <p className="mt-1 text-gray-300 text-sm leading-relaxed">{formatInline(content)}</p>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// Section renderer
-function SectionRenderer({ section, index }: { section: ReturnType<typeof parseContent>[0]; index: number }) {
-  switch (section.type) {
-    case 'hero':
-      return (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight">
-            {section.title}
-          </h1>
-          {section.content && (
-            <p className="mt-4 text-lg text-gray-400 leading-relaxed">{formatInline(section.content)}</p>
-          )}
-        </motion.div>
-      );
-
-    case 'section':
-      // Check if title starts with "Step" for special formatting
-      const isStep = section.title?.toLowerCase().startsWith('step ');
-      const stepMatch = section.title?.match(/^Step (\d+):?\s*(.*)$/i);
-
-      return (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          className="mt-12 mb-6"
-        >
-          {isStep && stepMatch ? (
-            <div className="flex items-start gap-4 mb-4">
-              <div className="flex-shrink-0">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                  <span className="text-xl font-bold text-black">{stepMatch[1]}</span>
-                </div>
-              </div>
-              <div className="pt-2">
-                <h2 className="text-xl md:text-2xl font-bold text-white">{stepMatch[2]}</h2>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1 h-8 rounded-full bg-gradient-to-b from-amber-500 to-amber-600" />
-              <h2 className="text-xl md:text-2xl font-bold text-white">{section.title}</h2>
-            </div>
-          )}
-          {section.content && (
-            <div className="text-gray-300 leading-relaxed whitespace-pre-line pl-0 md:pl-16">
-              {section.content.split('\n').map((line, i) => {
-                const trimmed = line.trim();
-                if (!trimmed) return <br key={i} />;
-                if (trimmed.startsWith('- ')) {
-                  return (
-                    <div key={i} className="flex items-start gap-2 my-1">
-                      <ChevronRight className="w-4 h-4 text-amber-500 mt-1 flex-shrink-0" />
-                      <span>{formatInline(trimmed.slice(2))}</span>
-                    </div>
-                  );
-                }
-                return <p key={i} className="my-2">{formatInline(trimmed)}</p>;
-              })}
-            </div>
-          )}
-        </motion.div>
-      );
-
-    case 'subsection':
-      return (
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-8 mb-4"
-        >
-          <h3 className="text-lg font-semibold text-amber-400 mb-3 flex items-center gap-2">
-            <Sparkles className="w-4 h-4" />
-            {section.title}
-          </h3>
-          {section.content && (
-            <div className="text-gray-300 leading-relaxed pl-6 border-l-2 border-amber-500/20">
-              {section.content.split('\n').map((line, i) => {
-                const trimmed = line.trim();
-                if (!trimmed) return <br key={i} />;
-                if (trimmed.startsWith('- ')) {
-                  return (
-                    <div key={i} className="flex items-start gap-2 my-1">
-                      <span className="text-amber-500">-</span>
-                      <span>{formatInline(trimmed.slice(2))}</span>
-                    </div>
-                  );
-                }
-                return <p key={i} className="my-2">{formatInline(trimmed)}</p>;
-              })}
-            </div>
-          )}
-        </motion.div>
-      );
-
-    case 'steps':
-      return <StepsRenderer items={section.items || []} />;
-
-    case 'checklist':
-      return <ChecklistRenderer items={section.items || []} />;
-
-    case 'table':
-      return <TableRenderer content={section.content} />;
-
-    case 'tip':
-      return <CalloutBox type="tip" content={section.content} />;
-
-    case 'warning':
-      return <CalloutBox type="warning" content={section.content} />;
-
-    case 'paragraph':
-      return (
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="my-4"
-        >
-          {section.content.split('\n').map((line, i) => {
-            const trimmed = line.trim();
-            if (!trimmed) return null;
-            if (trimmed.startsWith('- ')) {
-              return (
-                <div key={i} className="flex items-start gap-2 my-1 text-gray-300">
-                  <ChevronRight className="w-4 h-4 text-amber-500 mt-1 flex-shrink-0" />
-                  <span>{formatInline(trimmed.slice(2))}</span>
-                </div>
-              );
-            }
-            return <p key={i} className="text-gray-300 leading-relaxed my-2">{formatInline(trimmed)}</p>;
-          })}
-        </motion.div>
-      );
-
-    default:
-      return null;
-  }
-}
-
-// Progress indicator
-function ProgressIndicator({ scrollProgress }: { scrollProgress: number }) {
-  return (
-    <div className="fixed top-0 left-0 right-0 h-1 z-50">
-      <motion.div
-        className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500"
-        style={{
-          width: `${scrollProgress * 100}%`,
-          boxShadow: '0 0 20px rgba(245, 158, 11, 0.5)'
-        }}
-      />
-    </div>
-  );
-}
-
 // Main Tutorial Reader Component
 export function TutorialReader({
   tutorial,
@@ -526,7 +74,6 @@ export function TutorialReader({
 
   const Icon = getTutorialIcon(tutorial.category);
   const metadata = tutorial.metadata;
-  const sections = parseContent(tutorial.content);
 
   return (
     <AnimatePresence>
@@ -648,12 +195,116 @@ export function TutorialReader({
               )}
             </motion.div>
 
-            {/* Main content */}
-            <div className="py-8">
-              {sections.map((section, index) => (
-                <SectionRenderer key={index} section={section} index={index} />
-              ))}
-            </div>
+            {/* Main content with ReactMarkdown */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="py-8"
+            >
+              <article className="tutorial-content">
+                <ReactMarkdown
+                  components={{
+                    h1: ({ children }) => (
+                      <h1 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
+                        {children}
+                      </h1>
+                    ),
+                    h2: ({ children }) => (
+                      <h2 className="flex items-center gap-3 text-xl md:text-2xl font-bold text-white mt-12 mb-6">
+                        <div className="w-1 h-8 rounded-full bg-gradient-to-b from-amber-500 to-amber-600" />
+                        {children}
+                      </h2>
+                    ),
+                    h3: ({ children }) => (
+                      <h3 className="text-lg font-semibold text-amber-400 mt-8 mb-4 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4" />
+                        {children}
+                      </h3>
+                    ),
+                    h4: ({ children }) => (
+                      <h4 className="text-base font-semibold text-white mt-6 mb-3">
+                        {children}
+                      </h4>
+                    ),
+                    p: ({ children }) => (
+                      <p className="text-gray-300 leading-relaxed mb-4">
+                        {children}
+                      </p>
+                    ),
+                    ul: ({ children }) => (
+                      <ul className="space-y-2 mb-6 ml-4">
+                        {children}
+                      </ul>
+                    ),
+                    ol: ({ children }) => (
+                      <ol className="space-y-3 mb-6 ml-4 list-none counter-reset-item">
+                        {children}
+                      </ol>
+                    ),
+                    li: ({ children, ordered }) => (
+                      <li className={`text-gray-300 leading-relaxed flex items-start gap-3 ${ordered ? '' : ''}`}>
+                        <span className="text-amber-500 mt-1">•</span>
+                        <span>{children}</span>
+                      </li>
+                    ),
+                    strong: ({ children }) => (
+                      <strong className="text-white font-semibold">{children}</strong>
+                    ),
+                    em: ({ children }) => (
+                      <em className="text-amber-400 not-italic">{children}</em>
+                    ),
+                    code: ({ children }) => (
+                      <code className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 font-mono text-sm">
+                        {children}
+                      </code>
+                    ),
+                    blockquote: ({ children }) => (
+                      <blockquote className="my-6 p-5 rounded-xl bg-gradient-to-br from-cyan-500/5 to-transparent border border-cyan-500/20">
+                        <div className="text-cyan-400 text-sm">
+                          {children}
+                        </div>
+                      </blockquote>
+                    ),
+                    hr: () => (
+                      <hr className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                    ),
+                    table: ({ children }) => (
+                      <div className="overflow-x-auto my-6">
+                        <table className="w-full border-collapse">
+                          {children}
+                        </table>
+                      </div>
+                    ),
+                    thead: ({ children }) => (
+                      <thead className="bg-amber-500/5">{children}</thead>
+                    ),
+                    th: ({ children }) => (
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-amber-400 border-b border-amber-500/20">
+                        {children}
+                      </th>
+                    ),
+                    td: ({ children }) => (
+                      <td className="px-4 py-3 text-sm text-gray-300 border-b border-white/5">
+                        {children}
+                      </td>
+                    ),
+                    a: ({ href, children }) => (
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-amber-400 hover:text-amber-300 underline underline-offset-2"
+                      >
+                        {children}
+                      </a>
+                    ),
+                  }}
+                >
+                  {tutorial.content}
+                </ReactMarkdown>
+              </article>
+            </motion.div>
 
             {/* Footer */}
             <motion.div
