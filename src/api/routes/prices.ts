@@ -6,6 +6,7 @@ export const pricesRoutes = new Hono<{ Bindings: Env }>();
 
 // CoinGecko ID mapping for our assets
 const COINGECKO_IDS: Record<string, string> = {
+  XRP: "ripple",
   BTC: "bitcoin",
   ETH: "ethereum",
   SOL: "solana",
@@ -134,7 +135,7 @@ pricesRoutes.get("/history/:symbol", async (c) => {
       history = (await response.json()) as CoinGeckoMarketChart;
     } else {
       // Generate mock history
-      history = generateMockHistory(days);
+      history = generateMockHistory(days, symbol);
     }
 
     const result = {
@@ -156,7 +157,7 @@ pricesRoutes.get("/history/:symbol", async (c) => {
     console.error("History fetch error:", error);
 
     // Generate mock data on error
-    const mockHistory = generateMockHistory(days);
+    const mockHistory = generateMockHistory(days, symbol);
     return c.json({
       data: {
         symbol,
@@ -205,6 +206,7 @@ function transformCoinGeckoData(
 
 function generateMockPrices(symbols: string[]): Record<string, PriceData> {
   const basePrices: Record<string, number> = {
+    XRP: 2.5,
     BTC: 67500,
     ETH: 3450,
     SOL: 185,
@@ -239,17 +241,31 @@ function generateMockPrices(symbols: string[]): Record<string, PriceData> {
   return result;
 }
 
-function generateMockHistory(days: number): { prices: [number, number][] } {
+function generateMockHistory(days: number, symbol?: string): { prices: [number, number][] } {
+  const basePrices: Record<string, number> = {
+    XRP: 2.5,
+    BTC: 67500,
+    ETH: 3450,
+    SOL: 185,
+    AVAX: 42,
+    LINK: 18.5,
+    AAVE: 165,
+    UNI: 12.5,
+    ARB: 1.85,
+    OP: 3.2,
+    MATIC: 0.95,
+  };
+
   const prices: [number, number][] = [];
   const now = Date.now();
   const interval = (days * 24 * 60 * 60 * 1000) / 100; // 100 data points
-  let basePrice = 50000;
+  let price = symbol ? (basePrices[symbol] || 1) : 50000;
 
   for (let i = 0; i < 100; i++) {
     const timestamp = now - (100 - i) * interval;
     // Random walk
-    basePrice = basePrice * (1 + (Math.random() - 0.5) * 0.02);
-    prices.push([timestamp, basePrice]);
+    price = price * (1 + (Math.random() - 0.5) * 0.02);
+    prices.push([timestamp, price]);
   }
 
   return { prices };
