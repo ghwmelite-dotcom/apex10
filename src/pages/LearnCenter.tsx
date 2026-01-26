@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, Wallet, ShoppingCart, Shield, Brain, X, ExternalLink, Monitor, Smartphone, Lock, ArrowRightLeft, ArrowUpRight } from "lucide-react";
-import ReactMarkdown from "react-markdown";
+import { motion } from "framer-motion";
+import { BookOpen, Wallet, ShoppingCart, Shield, Brain, ExternalLink, Monitor, Smartphone, Lock, ArrowRightLeft, ArrowUpRight, Clock, Sparkles } from "lucide-react";
 import { useWalletGuides, useAcquisitionGuides } from "@/hooks/useSecurity";
 import {
   Card,
@@ -10,6 +9,7 @@ import {
   Skeleton,
 } from "@/components/ui";
 import { LearningPathGenerator } from "@/components/LearningPath";
+import { TutorialReader } from "@/components/TutorialReader";
 
 // Tutorial type with metadata
 interface Tutorial {
@@ -60,115 +60,7 @@ function getDifficultyColor(difficulty?: string) {
   }
 }
 
-// Tutorial Modal Component
-function TutorialModal({
-  tutorial,
-  onClose
-}: {
-  tutorial: Tutorial | null;
-  onClose: () => void;
-}) {
-  if (!tutorial) return null;
-
-  const Icon = getTutorialIcon(tutorial.category);
-  const metadata = tutorial.metadata;
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl bg-bg-secondary border border-border-primary"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="sticky top-0 z-10 bg-bg-secondary border-b border-border-primary p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-accent-primary/20">
-                  <Icon className="w-6 h-6 text-accent-primary" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-text-primary">{tutorial.title}</h2>
-                  <div className="flex items-center gap-2 mt-1">
-                    {metadata?.platform && (
-                      <Badge variant="info" className="text-xs">
-                        {metadata.platform === "desktop" ? "Desktop" :
-                         metadata.platform === "mobile" ? "Mobile" : "All Platforms"}
-                      </Badge>
-                    )}
-                    {metadata?.difficulty && (
-                      <Badge variant={getDifficultyColor(metadata.difficulty) as any} className="text-xs capitalize">
-                        {metadata.difficulty}
-                      </Badge>
-                    )}
-                    {metadata?.timeRequired && (
-                      <span className="text-xs text-text-muted">
-                        ⏱ {metadata.timeRequired}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-lg hover:bg-bg-tertiary transition-colors"
-              >
-                <X className="w-5 h-5 text-text-muted" />
-              </button>
-            </div>
-
-            {/* Requirements */}
-            {metadata?.requirements && metadata.requirements.length > 0 && (
-              <div className="mt-4 p-3 rounded-lg bg-bg-tertiary">
-                <span className="text-xs font-medium text-text-muted uppercase">Requirements:</span>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {metadata.requirements.map((req, i) => (
-                    <Badge key={i} variant="secondary" className="text-xs">
-                      {req}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Content */}
-          <div className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
-            <div className="prose prose-invert prose-sm max-w-none
-              prose-headings:text-text-primary
-              prose-h2:text-xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 prose-h2:border-b prose-h2:border-border-primary prose-h2:pb-2
-              prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-3
-              prose-h4:text-base prose-h4:font-medium prose-h4:mt-4 prose-h4:mb-2
-              prose-p:text-text-secondary prose-p:leading-relaxed
-              prose-strong:text-text-primary prose-strong:font-semibold
-              prose-ul:my-3 prose-ul:space-y-1
-              prose-ol:my-3 prose-ol:space-y-1
-              prose-li:text-text-secondary
-              prose-table:my-4
-              prose-th:bg-bg-tertiary prose-th:px-4 prose-th:py-2 prose-th:text-left prose-th:text-text-primary
-              prose-td:px-4 prose-td:py-2 prose-td:border-b prose-td:border-border-primary
-              prose-code:bg-bg-tertiary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-accent-primary prose-code:text-sm
-              prose-blockquote:border-l-accent-primary prose-blockquote:bg-bg-tertiary prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-lg
-            ">
-              <ReactMarkdown>{tutorial.content}</ReactMarkdown>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-}
-
-// Tutorial Card Component
+// Tutorial Card Component - Enhanced visual design
 function TutorialCard({
   tutorial,
   index,
@@ -187,66 +79,102 @@ function TutorialCard({
     line.trim() && !line.startsWith("#") && !line.startsWith("-")
   ) || tutorial.content.slice(0, 150);
 
+  // Get step count from content
+  const stepCount = (tutorial.content.match(/^## Step \d+/gm) || []).length;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.05 * index }}
+      whileHover={{ y: -4 }}
+      className="h-full"
     >
-      <Card
-        className={`p-6 h-full cursor-pointer hover:border-accent-primary/50 transition-all duration-200 ${
-          isBinanceTutorial ? "border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-transparent" : ""
+      <div
+        className={`relative h-full p-6 rounded-2xl cursor-pointer transition-all duration-300 group overflow-hidden ${
+          isBinanceTutorial
+            ? "bg-gradient-to-br from-amber-500/[0.08] via-amber-600/[0.04] to-transparent border border-amber-500/20 hover:border-amber-500/40 hover:shadow-lg hover:shadow-amber-500/10"
+            : "bg-gradient-to-br from-white/[0.03] to-transparent border border-white/10 hover:border-white/20"
         }`}
         onClick={onClick}
       >
-        <div className="flex items-start gap-4 mb-4">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+        {/* Decorative gradient orb */}
+        <div className={`absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+          isBinanceTutorial ? "bg-amber-500/20" : "bg-cyan-500/10"
+        }`} />
+
+        {/* Header */}
+        <div className="relative flex items-start gap-4 mb-5">
+          <div className={`flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center ${
             isBinanceTutorial
-              ? "bg-gradient-to-br from-amber-500/20 to-amber-600/20"
-              : "bg-accent-primary/20"
+              ? "bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg shadow-amber-500/20"
+              : "bg-gradient-to-br from-cyan-500/20 to-cyan-600/10 border border-cyan-500/20"
           }`}>
-            {isBinanceTutorial ? (
-              <Icon className="w-6 h-6 text-amber-500" />
-            ) : (
-              <span className="text-lg font-bold text-accent-primary">{index + 1}</span>
-            )}
+            <Icon className={`w-7 h-7 ${isBinanceTutorial ? "text-black" : "text-cyan-400"}`} />
           </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              {isBinanceTutorial && (
-                <Badge className="text-xs bg-amber-500/20 text-amber-400 border-amber-500/30">
-                  Binance
-                </Badge>
-              )}
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-1.5 mb-2">
               {metadata?.platform && (
-                <Badge variant="info" className="text-xs">
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium uppercase tracking-wider ${
+                  isBinanceTutorial
+                    ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                    : "bg-white/5 text-gray-400 border border-white/10"
+                }`}>
+                  {metadata.platform === "desktop" ? <Monitor className="w-3 h-3" /> :
+                   metadata.platform === "mobile" ? <Smartphone className="w-3 h-3" /> : null}
                   {metadata.platform === "desktop" ? "Desktop" :
                    metadata.platform === "mobile" ? "Mobile" : "All"}
-                </Badge>
+                </span>
               )}
               {metadata?.difficulty && (
-                <Badge variant={getDifficultyColor(metadata.difficulty) as any} className="text-xs capitalize">
+                <span className={`px-2 py-0.5 rounded-md text-[10px] font-medium uppercase tracking-wider ${
+                  metadata.difficulty === "beginner"
+                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                    : metadata.difficulty === "intermediate"
+                    ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                    : "bg-red-500/10 text-red-400 border border-red-500/20"
+                }`}>
                   {metadata.difficulty}
-                </Badge>
+                </span>
               )}
             </div>
-            <h3 className="font-semibold text-text-primary">{tutorial.title}</h3>
+            <h3 className="font-semibold text-white leading-tight line-clamp-2 group-hover:text-amber-400 transition-colors">
+              {tutorial.title.replace("Binance ", "").replace(": Complete Guide", "")}
+            </h3>
           </div>
         </div>
 
-        <p className="text-sm text-text-muted line-clamp-3 mb-4">
-          {preview.replace(/[#*_`]/g, "").slice(0, 150)}...
+        {/* Preview text */}
+        <p className="relative text-sm text-gray-400 line-clamp-2 mb-5 leading-relaxed">
+          {preview.replace(/[#*_`]/g, "").trim().slice(0, 120)}...
         </p>
 
-        <div className="flex items-center justify-between">
-          {metadata?.timeRequired && (
-            <span className="text-xs text-text-muted">⏱ {metadata.timeRequired}</span>
-          )}
-          <Button variant="ghost" size="sm" className="gap-1 text-accent-primary">
-            Read Guide <ExternalLink className="w-3 h-3" />
-          </Button>
+        {/* Footer */}
+        <div className="relative flex items-center justify-between pt-4 border-t border-white/5">
+          <div className="flex items-center gap-3">
+            {metadata?.timeRequired && (
+              <span className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Clock className="w-3.5 h-3.5" />
+                {metadata.timeRequired}
+              </span>
+            )}
+            {stepCount > 0 && (
+              <span className="flex items-center gap-1.5 text-xs text-gray-500">
+                <Sparkles className="w-3.5 h-3.5" />
+                {stepCount} steps
+              </span>
+            )}
+          </div>
+          <button className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
+            isBinanceTutorial
+              ? "text-amber-500 group-hover:text-amber-400"
+              : "text-cyan-500 group-hover:text-cyan-400"
+          }`}>
+            Start Guide
+            <ExternalLink className="w-3.5 h-3.5" />
+          </button>
         </div>
-      </Card>
+      </div>
     </motion.div>
   );
 }
@@ -267,13 +195,11 @@ export default function LearnCenter() {
 
   return (
     <div className="container-custom py-8">
-      {/* Tutorial Modal */}
-      {selectedTutorial && (
-        <TutorialModal
-          tutorial={selectedTutorial}
-          onClose={() => setSelectedTutorial(null)}
-        />
-      )}
+      {/* Tutorial Reader - Full screen immersive experience */}
+      <TutorialReader
+        tutorial={selectedTutorial}
+        onClose={() => setSelectedTutorial(null)}
+      />
 
       {/* Hero Section */}
       <motion.div

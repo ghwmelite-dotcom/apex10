@@ -46,7 +46,8 @@
       "WebFetch(domain:docs.coincap.io)",
       "WebFetch(domain:pro.coincap.io)",
       "WebSearch",
-      "WebFetch(domain:coincapapi.mintlify.app)"
+      "WebFetch(domain:coincapapi.mintlify.app)",
+      "Bash(python:*)"
     ]
   }
 }
