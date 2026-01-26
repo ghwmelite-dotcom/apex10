@@ -508,6 +508,8 @@ export function TutorialReader({
   const scrollProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   useEffect(() => {
+    if (!tutorial) return;
+
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
@@ -518,7 +520,7 @@ export function TutorialReader({
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = '';
     };
-  }, [onClose]);
+  }, [tutorial, onClose]);
 
   if (!tutorial) return null;
 
