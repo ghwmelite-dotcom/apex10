@@ -27,7 +27,26 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Bash(npm run deploy:*)"
+      "Bash(npm run deploy:*)",
+      "Bash(xargs:*)",
+      "Bash(npx vite --port 5174)",
+      "Bash(curl:*)",
+      "WebFetch(domain:apex10-cryptodiscover.ghwmelite.workers.dev)",
+      "Bash(node scripts/generate-pwa-assets.mjs:*)",
+      "Bash(npx lighthouse:*)",
+      "Bash(node:*)",
+      "Bash(timeout:*)",
+      "Bash(ping:*)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\rsimd\\\\Desktop\\\\Apex10\")",
+      "Bash(gh repo edit:*)",
+      "Bash(gh repo view:*)",
+      "Bash(powershell:*)",
+      "Bash(git fetch:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:docs.coincap.io)",
+      "WebFetch(domain:pro.coincap.io)",
+      "WebSearch",
+      "WebFetch(domain:coincapapi.mintlify.app)"
     ]
   }
 }
