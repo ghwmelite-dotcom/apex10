@@ -1,23 +1,69 @@
 import { Hono } from "hono";
-import type { Env, PriceData, CoinGeckoPrice, CoinGeckoMarketChart } from "../types";
+import type { Env, PriceData } from "../types";
 import { CACHE_KEYS, CACHE_TTL } from "../types";
 
 export const pricesRoutes = new Hono<{ Bindings: Env }>();
 
-// CoinGecko ID mapping for our assets
-const COINGECKO_IDS: Record<string, string> = {
-  XRP: "ripple",
+// CoinCap ID mapping for our assets (lowercase IDs)
+const COINCAP_IDS: Record<string, string> = {
+  XRP: "xrp",
   BTC: "bitcoin",
   ETH: "ethereum",
   SOL: "solana",
-  AVAX: "avalanche-2",
+  AVAX: "avalanche",
   LINK: "chainlink",
   AAVE: "aave",
   UNI: "uniswap",
   ARB: "arbitrum",
   OP: "optimism",
-  MATIC: "matic-network",
+  MATIC: "polygon",
 };
+
+// Base prices for mock data fallback
+const BASE_PRICES: Record<string, number> = {
+  XRP: 2.5,
+  BTC: 67500,
+  ETH: 3450,
+  SOL: 185,
+  AVAX: 42,
+  LINK: 18.5,
+  AAVE: 165,
+  UNI: 12.5,
+  ARB: 1.85,
+  OP: 3.2,
+  MATIC: 0.95,
+};
+
+// CoinCap API response types
+interface CoinCapAsset {
+  id: string;
+  rank: string;
+  symbol: string;
+  name: string;
+  supply: string;
+  maxSupply: string | null;
+  marketCapUsd: string;
+  volumeUsd24Hr: string;
+  priceUsd: string;
+  changePercent24Hr: string;
+  vwap24Hr: string;
+}
+
+interface CoinCapAssetsResponse {
+  data: CoinCapAsset[];
+  timestamp: number;
+}
+
+interface CoinCapHistoryPoint {
+  priceUsd: string;
+  time: number;
+  date: string;
+}
+
+interface CoinCapHistoryResponse {
+  data: CoinCapHistoryPoint[];
+  timestamp: number;
+}
 
 // ============================================
 // GET /api/prices/:symbols
@@ -38,9 +84,9 @@ pricesRoutes.get("/:symbols", async (c) => {
     });
   }
 
-  // Map symbols to CoinGecko IDs
+  // Map symbols to CoinCap IDs
   const ids = symbols
-    .map((s) => COINGECKO_IDS[s])
+    .map((s) => COINCAP_IDS[s])
     .filter(Boolean)
     .join(",");
 
@@ -49,29 +95,22 @@ pricesRoutes.get("/:symbols", async (c) => {
   }
 
   try {
-    // Fetch from CoinGecko (or use mock data if no API key)
-    let prices: Record<string, PriceData>;
-
-    if (c.env.COINGECKO_API_KEY) {
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_7d_change=true&include_market_cap=true&include_24hr_vol=true&include_last_updated_at=true`,
-        {
-          headers: {
-            "x-cg-demo-api-key": c.env.COINGECKO_API_KEY,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`CoinGecko API error: ${response.status}`);
+    // Fetch from CoinCap API (free, no API key required)
+    const response = await fetch(
+      `https://api.coincap.io/v2/assets?ids=${ids}`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
       }
+    );
 
-      const data = (await response.json()) as CoinGeckoPrice;
-      prices = transformCoinGeckoData(data, symbols);
-    } else {
-      // Mock data for development
-      prices = generateMockPrices(symbols);
+    if (!response.ok) {
+      throw new Error(`CoinCap API error: ${response.status}`);
     }
+
+    const data = (await response.json()) as CoinCapAssetsResponse;
+    const prices = transformCoinCapData(data, symbols);
 
     // Cache results
     await c.env.CACHE.put(cacheKey, JSON.stringify(prices), {
@@ -107,43 +146,45 @@ pricesRoutes.get("/history/:symbol", async (c) => {
     return c.json({ data: cached, meta: { cached: true } });
   }
 
-  const coingeckoId = COINGECKO_IDS[symbol];
-  if (!coingeckoId) {
+  const coincapId = COINCAP_IDS[symbol];
+  if (!coincapId) {
     return c.json({ error: "Invalid symbol" }, 400);
   }
 
-  const daysMap = { "24h": 1, "7d": 7, "30d": 30, "1y": 365 };
-  const days = daysMap[period];
+  // Map period to CoinCap interval and time range
+  const periodConfig = {
+    "24h": { interval: "m15", days: 1 },   // 15-minute intervals for 24h
+    "7d": { interval: "h1", days: 7 },     // 1-hour intervals for 7d
+    "30d": { interval: "h6", days: 30 },   // 6-hour intervals for 30d
+    "1y": { interval: "d1", days: 365 },   // Daily intervals for 1y
+  };
+
+  const { interval, days } = periodConfig[period];
+  const end = Date.now();
+  const start = end - days * 24 * 60 * 60 * 1000;
 
   try {
-    let history: { prices: [number, number][] };
-
-    if (c.env.COINGECKO_API_KEY) {
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${coingeckoId}/market_chart?vs_currency=usd&days=${days}`,
-        {
-          headers: {
-            "x-cg-demo-api-key": c.env.COINGECKO_API_KEY,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`CoinGecko API error: ${response.status}`);
+    const response = await fetch(
+      `https://api.coincap.io/v2/assets/${coincapId}/history?interval=${interval}&start=${start}&end=${end}`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
       }
+    );
 
-      history = (await response.json()) as CoinGeckoMarketChart;
-    } else {
-      // Generate mock history
-      history = generateMockHistory(days, symbol);
+    if (!response.ok) {
+      throw new Error(`CoinCap API error: ${response.status}`);
     }
+
+    const data = (await response.json()) as CoinCapHistoryResponse;
 
     const result = {
       symbol,
       period,
-      prices: history.prices.map(([timestamp, price]) => ({
-        timestamp,
-        price,
+      prices: data.data.map((point) => ({
+        timestamp: point.time,
+        price: parseFloat(point.priceUsd),
       })),
     };
 
@@ -176,27 +217,29 @@ pricesRoutes.get("/history/:symbol", async (c) => {
 // HELPER FUNCTIONS
 // ============================================
 
-function transformCoinGeckoData(
-  data: CoinGeckoPrice,
+function transformCoinCapData(
+  data: CoinCapAssetsResponse,
   symbols: string[]
 ): Record<string, PriceData> {
   const result: Record<string, PriceData> = {};
 
-  for (const symbol of symbols) {
-    const id = COINGECKO_IDS[symbol];
-    const coinData = data[id];
+  // Create a map of CoinCap ID to symbol for reverse lookup
+  const idToSymbol: Record<string, string> = {};
+  for (const [sym, id] of Object.entries(COINCAP_IDS)) {
+    idToSymbol[id] = sym;
+  }
 
-    if (coinData) {
+  for (const asset of data.data) {
+    const symbol = idToSymbol[asset.id];
+    if (symbol && symbols.includes(symbol)) {
       result[symbol] = {
         symbol,
-        priceUsd: coinData.usd,
-        change24h: coinData.usd_24h_change || 0,
-        change7d: coinData.usd_7d_change || 0,
-        marketCap: coinData.usd_market_cap || 0,
-        volume24h: coinData.usd_24h_vol || 0,
-        lastUpdated: new Date(
-          (coinData.last_updated_at || Date.now() / 1000) * 1000
-        ).toISOString(),
+        priceUsd: parseFloat(asset.priceUsd),
+        change24h: parseFloat(asset.changePercent24Hr) || 0,
+        change7d: 0, // CoinCap doesn't provide 7d change directly
+        marketCap: parseFloat(asset.marketCapUsd) || 0,
+        volume24h: parseFloat(asset.volumeUsd24Hr) || 0,
+        lastUpdated: new Date(data.timestamp).toISOString(),
       };
     }
   }
@@ -205,24 +248,10 @@ function transformCoinGeckoData(
 }
 
 function generateMockPrices(symbols: string[]): Record<string, PriceData> {
-  const basePrices: Record<string, number> = {
-    XRP: 2.5,
-    BTC: 67500,
-    ETH: 3450,
-    SOL: 185,
-    AVAX: 42,
-    LINK: 18.5,
-    AAVE: 165,
-    UNI: 12.5,
-    ARB: 1.85,
-    OP: 3.2,
-    MATIC: 0.95,
-  };
-
   const result: Record<string, PriceData> = {};
 
   for (const symbol of symbols) {
-    const basePrice = basePrices[symbol] || 1;
+    const basePrice = BASE_PRICES[symbol] || 1;
     // Add some randomness
     const variance = (Math.random() - 0.5) * 0.02;
     const price = basePrice * (1 + variance);
@@ -241,25 +270,14 @@ function generateMockPrices(symbols: string[]): Record<string, PriceData> {
   return result;
 }
 
-function generateMockHistory(days: number, symbol?: string): { prices: [number, number][] } {
-  const basePrices: Record<string, number> = {
-    XRP: 2.5,
-    BTC: 67500,
-    ETH: 3450,
-    SOL: 185,
-    AVAX: 42,
-    LINK: 18.5,
-    AAVE: 165,
-    UNI: 12.5,
-    ARB: 1.85,
-    OP: 3.2,
-    MATIC: 0.95,
-  };
-
+function generateMockHistory(
+  days: number,
+  symbol?: string
+): { prices: [number, number][] } {
   const prices: [number, number][] = [];
   const now = Date.now();
   const interval = (days * 24 * 60 * 60 * 1000) / 100; // 100 data points
-  let price = symbol ? (basePrices[symbol] || 1) : 50000;
+  let price = symbol ? (BASE_PRICES[symbol] || 1) : 50000;
 
   for (let i = 0; i < 100; i++) {
     const timestamp = now - (100 - i) * interval;

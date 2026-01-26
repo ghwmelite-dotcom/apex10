@@ -10,7 +10,7 @@ export interface Env {
   AI: Ai;
   ASSETS: { fetch: (request: Request) => Promise<Response> };
   ENVIRONMENT: string;
-  COINGECKO_API_KEY?: string;
+  // CoinCap API is used for prices (free, no key required)
   ADMIN_API_KEY?: string;
   // Web3 bindings
   POLYGON_RPC_URL?: string;
@@ -134,24 +134,10 @@ export interface PriceHistory {
 }
 
 // ============================================
-// COINGECKO TYPES
+// COINCAP TYPES (used in prices.ts)
 // ============================================
-export interface CoinGeckoPrice {
-  [id: string]: {
-    usd: number;
-    usd_24h_change?: number;
-    usd_7d_change?: number;
-    usd_market_cap?: number;
-    usd_24h_vol?: number;
-    last_updated_at?: number;
-  };
-}
-
-export interface CoinGeckoMarketChart {
-  prices: [number, number][];
-  market_caps: [number, number][];
-  total_volumes: [number, number][];
-}
+// CoinCap API types are defined locally in src/api/routes/prices.ts
+// since they are only used there. No API key required.
 
 // ============================================
 // CACHE KEYS
