@@ -1,11 +1,44 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, Component, ErrorInfo, ReactNode } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import {
   X, Clock, Monitor, Smartphone, Shield, ArrowRightLeft,
-  ArrowUpRight, Sparkles, Lock
+  ArrowUpRight, Sparkles, Lock, AlertTriangle
 } from "lucide-react";
 import { Badge } from "@/components/ui";
+
+// Error Boundary for ReactMarkdown
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  fallback: ReactNode;
+}
+
+class MarkdownErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('ReactMarkdown rendering error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
 
 interface TutorialMetadata {
   platform?: string;
@@ -202,7 +235,25 @@ export function TutorialReader({
               transition={{ delay: 0.2 }}
               className="py-8"
             >
+              {/* Tutorial title for mobile */}
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-8 sm:hidden">
+                {tutorial.title}
+              </h1>
+
               <article className="tutorial-content">
+                <MarkdownErrorBoundary
+                  fallback={
+                    <div className="p-6 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                      <div className="flex items-center gap-3 mb-4">
+                        <AlertTriangle className="w-5 h-5 text-amber-500" />
+                        <span className="text-amber-400 font-medium">Content Preview</span>
+                      </div>
+                      <pre className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed">
+                        {tutorial.content}
+                      </pre>
+                    </div>
+                  }
+                >
                 <ReactMarkdown
                   components={{
                     h1: ({ children }) => (
@@ -242,9 +293,9 @@ export function TutorialReader({
                         {children}
                       </ol>
                     ),
-                    li: ({ children, ordered }) => (
-                      <li className={`text-gray-300 leading-relaxed flex items-start gap-3 ${ordered ? '' : ''}`}>
-                        <span className="text-amber-500 mt-1">•</span>
+                    li: ({ children }) => (
+                      <li className="text-gray-300 leading-relaxed flex items-start gap-3">
+                        <span className="text-amber-500 mt-1 flex-shrink-0">•</span>
                         <span>{children}</span>
                       </li>
                     ),
@@ -303,6 +354,7 @@ export function TutorialReader({
                 >
                   {tutorial.content}
                 </ReactMarkdown>
+                </MarkdownErrorBoundary>
               </article>
             </motion.div>
 
