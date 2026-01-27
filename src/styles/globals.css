@@ -58,7 +58,7 @@
     height: 100%;
     pointer-events: none;
     opacity: var(--noise-opacity);
-    z-index: 1000;
+    z-index: 40; /* Below modals and overlays (z-50+) */
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
 
@@ -68,22 +68,35 @@
     color: white;
   }
 
-  /* Custom scrollbar */
+  /* Custom scrollbar - Sleek design */
   ::-webkit-scrollbar {
-    @apply w-2 h-2;
+    width: 10px;
+    height: 10px;
   }
 
   ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, var(--aurora-cyan) 0%, var(--aurora-purple) 100%);
     border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--aurora-cyan);
+    background: linear-gradient(180deg, var(--aurora-cyan) 0%, #a78bfa 100%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--aurora-cyan) rgba(0, 0, 0, 0.3);
   }
 
   /* Focus styles */
@@ -691,4 +704,66 @@
 .font-loading {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+}
+
+/* ============================================
+   CELEBRATION CONFETTI SHAPES
+   ============================================ */
+
+/* Triangle confetti shape */
+.triangle-clip {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+/* Star confetti shape */
+.star-clip {
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+
+/* Celebration shimmer effect */
+@keyframes celebration-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-gold {
+  background: linear-gradient(
+    90deg,
+    rgba(251, 191, 36, 0.1) 0%,
+    rgba(251, 191, 36, 0.4) 50%,
+    rgba(251, 191, 36, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: celebration-shimmer 2s ease-in-out infinite;
+}
+
+/* Celebration glow pulse */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.3),
+                0 0 40px rgba(251, 191, 36, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(251, 191, 36, 0.5),
+                0 0 80px rgba(251, 191, 36, 0.2);
+  }
+}
+
+.glow-pulse-gold {
+  animation: glow-pulse 2s ease-in-out infinite;
 }
