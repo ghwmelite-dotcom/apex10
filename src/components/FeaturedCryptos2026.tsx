@@ -24,6 +24,7 @@ const FEATURED_CRYPTOS = [
     rank: 1,
     category: "Payments",
     featured: true,
+    url: "https://ripple.com/",
   },
   {
     id: 2,
@@ -41,6 +42,7 @@ const FEATURED_CRYPTOS = [
     rank: 2,
     category: "Exchange",
     featured: true,
+    url: "https://www.binance.com/",
   },
   {
     id: 3,
@@ -58,6 +60,7 @@ const FEATURED_CRYPTOS = [
     rank: 3,
     category: "Infrastructure",
     featured: false,
+    url: "https://chain.link/",
   },
   {
     id: 4,
@@ -75,6 +78,7 @@ const FEATURED_CRYPTOS = [
     rank: 4,
     category: "Blockchain",
     featured: false,
+    url: "https://tron.network/",
   },
   {
     id: 5,
@@ -92,6 +96,7 @@ const FEATURED_CRYPTOS = [
     rank: 5,
     category: "Community",
     featured: false,
+    url: "https://dogecoin.com/",
   },
   {
     id: 6,
@@ -109,6 +114,7 @@ const FEATURED_CRYPTOS = [
     rank: 6,
     category: "Security",
     emerging: true,
+    url: "https://s.technology/",
   },
   {
     id: 7,
@@ -126,13 +132,14 @@ const FEATURED_CRYPTOS = [
     rank: 7,
     category: "Gaming",
     emerging: true,
+    url: "https://metaspacechain.com/",
   },
   {
     id: 8,
     name: "FunHi",
     symbol: "FUNHI",
     tagline: "People-First Tokenization",
-    description: "Anti-rugpull platform built for transparency and accessibility",
+    description: "No-code anti-scam platform by Ray Youssef for Global South",
     icon: Gem,
     gradient: "from-[#10B981] to-[#34D399]",
     glowColor: "rgba(16, 185, 129, 0.4)",
@@ -143,13 +150,14 @@ const FEATURED_CRYPTOS = [
     rank: 8,
     category: "DeFi",
     emerging: true,
+    url: "https://noones.com/",
   },
   {
     id: 9,
     name: "AURUM",
     symbol: "AUR",
-    tagline: "Digital Asset Excellence",
-    description: "Next-generation digital asset management platform",
+    tagline: "AI-Powered Web3 Neobank",
+    description: "$12M funding at $100M valuation, led by Binance pioneer",
     icon: Crown,
     gradient: "from-[#FFD700] to-[#FFA500]",
     glowColor: "rgba(255, 215, 0, 0.4)",
@@ -160,13 +168,14 @@ const FEATURED_CRYPTOS = [
     rank: 9,
     category: "Platform",
     emerging: true,
+    url: "https://aurum-foundation.com/",
   },
   {
     id: 10,
     name: "BeatSwap",
-    symbol: "BEAT",
+    symbol: "BTX",
     tagline: "Music Meets Blockchain",
-    description: "Revolutionizing music industry with decentralized royalties",
+    description: "90%+ revenue to creators vs 12% industry avg via smart contracts",
     icon: Music,
     gradient: "from-[#00D4FF] to-[#00FFD1]",
     glowColor: "rgba(0, 212, 255, 0.4)",
@@ -177,6 +186,7 @@ const FEATURED_CRYPTOS = [
     rank: 10,
     category: "Entertainment",
     emerging: true,
+    url: "https://x.com/BeatXswap",
   },
 ];
 
@@ -219,13 +229,16 @@ function CryptoCard({ crypto, index }: { crypto: typeof FEATURED_CRYPTOS[0]; ind
   const Icon = crypto.icon;
 
   return (
-    <motion.div
+    <motion.a
+      href={crypto.url}
+      target="_blank"
+      rel="noopener noreferrer"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className="group relative"
+      className="group relative block"
     >
       <div
         className={`relative h-full p-5 rounded-2xl bg-bg-secondary/60 backdrop-blur-sm border ${crypto.borderColor} ${crypto.hoverBorder} transition-all duration-300 overflow-hidden`}
@@ -308,8 +321,8 @@ function CryptoCard({ crypto, index }: { crypto: typeof FEATURED_CRYPTOS[0]; ind
             className={`flex items-center gap-1 ${crypto.textColor} text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity`}
             whileHover={{ x: 4 }}
           >
-            <span>Learn More</span>
-            <ChevronRight className="w-4 h-4" />
+            <span>Visit Platform</span>
+            <ExternalLink className="w-4 h-4" />
           </motion.div>
         </div>
 
@@ -321,7 +334,7 @@ function CryptoCard({ crypto, index }: { crypto: typeof FEATURED_CRYPTOS[0]; ind
           }}
         />
       </div>
-    </motion.div>
+    </motion.a>
   );
 }
 
@@ -383,17 +396,20 @@ export function FeaturedCryptos2026() {
         {/* Featured heroes (top 2) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {FEATURED_CRYPTOS.slice(0, 2).map((crypto, index) => (
-            <motion.div
+            <motion.a
               key={crypto.id}
+              href={crypto.url}
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="group relative"
+              className="group relative block"
             >
               <div
-                className={`relative p-6 rounded-2xl bg-gradient-to-br ${crypto.gradient} overflow-hidden`}
+                className={`relative p-6 rounded-2xl bg-gradient-to-br ${crypto.gradient} overflow-hidden cursor-pointer`}
                 style={{ boxShadow: `0 20px 60px ${crypto.glowColor}` }}
               >
                 {/* Animated shine */}
@@ -408,7 +424,7 @@ export function FeaturedCryptos2026() {
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-2xl bg-black/20 backdrop-blur-sm flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-2xl bg-black/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <crypto.icon className="w-8 h-8 text-white" />
                       </div>
                       <div>
@@ -436,16 +452,16 @@ export function FeaturedCryptos2026() {
                       {crypto.category}
                     </span>
                     <motion.div
-                      className="flex items-center gap-2 text-white font-medium"
+                      className="flex items-center gap-2 text-white font-medium group-hover:gap-3 transition-all"
                       whileHover={{ x: 4 }}
                     >
-                      <span>Explore</span>
-                      <ArrowUpRight className="w-5 h-5" />
+                      <span>Visit Platform</span>
+                      <ExternalLink className="w-5 h-5" />
                     </motion.div>
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </motion.a>
           ))}
         </div>
 
