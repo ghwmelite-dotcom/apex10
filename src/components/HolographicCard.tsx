@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback, useMemo, memo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -8,7 +8,17 @@ interface HolographicCardProps {
   intensity?: "low" | "medium" | "high";
 }
 
-export function HolographicCard({
+// Memoize intensity config outside component to prevent recreation
+const intensityMap = {
+  low: { rotate: 5, glare: 0.1 },
+  medium: { rotate: 10, glare: 0.2 },
+  high: { rotate: 15, glare: 0.3 },
+} as const;
+
+// Static array to avoid recreation on each render
+const sparkleIndices = [0, 1, 2, 3, 4, 5];
+
+export const HolographicCard = memo(function HolographicCard({
   children,
   className,
   intensity = "medium",
@@ -18,15 +28,10 @@ export function HolographicCard({
   const [rotateY, setRotateY] = useState(0);
   const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
 
-  const intensityMap = {
-    low: { rotate: 5, glare: 0.1 },
-    medium: { rotate: 10, glare: 0.2 },
-    high: { rotate: 15, glare: 0.3 },
-  };
-
   const { rotate: maxRotate, glare: glareOpacity } = intensityMap[intensity];
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Memoize handlers to prevent recreation on each render
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
 
     const rect = cardRef.current.getBoundingClientRect();
@@ -46,13 +51,13 @@ export function HolographicCard({
     const glareX = ((e.clientX - rect.left) / rect.width) * 100;
     const glareY = ((e.clientY - rect.top) / rect.height) * 100;
     setGlarePosition({ x: glareX, y: glareY });
-  };
+  }, [maxRotate]);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setRotateX(0);
     setRotateY(0);
     setGlarePosition({ x: 50, y: 50 });
-  };
+  }, []);
 
   return (
     <motion.div
@@ -104,9 +109,9 @@ export function HolographicCard({
         }}
       />
 
-      {/* Sparkle particles */}
+      {/* Sparkle particles - array created once */}
       <div className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden">
-        {[...Array(6)].map((_, i) => (
+        {sparkleIndices.map((i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full opacity-0 group-hover:opacity-100"
@@ -149,7 +154,7 @@ export function HolographicCard({
       `}</style>
     </motion.div>
   );
-}
+});
 
 // Shimmer border variant
 export function ShimmerBorderCard({

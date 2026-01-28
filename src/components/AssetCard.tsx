@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
@@ -14,7 +15,8 @@ interface AssetCardProps {
   index?: number;
 }
 
-export function AssetCard({ asset, price, index = 0 }: AssetCardProps) {
+// Memoize to prevent unnecessary re-renders when parent updates
+export const AssetCard = memo(function AssetCard({ asset, price, index = 0 }: AssetCardProps) {
   const riskColors = {
     low: "success",
     medium: "warning",
@@ -88,4 +90,13 @@ export function AssetCard({ asset, price, index = 0 }: AssetCardProps) {
       </Link>
     </motion.div>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison - only re-render if asset or price actually changed
+  return (
+    prevProps.asset.id === nextProps.asset.id &&
+    prevProps.asset.overallScore === nextProps.asset.overallScore &&
+    prevProps.price?.priceUsd === nextProps.price?.priceUsd &&
+    prevProps.price?.change24h === nextProps.price?.change24h &&
+    prevProps.index === nextProps.index
+  );
+});

@@ -9,7 +9,6 @@ import { SplashScreen } from "./components/SplashScreen";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { OfflineIndicator } from "./components/OfflineIndicator";
 import { PageLoader } from "./components/ui/PageLoader";
-import { WalletProvider } from "./components/web3/WalletProvider";
 
 // Lazy load pages for code splitting
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -19,7 +18,8 @@ const LearnCenter = lazy(() => import("./pages/LearnCenter"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ContractScanner = lazy(() => import("./pages/ContractScanner"));
-const WalletGuardian = lazy(() => import("./pages/WalletGuardian"));
+// WalletGuardianPage includes its own WalletProvider - keeps 347KB web3 bundle lazy loaded
+const WalletGuardianPage = lazy(() => import("./pages/WalletGuardianPage"));
 const VerifyPage = lazy(() => import("./pages/VerifyPage"));
 const NewsHub = lazy(() => import("./pages/NewsHub"));
 const XRPHub = lazy(() => import("./pages/XRPHub"));
@@ -51,10 +51,9 @@ export default function App() {
   }, []);
 
   return (
-    <WalletProvider>
-      <TimeAwareProvider>
-        <AchievementProvider>
-          <AmbientProvider>
+    <TimeAwareProvider>
+      <AchievementProvider>
+        <AmbientProvider>
           {/* Splash Screen */}
           <AnimatePresence>
             {showSplash && (
@@ -91,7 +90,7 @@ export default function App() {
                         <Route path="/security" element={<SecurityHub />} />
                         <Route path="/learn" element={<LearnCenter />} />
                         <Route path="/scanner" element={<ContractScanner />} />
-                        <Route path="/wallet-guardian" element={<WalletGuardian />} />
+                        <Route path="/wallet-guardian" element={<WalletGuardianPage />} />
                         <Route path="/news" element={<NewsHub />} />
                         <Route path="/aurum" element={<AurumArticle />} />
                         <Route path="*" element={<NotFound />} />
@@ -105,9 +104,8 @@ export default function App() {
 
           {/* PWA Install Prompt */}
           <PWAInstallPrompt />
-          </AmbientProvider>
-        </AchievementProvider>
-      </TimeAwareProvider>
-    </WalletProvider>
+        </AmbientProvider>
+      </AchievementProvider>
+    </TimeAwareProvider>
   );
 }

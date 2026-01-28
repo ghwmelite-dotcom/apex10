@@ -14,6 +14,14 @@ export default defineConfig({
       manifest: false, // Use external manifest.json
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        // Exclude large vendor chunks from precaching (loaded on demand)
+        globIgnores: [
+          "**/vendor-web3-*.js",
+          "**/vendor-three-*.js",
+          "**/vendor-particles-*.js",
+        ],
+        // Increase limit for other assets
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3 MB
         navigateFallback: null,
         runtimeCaching: [
           {
@@ -96,7 +104,8 @@ export default defineConfig({
   },
   build: {
     minify: "esbuild",
-    sourcemap: true,
+    // Disable source maps in production for smaller bundles
+    sourcemap: process.env.NODE_ENV !== "production",
     target: "esnext",
     rollupOptions: {
       output: {
@@ -109,11 +118,23 @@ export default defineConfig({
           // Three.js - lazy loaded, separate chunk
           if (id.includes("three") || id.includes("@react-three")) return "vendor-three";
 
-          // Web3 libraries - separate chunk for wallet pages
-          if (id.includes("wagmi") || id.includes("viem") || id.includes("@wagmi") || id.includes("@walletconnect")) return "vendor-web3";
+          // Web3 libraries - separate chunk for wallet pages only
+          if (
+            id.includes("wagmi") ||
+            id.includes("viem") ||
+            id.includes("@wagmi") ||
+            id.includes("@walletconnect") ||
+            id.includes("@rainbow-me/rainbowkit")
+          ) return "vendor-web3";
 
           // Animation - can be deferred
           if (id.includes("framer-motion")) return "vendor-animation";
+
+          // Particles - separate chunk for optional visual effects
+          if (id.includes("@tsparticles") || id.includes("tsparticles")) return "vendor-particles";
+
+          // HTML to Image - only needed for certificate generation
+          if (id.includes("html-to-image")) return "vendor-html-to-image";
 
           // TanStack Query
           if (id.includes("@tanstack")) return "vendor-query";

@@ -1,4 +1,4 @@
-import { useRef, useState, ReactNode, MouseEvent } from "react";
+import { useRef, useState, ReactNode, MouseEvent, useCallback, memo, useMemo } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,10 @@ interface TiltCardProps {
   perspective?: number;
 }
 
-export function TiltCard({
+// Spring config moved outside to prevent recreation
+const springConfig = { stiffness: 300, damping: 30 };
+
+export const TiltCard = memo(function TiltCard({
   children,
   className,
   glareEnabled = true,
@@ -25,7 +28,6 @@ export function TiltCard({
   const y = useMotionValue(0);
 
   // Spring physics for smooth movement
-  const springConfig = { stiffness: 300, damping: 30 };
   const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [tiltAmount, -tiltAmount]), springConfig);
   const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-tiltAmount, tiltAmount]), springConfig);
 
@@ -33,7 +35,8 @@ export function TiltCard({
   const glareX = useTransform(x, [-0.5, 0.5], [0, 100]);
   const glareY = useTransform(y, [-0.5, 0.5], [0, 100]);
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+  // Memoized handlers to prevent recreation
+  const handleMouseMove = useCallback((e: MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
 
     const rect = cardRef.current.getBoundingClientRect();
@@ -42,17 +45,17 @@ export function TiltCard({
 
     x.set((e.clientX - centerX) / rect.width);
     y.set((e.clientY - centerY) / rect.height);
-  };
+  }, [x, y]);
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = useCallback(() => {
     setIsHovered(true);
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setIsHovered(false);
     x.set(0);
     y.set(0);
-  };
+  }, [x, y]);
 
   return (
     <motion.div
@@ -112,4 +115,4 @@ export function TiltCard({
       </motion.div>
     </motion.div>
   );
-}
+});

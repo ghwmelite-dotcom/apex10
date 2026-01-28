@@ -1,4 +1,4 @@
-import { useRef, ReactNode, MouseEvent, ButtonHTMLAttributes } from "react";
+import { useRef, ReactNode, MouseEvent, ButtonHTMLAttributes, useCallback, memo } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,10 @@ interface MagneticButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElemen
   disabled?: boolean;
 }
 
-export function MagneticButton({
+// Spring config moved outside to prevent recreation
+const springConfig = { stiffness: 400, damping: 25 };
+
+export const MagneticButton = memo(function MagneticButton({
   children,
   className,
   strength = 0.3,
@@ -23,11 +26,11 @@ export function MagneticButton({
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  const springConfig = { stiffness: 400, damping: 25 };
   const springX = useSpring(x, springConfig);
   const springY = useSpring(y, springConfig);
 
-  const handleMouseMove = (e: MouseEvent<HTMLButtonElement>) => {
+  // Memoized handlers
+  const handleMouseMove = useCallback((e: MouseEvent<HTMLButtonElement>) => {
     if (!buttonRef.current || disabled) return;
 
     const rect = buttonRef.current.getBoundingClientRect();
@@ -39,12 +42,12 @@ export function MagneticButton({
 
     x.set(deltaX);
     y.set(deltaY);
-  };
+  }, [disabled, strength, x, y]);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     x.set(0);
     y.set(0);
-  };
+  }, [x, y]);
 
   return (
     <motion.button
@@ -68,7 +71,7 @@ export function MagneticButton({
       {children}
     </motion.button>
   );
-}
+});
 
 // Preset magnetic button variants
 export function MagneticAuroraButton({

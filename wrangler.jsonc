@@ -5,6 +5,18 @@
   "compatibility_date": "2024-11-01",
   "compatibility_flags": ["nodejs_compat"],
 
+  // Custom domain routes
+  "routes": [
+    {
+      "pattern": "a10cryptodiscovery.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.a10cryptodiscovery.com",
+      "custom_domain": true
+    }
+  ],
+
   // Assets configuration for static files
   "assets": {
     "directory": "./dist/client",

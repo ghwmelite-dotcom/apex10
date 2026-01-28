@@ -47,7 +47,12 @@
       "WebFetch(domain:pro.coincap.io)",
       "WebSearch",
       "WebFetch(domain:coincapapi.mintlify.app)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(git restore:*)",
+      "Bash(npm update:*)",
+      "mcp__claude_ai_Cloudflare_Developer_Platform__search_cloudflare_documentation",
+      "WebFetch(domain:www.ibtimes.com)",
+      "Bash(wrangler deploy:*)"
     ]
   }
 }
