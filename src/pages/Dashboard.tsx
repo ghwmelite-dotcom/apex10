@@ -6,6 +6,9 @@ import { Card, SkeletonCard, SkeletonAssetRow } from "@/components/ui";
 // XRP Components
 import { XRPHero, XRPDeepDive, EssentialNine } from "@/components/xrp";
 
+// Featured Cryptos 2026
+import { FeaturedCryptos2026 } from "@/components/FeaturedCryptos2026";
+
 // Only lazy load truly heavy components (Three.js, WebGL)
 const OrbitalView = lazy(() => import("@/components/OrbitalView"));
 
@@ -54,6 +57,11 @@ export default function Dashboard() {
       {/* XRP Deep Dive Section */}
       <FadeIn delay={0.1}>
         <XRPDeepDive />
+      </FadeIn>
+
+      {/* Featured Cryptos 2026 - IBTimes Top 10 */}
+      <FadeIn delay={0.125}>
+        <FeaturedCryptos2026 />
       </FadeIn>
 
       {/* Essential Nine Section */}
