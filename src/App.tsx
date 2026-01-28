@@ -24,6 +24,7 @@ const VerifyPage = lazy(() => import("./pages/VerifyPage"));
 const NewsHub = lazy(() => import("./pages/NewsHub"));
 const XRPHub = lazy(() => import("./pages/XRPHub"));
 const Rankings = lazy(() => import("./pages/Rankings"));
+const AurumArticle = lazy(() => import("./pages/AurumArticle"));
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -92,6 +93,7 @@ export default function App() {
                         <Route path="/scanner" element={<ContractScanner />} />
                         <Route path="/wallet-guardian" element={<WalletGuardian />} />
                         <Route path="/news" element={<NewsHub />} />
+                        <Route path="/aurum" element={<AurumArticle />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </AnimatePresence>

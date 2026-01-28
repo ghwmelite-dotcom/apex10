@@ -767,3 +767,82 @@
 .glow-pulse-gold {
   animation: glow-pulse 2s ease-in-out infinite;
 }
+
+/* ============================================
+   CUSTOM RANGE SLIDER - AURORA THEME
+   ============================================ */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.slider-aurora {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.slider-aurora::-webkit-slider-runnable-track {
+  height: 8px;
+  background: linear-gradient(90deg, var(--aurora-cyan) 0%, var(--aurora-purple) 100%);
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 255, 209, 0.3);
+}
+
+.slider-aurora::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--aurora-cyan), var(--aurora-blue));
+  border-radius: 50%;
+  margin-top: -8px;
+  box-shadow: 0 0 15px rgba(0, 255, 209, 0.5),
+              0 0 30px rgba(0, 255, 209, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.slider-aurora::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 255, 209, 0.7),
+              0 0 40px rgba(0, 255, 209, 0.3);
+}
+
+/* Firefox */
+.slider-aurora::-moz-range-track {
+  height: 8px;
+  background: linear-gradient(90deg, var(--aurora-cyan) 0%, var(--aurora-purple) 100%);
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 255, 209, 0.3);
+}
+
+.slider-aurora::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--aurora-cyan), var(--aurora-blue));
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 255, 209, 0.5),
+              0 0 30px rgba(0, 255, 209, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.slider-aurora::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 255, 209, 0.7),
+              0 0 40px rgba(0, 255, 209, 0.3);
+}
+
+/* Focus state */
+.slider-aurora:focus {
+  outline: none;
+}
+
+.slider-aurora:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(0, 255, 209, 0.2),
+              0 0 20px rgba(0, 255, 209, 0.7);
+}
+
+.slider-aurora:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 4px rgba(0, 255, 209, 0.2),
+              0 0 20px rgba(0, 255, 209, 0.7);
+}
