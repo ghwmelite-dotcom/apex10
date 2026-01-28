@@ -9,6 +9,9 @@ import { XRPHero, XRPDeepDive, EssentialNine } from "@/components/xrp";
 // Featured Cryptos 2026
 import { FeaturedCryptos2026 } from "@/components/FeaturedCryptos2026";
 
+// AURUM Spotlight
+import { AurumSpotlight } from "@/components/AurumSpotlight";
+
 // Only lazy load truly heavy components (Three.js, WebGL)
 const OrbitalView = lazy(() => import("@/components/OrbitalView"));
 
@@ -62,6 +65,11 @@ export default function Dashboard() {
       {/* Featured Cryptos 2026 - IBTimes Top 10 */}
       <FadeIn delay={0.125}>
         <FeaturedCryptos2026 />
+      </FadeIn>
+
+      {/* AURUM Spotlight - Investment Opportunity */}
+      <FadeIn delay={0.135}>
+        <AurumSpotlight />
       </FadeIn>
 
       {/* Essential Nine Section */}
