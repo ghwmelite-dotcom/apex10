@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Edge-Native Crypto Asset Discovery Platform",
   "type": "module",
+  "sideEffects": [
+    "*.css",
+    "src/lib/sounds.ts"
+  ],
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
@@ -29,7 +33,6 @@
     "drizzle-orm": "^0.36.0",
     "framer-motion": "^11.11.0",
     "hono": "^4.6.0",
-    "howler": "^2.2.4",
     "html-to-image": "^1.11.13",
     "lucide-react": "^0.460.0",
     "react": "^18.3.1",

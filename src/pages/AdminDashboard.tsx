@@ -118,6 +118,7 @@ function AuthScreen({
                 type="button"
                 onClick={() => setShowKey(!showKey)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-text-muted hover:text-text-primary transition-colors"
+                aria-label={showKey ? "Hide API key" : "Show API key"}
               >
                 {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -351,6 +352,7 @@ function Dashboard({
                 onClick={fetchData}
                 className="p-2 rounded-lg hover:bg-bg-secondary text-text-secondary hover:text-text-primary transition-colors"
                 title="Refresh"
+                aria-label="Refresh dashboard data"
               >
                 <RefreshCw className="w-5 h-5" />
               </button>

@@ -107,7 +107,18 @@ export default defineConfig({
     // Disable source maps in production for smaller bundles
     sourcemap: process.env.NODE_ENV !== "production",
     target: "esnext",
+    // Critical CSS inline threshold - inline small CSS files for faster FCP
+    cssCodeSplit: true,
+    assetsInlineLimit: 4096, // Inline assets < 4KB as base64
+    chunkSizeWarningLimit: 600, // Warn on chunks > 600KB
     rollupOptions: {
+      treeshake: {
+        preset: "recommended",
+        moduleSideEffects: (id) => {
+          // Keep side effects for CSS and sounds
+          return id.includes(".css") || id.includes("sounds.ts");
+        },
+      },
       output: {
         manualChunks(id) {
           // React core - smallest possible

@@ -193,7 +193,11 @@ export function LearningPathGenerator() {
                 How much time can you dedicate daily?
               </h3>
               <div className="flex items-center gap-4">
+                <label htmlFor="time-per-day" className="sr-only">
+                  Daily time commitment in minutes
+                </label>
                 <input
+                  id="time-per-day"
                   type="range"
                   min="5"
                   max="60"

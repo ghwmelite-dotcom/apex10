@@ -407,6 +407,7 @@ export function CertificateModal({ data, isOpen, onClose }: CertificateProps) {
             <button
               onClick={onClose}
               className="absolute top-4 right-4 z-20 p-2 rounded-lg hover:bg-bg-tertiary text-text-muted hover:text-text-primary transition-colors"
+              aria-label="Close certificate"
             >
               <X className="w-5 h-5" />
             </button>

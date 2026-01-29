@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, startTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Users,
@@ -109,28 +109,40 @@ export function CommunityPulse() {
   const [stats, setStats] = useState<CommunityStats>(generateStats);
   const [isLive, setIsLive] = useState(true);
 
-  // Generate initial activities
+  // Generate initial activities - defer to idle time
   useEffect(() => {
-    const initial = Array.from({ length: 5 }, generateActivity);
-    setActivities(initial);
+    if (typeof requestIdleCallback !== 'undefined') {
+      requestIdleCallback(() => {
+        const initial = Array.from({ length: 5 }, generateActivity);
+        setActivities(initial);
+      });
+    } else {
+      setTimeout(() => {
+        const initial = Array.from({ length: 5 }, generateActivity);
+        setActivities(initial);
+      }, 0);
+    }
   }, []);
 
-  // Simulate live activity
+  // Simulate live activity - increased interval to reduce frequency
   useEffect(() => {
     if (!isLive) return;
 
     const interval = setInterval(() => {
-      const newActivity = generateActivity();
-      setActivities((prev) => [newActivity, ...prev.slice(0, 9)]);
+      // Use startTransition for non-urgent UI updates
+      startTransition(() => {
+        const newActivity = generateActivity();
+        setActivities((prev) => [newActivity, ...prev.slice(0, 9)]);
 
-      // Randomly update stats
-      setStats((prev) => ({
-        activeUsers: prev.activeUsers + Math.floor(Math.random() * 5) - 2,
-        lessonsCompleted: prev.lessonsCompleted + Math.floor(Math.random() * 3),
-        discussionsPosts: prev.discussionsPosts + (Math.random() > 0.7 ? 1 : 0),
-        securityScore: Math.min(100, Math.max(80, prev.securityScore + (Math.random() > 0.5 ? 0.1 : -0.1))),
-      }));
-    }, 3000 + Math.random() * 2000);
+        // Randomly update stats
+        setStats((prev) => ({
+          activeUsers: prev.activeUsers + Math.floor(Math.random() * 5) - 2,
+          lessonsCompleted: prev.lessonsCompleted + Math.floor(Math.random() * 3),
+          discussionsPosts: prev.discussionsPosts + (Math.random() > 0.7 ? 1 : 0),
+          securityScore: Math.min(100, Math.max(80, prev.securityScore + (Math.random() > 0.5 ? 0.1 : -0.1))),
+        }));
+      });
+    }, 4000 + Math.random() * 2000); // Increased from 3-5s to 4-6s
 
     return () => clearInterval(interval);
   }, [isLive]);
@@ -298,11 +310,14 @@ export function CommunityPulseMini() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setStats((prev) => ({
-        users: prev.users + Math.floor(Math.random() * 5) - 2,
-        activity: prev.activity + Math.floor(Math.random() * 3),
-      }));
-    }, 5000);
+      // Use startTransition for mini stats updates
+      startTransition(() => {
+        setStats((prev) => ({
+          users: prev.users + Math.floor(Math.random() * 5) - 2,
+          activity: prev.activity + Math.floor(Math.random() * 3),
+        }));
+      });
+    }, 6000); // Increased from 5s to 6s
 
     return () => clearInterval(interval);
   }, []);

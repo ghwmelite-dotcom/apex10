@@ -204,6 +204,7 @@ function AmbientOverlay() {
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowSettings(!showSettings)}
           className="p-3 rounded-xl bg-bg-secondary/70 backdrop-blur-sm border border-border-default text-text-muted hover:text-text-primary"
+          aria-label="Toggle ambient mode settings"
         >
           <Settings className="w-5 h-5" />
         </motion.button>
@@ -212,6 +213,7 @@ function AmbientOverlay() {
           whileTap={{ scale: 0.9 }}
           onClick={() => setAmbient(false)}
           className="p-3 rounded-xl bg-bg-secondary/70 backdrop-blur-sm border border-nova-red/50 text-nova-red hover:border-nova-red"
+          aria-label="Exit ambient mode"
         >
           <X className="w-5 h-5" />
         </motion.button>

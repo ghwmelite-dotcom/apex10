@@ -60,10 +60,11 @@ function RuleOf72Calculator() {
           {/* Inputs */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">
+              <label htmlFor="monthly-return-rate" className="block text-sm font-medium text-text-secondary mb-2">
                 Monthly Return Rate: <span className="text-aurora-cyan">{rate}%</span>
               </label>
               <input
+                id="monthly-return-rate"
                 type="range"
                 min="1"
                 max="20"
@@ -79,10 +80,11 @@ function RuleOf72Calculator() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">
+              <label htmlFor="initial-investment" className="block text-sm font-medium text-text-secondary mb-2">
                 Initial Investment (USDT)
               </label>
               <input
+                id="initial-investment"
                 type="number"
                 value={principal}
                 onChange={(e) => setPrincipal(parseInt(e.target.value) || 0)}

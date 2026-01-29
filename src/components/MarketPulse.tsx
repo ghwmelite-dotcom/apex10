@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, startTransition } from "react";
 import { motion } from "framer-motion";
 import { Activity, TrendingUp, TrendingDown } from "lucide-react";
 import { usePrices } from "@/hooks/useAssets";
@@ -20,9 +20,9 @@ export function MarketPulse({
   const [sentiment, setSentiment] = useState<"bullish" | "bearish" | "neutral">("neutral");
   const [waveData, setWaveData] = useState<number[]>([]);
 
-  // Calculate market pulse from price changes
-  useEffect(() => {
-    if (!prices) return;
+  // Memoize price calculations to prevent blocking
+  const marketMetrics = useMemo(() => {
+    if (!prices) return null;
 
     const changes = Object.values(prices).map((p) => Math.abs(p.change24h));
     const avgVolatility = changes.reduce((a, b) => a + b, 0) / changes.length;
@@ -30,26 +30,44 @@ export function MarketPulse({
 
     // BPM based on volatility (40-120 range)
     const calculatedBpm = Math.min(120, Math.max(40, 60 + avgVolatility * 3));
-    setBpm(Math.round(calculatedBpm));
 
     // Sentiment based on average change
-    if (avgChange > 1) setSentiment("bullish");
-    else if (avgChange < -1) setSentiment("bearish");
-    else setSentiment("neutral");
+    let newSentiment: "bullish" | "bearish" | "neutral" = "neutral";
+    if (avgChange > 1) newSentiment = "bullish";
+    else if (avgChange < -1) newSentiment = "bearish";
+
+    return {
+      bpm: Math.round(calculatedBpm),
+      sentiment: newSentiment,
+    };
   }, [prices]);
 
-  // Generate waveform data
+  // Update state using startTransition for non-urgent updates
+  useEffect(() => {
+    if (!marketMetrics) return;
+
+    startTransition(() => {
+      setBpm(marketMetrics.bpm);
+      setSentiment(marketMetrics.sentiment);
+    });
+  }, [marketMetrics]);
+
+  // Generate waveform data - increased interval from 50ms to 200ms to reduce TBT
+  // This reduces updates from 20fps to 5fps which is still smooth enough for visualization
   useEffect(() => {
     const interval = setInterval(() => {
-      setWaveData((prev) => {
-        const newData = [...prev.slice(-29)];
-        // Add new data point based on BPM
-        const amplitude = (bpm - 40) / 80; // 0-1 range
-        const noise = Math.random() * 0.3;
-        newData.push(0.5 + amplitude * 0.4 * Math.sin(Date.now() / 200) + noise * 0.2);
-        return newData;
+      // Use startTransition for low-priority visual updates
+      startTransition(() => {
+        setWaveData((prev) => {
+          const newData = [...prev.slice(-29)];
+          // Add new data point based on BPM
+          const amplitude = (bpm - 40) / 80; // 0-1 range
+          const noise = Math.random() * 0.3;
+          newData.push(0.5 + amplitude * 0.4 * Math.sin(Date.now() / 200) + noise * 0.2);
+          return newData;
+        });
       });
-    }, 50);
+    }, 200); // Changed from 50ms to 200ms (4x reduction in updates)
 
     return () => clearInterval(interval);
   }, [bpm]);

@@ -16,7 +16,11 @@ const queryClient = new QueryClient({
   },
 });
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+// Mark app as hydrated to remove initial loader (FCP optimization)
+const rootElement = document.getElementById("root")!;
+rootElement.classList.add("hydrated");
+
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>

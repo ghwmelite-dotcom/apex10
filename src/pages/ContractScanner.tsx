@@ -567,7 +567,11 @@ export default function ContractScanner() {
 
               {/* Address input */}
               <div className="flex-1 relative">
+                <label htmlFor="contract-address" className="sr-only">
+                  Contract address
+                </label>
                 <input
+                  id="contract-address"
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}

@@ -64,7 +64,7 @@ export default {
         text: {
           primary: "#FFFFFF",
           secondary: "#E2E8F0",
-          muted: "#94A3B8",
+          muted: "#A1B0C9",  // Improved from #94A3B8 for better contrast (WCAG AA compliant)
           disabled: "#475569",
         },
 

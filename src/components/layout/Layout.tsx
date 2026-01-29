@@ -2,11 +2,11 @@ import { ReactNode, createContext, useContext, useMemo, lazy, Suspense } from "r
 import { motion } from "framer-motion";
 import Header from "./Header";
 import Footer from "./Footer";
-import { useDiscoveryMode } from "../DiscoveryMode";
 import { CustomCursor } from "../CustomCursor";
 import { ScrollProgress } from "../ScrollAnimations";
 import { useCelebration } from "../Confetti";
 import { useSound } from "@/lib/sounds";
+import { useDiscoveryMode } from "../useDiscoveryMode";
 
 // Lazy load heavy components to reduce initial bundle size (~170 KB savings)
 const CommandPalette = lazy(() => import("../CommandPalette").then(m => ({ default: m.CommandPalette })));

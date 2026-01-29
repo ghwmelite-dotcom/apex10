@@ -15,17 +15,31 @@ export function ParticleBackground({
   const [init, setInit] = useState(false);
 
   useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setInit(true);
-    });
+    // Defer particle initialization to idle time to reduce TBT
+    if (typeof requestIdleCallback !== 'undefined') {
+      requestIdleCallback(() => {
+        initParticlesEngine(async (engine) => {
+          await loadSlim(engine);
+        }).then(() => {
+          setInit(true);
+        });
+      }, { timeout: 2000 });
+    } else {
+      // Fallback: defer with setTimeout
+      setTimeout(() => {
+        initParticlesEngine(async (engine) => {
+          await loadSlim(engine);
+        }).then(() => {
+          setInit(true);
+        });
+      }, 100);
+    }
   }, []);
 
   const options: ISourceOptions = useMemo(() => {
     const baseConfig: ISourceOptions = {
       fullScreen: false,
-      fpsLimit: 60,
+      fpsLimit: 30, // Reduced from 60 to 30 FPS to decrease CPU load
       particles: {
         number: {
           value: variant === "energetic" ? 80 : variant === "calm" ? 30 : 50,

@@ -52,13 +52,11 @@ export default function Dashboard() {
       {/* Floating orbs background */}
       <FloatingOrbs />
 
-      {/* XRP Hero Section - Above the fold */}
-      <FadeIn>
-        <XRPHero price={xrpPrice} isLoading={!prices} />
-      </FadeIn>
+      {/* XRP Hero Section - Above the fold - No animation delay for LCP */}
+      <XRPHero price={xrpPrice} isLoading={!prices} />
 
-      {/* XRP Deep Dive Section */}
-      <FadeIn delay={0.1}>
+      {/* XRP Deep Dive Section - Reduced delay */}
+      <FadeIn delay={0.05}>
         <XRPDeepDive />
       </FadeIn>
 

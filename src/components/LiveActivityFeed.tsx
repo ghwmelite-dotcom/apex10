@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ArrowDownRight, Zap } from "lucide-react";
 
@@ -35,19 +35,31 @@ export function LiveActivityFeed() {
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    // Generate initial activities
-    const initial = Array.from({ length: 5 }, generateActivity);
-    setActivities(initial);
+    // Defer initial activities generation using requestIdleCallback
+    if (typeof requestIdleCallback !== 'undefined') {
+      requestIdleCallback(() => {
+        const initial = Array.from({ length: 5 }, generateActivity);
+        setActivities(initial);
+      });
+    } else {
+      setTimeout(() => {
+        const initial = Array.from({ length: 5 }, generateActivity);
+        setActivities(initial);
+      }, 0);
+    }
 
-    // Add new activity every 2-4 seconds
+    // Add new activity every 3-5 seconds (increased from 2-4s to reduce frequency)
     const interval = setInterval(() => {
       if (!isPaused) {
-        setActivities((prev) => {
-          const newActivity = generateActivity();
-          return [newActivity, ...prev.slice(0, 9)];
+        // Use startTransition for non-urgent updates
+        startTransition(() => {
+          setActivities((prev) => {
+            const newActivity = generateActivity();
+            return [newActivity, ...prev.slice(0, 9)];
+          });
         });
       }
-    }, 2000 + Math.random() * 2000);
+    }, 3000 + Math.random() * 2000);
 
     return () => clearInterval(interval);
   }, [isPaused]);
@@ -121,11 +133,24 @@ export function LiveActivityTicker() {
   const [activity, setActivity] = useState<Activity | null>(null);
 
   useEffect(() => {
+    // Defer initial generation
+    if (typeof requestIdleCallback !== 'undefined') {
+      requestIdleCallback(() => {
+        setActivity(generateActivity());
+      });
+    } else {
+      setTimeout(() => {
+        setActivity(generateActivity());
+      }, 0);
+    }
+
     const interval = setInterval(() => {
-      setActivity(generateActivity());
+      // Use startTransition for ticker updates
+      startTransition(() => {
+        setActivity(generateActivity());
+      });
     }, 3000);
 
-    setActivity(generateActivity());
     return () => clearInterval(interval);
   }, []);
 

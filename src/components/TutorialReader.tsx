@@ -1,6 +1,8 @@
-import { useRef, useEffect, useState, useMemo, useCallback } from "react";
-import ReactMarkdown from "react-markdown";
+import { useRef, useEffect, useState, useMemo, useCallback, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Lazy load ReactMarkdown to reduce initial bundle size
+const ReactMarkdown = lazy(() => import("react-markdown"));
 import {
   X, Clock, Monitor, Smartphone, Shield, ArrowRightLeft,
   ArrowUpRight, Sparkles, Lock, ChevronUp, CheckCircle2,
@@ -332,7 +334,8 @@ function StepCard({
             <div className="px-5 pb-5 pt-0">
               <div className="pl-12 border-l-2 border-white/[0.06] ml-4">
                 <div className="pl-6">
-                  <ReactMarkdown
+                  <Suspense fallback={<div className="animate-pulse text-gray-400">Loading content...</div>}>
+                    <ReactMarkdown
                     components={{
                       h3: ({ children }) => (
                         <h4 className="text-base font-semibold text-amber-400 mt-6 mb-3 flex items-center gap-2 first:mt-0">
@@ -444,6 +447,7 @@ function StepCard({
                   >
                     {section.content}
                   </ReactMarkdown>
+                  </Suspense>
 
                   {/* Mark as complete button */}
                   <div className="mt-6 pt-4 border-t border-white/[0.06]">

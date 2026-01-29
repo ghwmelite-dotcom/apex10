@@ -362,6 +362,7 @@ export function FocusMode({
                   onClick={onClose}
                   className="p-2 rounded-lg hover:bg-red-500/20 text-text-secondary hover:text-red-400 transition-colors"
                   title="Exit Focus Mode (ESC)"
+                  aria-label="Exit Focus Mode"
                 >
                   <X className="w-4 h-4" />
                 </button>

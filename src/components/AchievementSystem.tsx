@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from "react";
+import { useState, useEffect, createContext, useContext, ReactNode, useMemo, startTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Trophy,
@@ -150,7 +150,10 @@ function getLevelFromXP(xp: number): { level: number; currentXP: number; require
   let level = 1;
   let totalXP = 0;
 
-  while (true) {
+  // Add safety limit to prevent infinite loop blocking the main thread
+  const MAX_LEVEL = 100;
+
+  while (level < MAX_LEVEL) {
     const required = getXPForLevel(level);
     if (totalXP + required > xp) {
       return {
@@ -162,6 +165,13 @@ function getLevelFromXP(xp: number): { level: number; currentXP: number; require
     totalXP += required;
     level++;
   }
+
+  // Fallback for max level
+  return {
+    level: MAX_LEVEL,
+    currentXP: xp - totalXP,
+    requiredXP: getXPForLevel(MAX_LEVEL),
+  };
 }
 
 // Context for achievement system
@@ -242,20 +252,43 @@ export function AchievementProvider({ children }: AchievementProviderProps) {
     }
   }, []);
 
-  const levelInfo = getLevelFromXP(xp);
+  // Memoize expensive level calculation
+  const levelInfo = useMemo(() => getLevelFromXP(xp), [xp]);
 
   const addXP = (amount: number) => {
-    const prevLevel = getLevelFromXP(xp).level;
-    setXP((prev) => prev + amount);
-    const newLevel = getLevelFromXP(xp + amount).level;
+    const prevLevel = levelInfo.level;
 
-    // Check for level-up achievements
-    if (newLevel >= 5 && !achievements.includes("level_5")) {
-      unlockAchievement("level_5");
-    }
-    if (newLevel >= 10 && !achievements.includes("level_10")) {
-      unlockAchievement("level_10");
-    }
+    // Use startTransition for non-urgent state updates
+    startTransition(() => {
+      setXP((prev) => {
+        const newXP = prev + amount;
+        const newLevel = getLevelFromXP(newXP).level;
+
+        // Defer achievement checks using requestIdleCallback
+        if (typeof requestIdleCallback !== 'undefined') {
+          requestIdleCallback(() => {
+            if (newLevel >= 5 && !achievements.includes("level_5")) {
+              unlockAchievement("level_5");
+            }
+            if (newLevel >= 10 && !achievements.includes("level_10")) {
+              unlockAchievement("level_10");
+            }
+          });
+        } else {
+          // Fallback for browsers without requestIdleCallback
+          setTimeout(() => {
+            if (newLevel >= 5 && !achievements.includes("level_5")) {
+              unlockAchievement("level_5");
+            }
+            if (newLevel >= 10 && !achievements.includes("level_10")) {
+              unlockAchievement("level_10");
+            }
+          }, 0);
+        }
+
+        return newXP;
+      });
+    });
   };
 
   const unlockAchievement = (id: string) => {

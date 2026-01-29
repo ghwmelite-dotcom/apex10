@@ -54,56 +54,190 @@
     <!-- iPhone SE -->
     <link rel="apple-touch-startup-image" href="/apple-splash/apple-splash-640-1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
 
-    <!-- Preconnect to font origins -->
+    <!-- Resource hints for external origins - critical for FCP -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Load fonts asynchronously to prevent CLS - font will apply after paint -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=optional" /></noscript>
+    <link rel="dns-prefetch" href="https://api.coingecko.com" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
 
-    <!-- Inline critical font-face to prevent CLS from font loading -->
+    <!-- Load fonts with display=swap for better FCP (swap instead of optional for better UX) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
+
+    <!-- Preload critical assets for LCP optimization -->
+    <link rel="modulepreload" href="/src/main.tsx" />
+    <link rel="modulepreload" href="/src/App.tsx" />
+    <link rel="modulepreload" href="/src/pages/Dashboard.tsx" />
+    <link rel="modulepreload" href="/src/components/xrp/XRPHero.tsx" />
+
+    <!-- Critical CSS for First Contentful Paint - Inlined for immediate rendering -->
     <style>
-      /* Use font-display: optional to prevent CLS entirely */
-      /* This may show system fonts on slow connections but eliminates layout shift */
-      @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 400;
-        font-display: optional;
-        src: local('Inter'), local('Inter-Regular');
+      /* ========================================
+         CRITICAL CSS - ABOVE THE FOLD ONLY
+         Target: FCP < 1.8s desktop, < 4s mobile
+         ======================================== */
+
+      /* Base reset - instant render */
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+      html{
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+        text-rendering:optimizeLegibility;
+        scroll-behavior:smooth
       }
-      @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 500;
-        font-display: optional;
-        src: local('Inter Medium'), local('Inter-Medium');
+
+      /* Body with critical background */
+      body{
+        background-color:#030712;
+        color:#f9fafb;
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+        line-height:1.5;
+        overflow-x:hidden;
+        min-height:100vh
       }
-      @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 600;
-        font-display: optional;
-        src: local('Inter SemiBold'), local('Inter-SemiBold');
+
+      /* Root container - prevent CLS */
+      #root{
+        min-height:100vh;
+        min-height:100dvh;
+        position:relative
       }
-      @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 700;
-        font-display: optional;
-        src: local('Inter Bold'), local('Inter-Bold');
+
+      /* Critical font declarations with swap display for better UX */
+      @font-face{
+        font-family:'Inter';
+        font-style:normal;
+        font-weight:400;
+        font-display:swap;
+        src:local('Inter'),local('Inter-Regular')
       }
-      /* Reserve space to prevent layout shift */
-      #root {
-        min-height: 100vh;
-        min-height: 100dvh;
+      @font-face{
+        font-family:'Inter';
+        font-style:normal;
+        font-weight:500;
+        font-display:swap;
+        src:local('Inter Medium'),local('Inter-Medium')
       }
+      @font-face{
+        font-family:'Inter';
+        font-style:normal;
+        font-weight:600;
+        font-display:swap;
+        src:local('Inter SemiBold'),local('Inter-SemiBold')
+      }
+      @font-face{
+        font-family:'Inter';
+        font-style:normal;
+        font-weight:700;
+        font-display:swap;
+        src:local('Inter Bold'),local('Inter-Bold')
+      }
+
+      /* Apply Inter font once loaded */
+      body.fonts-loaded{
+        font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif
+      }
+
+      /* Noise texture overlay - instant visual depth (data URI is instant) */
+      body::before{
+        content:"";
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        pointer-events:none;
+        opacity:0.03;
+        z-index:40;
+        background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")
+      }
+
+      /* Critical loading skeleton - shows immediately */
+      .skeleton-loader{
+        background:linear-gradient(90deg,rgba(255,255,255,0.03) 0%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.03) 100%);
+        background-size:200% 100%;
+        animation:shimmer 1.5s ease-in-out infinite
+      }
+      @keyframes shimmer{
+        0%{background-position:-200% 0}
+        100%{background-position:200% 0}
+      }
+
+      /* Critical header styles - visible immediately on load */
+      header{
+        background:rgba(3,7,18,0.8);
+        backdrop-filter:blur(12px);
+        border-bottom:1px solid rgba(255,255,255,0.08)
+      }
+
+      /* Hero gradient - critical for LCP */
+      .hero-gradient{
+        background:radial-gradient(ellipse at center,rgba(0,255,209,0.15) 0%,transparent 70%)
+      }
+
+      /* Aurora text gradient - brand identity */
+      .aurora-text{
+        background:linear-gradient(135deg,#00FFD1 0%,#00D4FF 50%,#8B5CF6 100%);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text
+      }
+
+      /* Glass card - most common component */
+      .glass-card{
+        background:linear-gradient(135deg,rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.02) 100%);
+        backdrop-filter:blur(20px);
+        border:1px solid rgba(255,255,255,0.08);
+        border-radius:1.5rem
+      }
+
+      /* Pre-render hero container to reserve space (LCP optimization) */
+      .xrp-hero-container{
+        min-height:400px;
+        background:linear-gradient(180deg,#23292F 0%,#1a1f25 100%)
+      }
+
+      /* Initial loading spinner - instant feedback */
+      .initial-loader{
+        position:fixed;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        width:48px;
+        height:48px;
+        border:3px solid rgba(0,255,209,0.2);
+        border-top-color:#00FFD1;
+        border-radius:50%;
+        animation:spin 1s linear infinite;
+        z-index:9999
+      }
+      @keyframes spin{
+        to{transform:translate(-50%,-50%) rotate(360deg)}
+      }
+      .hydrated .initial-loader{display:none}
+
+      /* Prevent flash of unstyled content */
+      .bg-bg-primary{background-color:#030712}
+      .text-text-primary{color:#f9fafb}
+      .antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
     </style>
+
+    <!-- Preload critical font file directly for faster FCP -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- Mark fonts as loaded when ready -->
+    <script>
+      document.fonts.ready.then(()=>document.body.classList.add('fonts-loaded'));
+    </script>
 
     <title>Apex10 | XRP Intelligence Hub + Essential Crypto Signals</title>
   </head>
   <body class="bg-bg-primary text-text-primary antialiased">
-    <div id="root"></div>
+    <!-- Initial loading indicator for immediate feedback (improves perceived FCP) -->
+    <div id="root">
+      <div class="initial-loader" aria-label="Loading application"></div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

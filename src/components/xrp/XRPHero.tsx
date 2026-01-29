@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, TrendingUp, TrendingDown, BarChart3, DollarSign } from "lucide-react";
 import { SignalIndicator, getSignalType } from "./SignalIndicator";
@@ -22,7 +21,7 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
   };
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-xrp-hero border border-xrp-cyan/20 mb-8">
+    <section className="relative overflow-hidden rounded-3xl bg-xrp-hero border border-xrp-cyan/20 mb-8 xrp-hero-container">
       {/* Background effects */}
       <div className="absolute inset-0 bg-xrp-mesh opacity-60" />
       <div className="absolute top-0 right-0 w-96 h-96 bg-xrp-cyan/10 rounded-full blur-3xl" />
@@ -32,26 +31,19 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           {/* Left: Logo and Price */}
           <div className="flex flex-col md:flex-row md:items-center gap-6">
-            {/* XRP Logo with glow ring */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="relative"
-            >
+            {/* XRP Logo with glow ring - Removed framer-motion for LCP optimization */}
+            <div className="relative">
               <div className="relative w-24 h-24 md:w-32 md:h-32">
-                {/* Animated glow ring */}
-                <motion.div
-                  className="absolute inset-0 rounded-full border-2 border-xrp-cyan/50"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                {/* Animated glow ring - CSS animation instead of framer-motion */}
+                <div
+                  className="absolute inset-0 rounded-full border-2 border-xrp-cyan/50 animate-xrp-ring"
                   style={{
                     background: "conic-gradient(from 0deg, transparent, rgba(0, 170, 228, 0.3), transparent)",
                   }}
                 />
-                <motion.div
+                <div
                   className="absolute inset-2 rounded-full border border-xrp-cyan/30"
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                  style={{ animation: "xrp-ring 15s linear infinite reverse" }}
                 />
 
                 {/* Logo container */}
@@ -59,15 +51,11 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
                   <span className="text-3xl md:text-4xl font-black text-xrp-cyan">XRP</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Price and stats */}
+            {/* Price and stats - Removed animation delay for LCP */}
             <div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-              >
+              <div>
                 <div className="flex items-center gap-3 mb-2">
                   <h1 className="text-2xl md:text-3xl font-bold text-white">XRP</h1>
                   <SignalIndicator change24h={change24h} change7d={change7d} size="md" />
@@ -87,19 +75,14 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
                 <p className="mt-3 text-xrp-cyan/80 text-sm md:text-base max-w-md">
                   {taglines[signal]}
                 </p>
-              </motion.div>
+              </div>
             </div>
           </div>
 
-          {/* Right: Stats and CTAs */}
+          {/* Right: Stats and CTAs - Removed animation for LCP */}
           <div className="flex flex-col gap-4">
             {/* Quick stats */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="grid grid-cols-2 gap-3"
-            >
+            <div className="grid grid-cols-2 gap-3">
               <StatCard
                 icon={<BarChart3 className="w-4 h-4" />}
                 label="Market Cap"
@@ -112,15 +95,10 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
                 value={price ? formatNumber(price.volume24h, true) : "--"}
                 isLoading={isLoading}
               />
-            </motion.div>
+            </div>
 
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-3"
-            >
+            {/* CTAs - Removed animation for LCP */}
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/xrp"
                 className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-xrp-gradient text-xrp-navy font-semibold hover:shadow-xrp-glow transition-all"
@@ -134,7 +112,7 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
               >
                 View All 10 Cryptos
               </Link>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
