@@ -114,55 +114,35 @@ export function AurumSpotlight() {
         <div className="absolute top-1/2 right-1/4 w-96 h-96 bg-aurora-purple/10 rounded-full blur-3xl -translate-y-1/2" />
       </div>
 
-      {/* Section Header */}
+      {/* Section Header - No animations to prevent CLS */}
       <div className="relative z-10 text-center mb-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-solar-gold/20 border border-solar-gold/30 mb-4"
-        >
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-solar-gold/20 border border-solar-gold/30 mb-4">
           <Crown className="w-4 h-4 text-solar-gold" />
           <span className="text-sm font-medium text-solar-gold">Featured Investment Opportunity</span>
-        </motion.div>
+        </div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-3xl md:text-4xl font-bold mb-3"
-        >
+        <h2 className="text-3xl md:text-4xl font-bold mb-3">
           <span className="bg-gradient-to-r from-solar-gold via-plasma-orange to-solar-gold bg-clip-text text-transparent">
             AURUM
           </span>
           <span className="text-text-primary"> — Top 10 Company 2026</span>
-        </motion.h2>
+        </h2>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-text-muted max-w-2xl mx-auto"
-        >
+        <p className="text-text-muted max-w-2xl mx-auto">
           Discover how AI-powered trading and the Rule of 72 are revolutionizing wealth creation
-        </motion.p>
+        </p>
       </div>
 
       {/* Main Content Grid */}
       <div className="relative z-10 grid lg:grid-cols-3 gap-6">
-        {/* Left Column - Stats Grid */}
-        <div className="lg:col-span-1 grid grid-cols-2 gap-4">
+        {/* Left Column - Stats Grid - Fixed dimensions to prevent CLS */}
+        <div className="lg:col-span-1 grid grid-cols-2 gap-4 min-h-[200px]">
           {highlights.map((item, index) => (
             <motion.div
               key={item.title}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.05, y: -5 }}
               className="group relative"
+              style={{ opacity: 1 }}
             >
               <div className="glass-card p-4 h-full border border-border-default hover:border-solar-gold/50 transition-all duration-300">
                 {/* Icon */}
@@ -183,13 +163,9 @@ export function AurumSpotlight() {
           ))}
         </div>
 
-        {/* Center Column - Quote Carousel */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="lg:col-span-1"
+        {/* Center Column - Quote Carousel - Fixed height to prevent CLS */}
+        <div
+          className="lg:col-span-1 min-h-[280px]"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -200,8 +176,8 @@ export function AurumSpotlight() {
             {/* Quote icon */}
             <div className="text-solar-gold/30 text-6xl font-serif leading-none mb-4">"</div>
 
-            {/* Animated quotes */}
-            <div className="min-h-[120px] relative">
+            {/* Animated quotes - Fixed height to prevent CLS */}
+            <div className="min-h-[140px] relative">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeSnippet}
@@ -235,16 +211,10 @@ export function AurumSpotlight() {
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Right Column - Rule of 72 Preview + CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="lg:col-span-1 flex flex-col gap-4"
-        >
+        {/* Right Column - Rule of 72 Preview + CTA - No animation to prevent CLS */}
+        <div className="lg:col-span-1 flex flex-col gap-4">
           {/* Rule of 72 Mini Calculator Preview */}
           <div className="glass-card p-5 border border-aurora-purple/30 flex-1">
             <div className="flex items-center gap-2 mb-4">
@@ -275,12 +245,9 @@ export function AurumSpotlight() {
                   <div className="h-full w-1/5 bg-plasma-orange rounded-full" />
                 </div>
                 <div className="h-2 rounded-full bg-bg-tertiary overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: "3.5%" }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5, duration: 1 }}
+                  <div
                     className="h-full bg-gradient-to-r from-quantum-green to-aurora-cyan rounded-full shadow-glow"
+                    style={{ width: "3.5%" }}
                   />
                 </div>
               </div>
@@ -318,17 +285,11 @@ export function AurumSpotlight() {
               </motion.button>
             </a>
           </div>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Bottom Feature Strip */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4 }}
-        className="relative z-10 mt-8"
-      >
+      {/* Bottom Feature Strip - No animation to prevent CLS */}
+      <div className="relative z-10 mt-8">
         <div className="glass-card p-4 border border-border-default">
           <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 text-sm">
             <div className="flex items-center gap-2">
@@ -349,7 +310,7 @@ export function AurumSpotlight() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

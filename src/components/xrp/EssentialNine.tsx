@@ -37,8 +37,9 @@ export function EssentialNine({ assets, prices, isLoading }: EssentialNineProps)
         </Link>
       </div>
 
+      {/* Fixed height grid to prevent CLS */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[312px]">
           {Array.from({ length: 9 }).map((_, i) => (
             <div
               key={i}
@@ -47,7 +48,7 @@ export function EssentialNine({ assets, prices, isLoading }: EssentialNineProps)
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[312px]">
           {essentialAssets.map((asset, index) => (
             <EssentialCard
               key={asset.id}
@@ -73,15 +74,10 @@ function EssentialCard({ asset, price, index }: EssentialCardProps) {
   const isPositive = change >= 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.03 }}
+    <Link
+      to={`/asset/${asset.slug}`}
+      className="flex items-center gap-4 p-4 rounded-xl bg-bg-secondary/50 border border-border-default hover:border-aurora-cyan/30 hover:bg-bg-secondary transition-all group h-24"
     >
-      <Link
-        to={`/asset/${asset.slug}`}
-        className="flex items-center gap-4 p-4 rounded-xl bg-bg-secondary/50 border border-border-default hover:border-aurora-cyan/30 hover:bg-bg-secondary transition-all group"
-      >
         {/* Rank */}
         <div className="w-8 h-8 rounded-lg bg-bg-tertiary flex items-center justify-center flex-shrink-0">
           <span className="text-sm font-bold text-text-muted">#{asset.rank}</span>
@@ -125,7 +121,6 @@ function EssentialCard({ asset, price, index }: EssentialCardProps) {
           )}
           <span>{isPositive ? "+" : ""}{change.toFixed(1)}%</span>
         </div>
-      </Link>
-    </motion.div>
+    </Link>
   );
 }

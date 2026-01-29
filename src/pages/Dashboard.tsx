@@ -27,14 +27,20 @@ import { TiltCard } from "@/components/ui/TiltCard";
 import { MagneticButton, MagneticAuroraButton } from "@/components/ui/MagneticButton";
 
 // Simple CSS-based animation wrapper (no framer-motion for initial render)
-const FadeIn = ({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => (
-  <div
-    className={`animate-fade-in ${className}`}
-    style={{ animationDelay: `${delay}s` }}
-  >
-    {children}
-  </div>
-);
+// Mobile optimization: Remove delays on mobile for faster LCP
+const FadeIn = ({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const effectiveDelay = isMobile ? 0 : delay;
+
+  return (
+    <div
+      className={`animate-fade-in ${className}`}
+      style={{ animationDelay: `${effectiveDelay}s` }}
+    >
+      {children}
+    </div>
+  );
+};
 
 export default function Dashboard() {
   const { data: assets, isLoading: assetsLoading, error: assetsError } = useTop10Assets();
@@ -53,7 +59,10 @@ export default function Dashboard() {
       <FloatingOrbs />
 
       {/* XRP Hero Section - Above the fold - No animation delay for LCP */}
-      <XRPHero price={xrpPrice} isLoading={!prices} />
+      {/* Priority rendering for LCP optimization */}
+      <div className="fade-in-immediate">
+        <XRPHero price={xrpPrice} isLoading={!prices} />
+      </div>
 
       {/* XRP Deep Dive Section - Reduced delay */}
       <FadeIn delay={0.05}>

@@ -224,7 +224,7 @@ function FloatingOrbs() {
   );
 }
 
-// Individual crypto card
+// Individual crypto card - No viewport animations to prevent CLS
 function CryptoCard({ crypto, index }: { crypto: typeof FEATURED_CRYPTOS[0]; index: number }) {
   const Icon = crypto.icon;
 
@@ -233,12 +233,9 @@ function CryptoCard({ crypto, index }: { crypto: typeof FEATURED_CRYPTOS[0]; ind
       href={crypto.url}
       target="_blank"
       rel="noopener noreferrer"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className="group relative block"
+      style={{ opacity: 1 }}
     >
       <div
         className={`relative h-full p-5 rounded-2xl bg-bg-secondary/60 backdrop-blur-sm border ${crypto.borderColor} ${crypto.hoverBorder} transition-all duration-300 overflow-hidden`}
@@ -346,26 +343,15 @@ export function FeaturedCryptos2026() {
       <FloatingOrbs />
 
       <div className="relative z-10">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10"
-        >
+        {/* Section header - No animations to prevent CLS */}
+        <div className="text-center mb-10">
           {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-aurora-purple/10 via-aurora-cyan/10 to-aurora-purple/10 border border-aurora-purple/20 mb-4"
-          >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-aurora-purple/10 via-aurora-cyan/10 to-aurora-purple/10 border border-aurora-purple/20 mb-4">
+
             <Sparkles className="w-4 h-4 text-aurora-purple" />
             <span className="text-sm font-semibold text-aurora-purple">Featured for 2026</span>
             <Award className="w-4 h-4 text-aurora-cyan" />
-          </motion.div>
+          </div>
 
           {/* Title */}
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
@@ -391,9 +377,9 @@ export function FeaturedCryptos2026() {
             <span>Source: IBTimes</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </motion.a>
-        </motion.div>
+        </div>
 
-        {/* Featured heroes (top 2) */}
+        {/* Featured heroes (top 2) - No viewport animations to prevent CLS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {FEATURED_CRYPTOS.slice(0, 2).map((crypto, index) => (
             <motion.a
@@ -401,12 +387,9 @@ export function FeaturedCryptos2026() {
               href={crypto.url}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
               className="group relative block"
+              style={{ opacity: 1 }}
             >
               <div
                 className={`relative p-6 rounded-2xl bg-gradient-to-br ${crypto.gradient} overflow-hidden cursor-pointer`}
@@ -472,14 +455,8 @@ export function FeaturedCryptos2026() {
           ))}
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="text-center mt-10"
-        >
+        {/* Bottom CTA - No animation to prevent CLS */}
+        <div className="text-center mt-10">
           <Link
             to="/rankings"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-aurora-cyan to-aurora-purple text-black font-semibold hover:shadow-lg hover:shadow-aurora-cyan/30 transition-all"
@@ -488,7 +465,7 @@ export function FeaturedCryptos2026() {
             View Full Rankings
             <ChevronRight className="w-5 h-5" />
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

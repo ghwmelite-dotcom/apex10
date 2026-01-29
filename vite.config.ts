@@ -103,14 +103,25 @@ export default defineConfig({
     },
   },
   build: {
-    minify: "esbuild",
+    // Mobile LCP optimization - aggressive minification
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: process.env.NODE_ENV === "production",
+        drop_debugger: true,
+        pure_funcs: ["console.log", "console.info"],
+      },
+    },
     // Disable source maps in production for smaller bundles
     sourcemap: process.env.NODE_ENV !== "production",
     target: "esnext",
     // Critical CSS inline threshold - inline small CSS files for faster FCP
     cssCodeSplit: true,
     assetsInlineLimit: 4096, // Inline assets < 4KB as base64
-    chunkSizeWarningLimit: 600, // Warn on chunks > 600KB
+    chunkSizeWarningLimit: 500, // Warn on chunks > 500KB (reduced for mobile)
+    // Mobile performance budget
+    reportCompressedSize: true,
+    cssMinify: true,
     rollupOptions: {
       treeshake: {
         preset: "recommended",
@@ -152,7 +163,17 @@ export default defineConfig({
 
           // Icons - tree-shake but group together
           if (id.includes("lucide-react")) return "vendor-icons";
+
+          // Recharts - only for analytics pages
+          if (id.includes("recharts")) return "vendor-charts";
+
+          // Split large components into separate chunks for better caching
+          if (id.includes("/components/") && id.includes("Article")) return "components-article";
+          if (id.includes("/components/") && id.includes("Security")) return "components-security";
+          if (id.includes("/components/") && id.includes("Community")) return "components-community";
         },
+        // Optimize chunk size for mobile networks
+        inlineDynamicImports: false,
       },
     },
   },

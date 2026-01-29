@@ -22,10 +22,11 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
 
   return (
     <section className="relative overflow-hidden rounded-3xl bg-xrp-hero border border-xrp-cyan/20 mb-8 xrp-hero-container">
-      {/* Background effects */}
+      {/* Background effects - Optimized for mobile LCP */}
       <div className="absolute inset-0 bg-xrp-mesh opacity-60" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-xrp-cyan/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-xrp-teal/10 rounded-full blur-3xl" />
+      {/* Reduce blur complexity on mobile for faster paint */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-xrp-cyan/10 rounded-full blur-xl md:blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-xrp-teal/10 rounded-full blur-xl md:blur-3xl" />
 
       <div className="relative z-10 p-6 md:p-10">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
@@ -35,14 +36,15 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
             <div className="relative">
               <div className="relative w-24 h-24 md:w-32 md:h-32">
                 {/* Animated glow ring - CSS animation instead of framer-motion */}
+                {/* Disable animation on mobile for better LCP */}
                 <div
-                  className="absolute inset-0 rounded-full border-2 border-xrp-cyan/50 animate-xrp-ring"
+                  className="absolute inset-0 rounded-full border-2 border-xrp-cyan/50 md:animate-xrp-ring"
                   style={{
                     background: "conic-gradient(from 0deg, transparent, rgba(0, 170, 228, 0.3), transparent)",
                   }}
                 />
                 <div
-                  className="absolute inset-2 rounded-full border border-xrp-cyan/30"
+                  className="absolute inset-2 rounded-full border border-xrp-cyan/30 md:block hidden"
                   style={{ animation: "xrp-ring 15s linear infinite reverse" }}
                 />
 
@@ -61,16 +63,19 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
                   <SignalIndicator change24h={change24h} change7d={change7d} size="md" />
                 </div>
 
-                {isLoading ? (
-                  <div className="h-12 w-48 bg-xrp-cyan/10 rounded-lg animate-pulse" />
-                ) : (
-                  <div className="flex items-baseline gap-4">
-                    <span className="text-4xl md:text-5xl font-bold text-white">
-                      {price ? formatUsd(price.priceUsd) : "$--"}
-                    </span>
-                    <PriceChangeIndicator value={change24h} label="24h" />
-                  </div>
-                )}
+                {/* Fixed height container to prevent CLS */}
+                <div className="h-[52px] md:h-[60px] flex items-baseline">
+                  {isLoading ? (
+                    <div className="h-12 w-48 bg-xrp-cyan/10 rounded-lg animate-pulse" />
+                  ) : (
+                    <div className="flex items-baseline gap-4">
+                      <span className="text-4xl md:text-5xl font-bold text-white">
+                        {price ? formatUsd(price.priceUsd) : "$--"}
+                      </span>
+                      <PriceChangeIndicator value={change24h} label="24h" />
+                    </div>
+                  )}
+                </div>
 
                 <p className="mt-3 text-xrp-cyan/80 text-sm md:text-base max-w-md">
                   {taglines[signal]}
@@ -81,8 +86,8 @@ export function XRPHero({ price, isLoading }: XRPHeroProps) {
 
           {/* Right: Stats and CTAs - Removed animation for LCP */}
           <div className="flex flex-col gap-4">
-            {/* Quick stats */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Quick stats - Fixed height to prevent CLS */}
+            <div className="grid grid-cols-2 gap-3 min-h-[88px]">
               <StatCard
                 icon={<BarChart3 className="w-4 h-4" />}
                 label="Market Cap"

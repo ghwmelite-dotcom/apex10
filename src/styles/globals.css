@@ -518,6 +518,26 @@
   .hover-effect:hover {
     transform: none;
   }
+
+  /* Mobile LCP optimization - disable expensive animations */
+  .animate-xrp-ring,
+  .animate-aurora,
+  .animate-pulse-slow,
+  .animate-float,
+  .animate-float-slow {
+    animation: none !important;
+  }
+
+  /* Reduce blur effects on mobile for faster paint */
+  .blur-3xl {
+    filter: blur(40px) !important;
+  }
+
+  /* Simplify gradients on mobile */
+  .bg-mesh-gradient,
+  .bg-mesh-subtle {
+    opacity: 0.3 !important;
+  }
 }
 
 /* Prevent text selection on UI elements */

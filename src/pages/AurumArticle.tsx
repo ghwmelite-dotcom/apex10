@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import {
   TrendingUp,
@@ -27,7 +27,9 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { FloatingOrbs } from "@/components/ParticleBackground";
+
+// Lazy load non-critical components
+const FloatingOrbs = lazy(() => import("@/components/ParticleBackground").then(module => ({ default: module.FloatingOrbs })));
 
 // Interactive Rule of 72 Calculator
 function RuleOf72Calculator() {
@@ -122,38 +124,43 @@ function RuleOf72Calculator() {
   );
 }
 
-// Animated counter component
+// Animated counter component - optimized to defer animation until visible
 function AnimatedCounter({ value, suffix = "", prefix = "" }: { value: number; suffix?: string; prefix?: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
-          let start = 0;
-          const end = value;
-          const duration = 2000;
-          const increment = end / (duration / 16);
+    // Defer observer setup to prevent blocking initial render
+    const timeoutId = setTimeout(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true);
+            let start = 0;
+            const end = value;
+            const duration = 2000;
+            const increment = end / (duration / 16);
 
-          const timer = setInterval(() => {
-            start += increment;
-            if (start >= end) {
-              setCount(end);
-              clearInterval(timer);
-            } else {
-              setCount(Math.floor(start));
-            }
-          }, 16);
-        }
-      },
-      { threshold: 0.5 }
-    );
+            const timer = setInterval(() => {
+              start += increment;
+              if (start >= end) {
+                setCount(end);
+                clearInterval(timer);
+              } else {
+                setCount(Math.floor(start));
+              }
+            }, 16);
+          }
+        },
+        { threshold: 0.5 }
+      );
 
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+      if (ref.current) observer.observe(ref.current);
+      return () => observer.disconnect();
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
   }, [value, hasAnimated]);
 
   return (
@@ -163,7 +170,7 @@ function AnimatedCounter({ value, suffix = "", prefix = "" }: { value: number; s
   );
 }
 
-// Stats card component
+// Stats card component - Optimized for faster initial render
 function StatCard({ icon: Icon, value, label, suffix = "", prefix = "" }: {
   icon: React.ElementType;
   value: number;
@@ -172,18 +179,13 @@ function StatCard({ icon: Icon, value, label, suffix = "", prefix = "" }: {
   prefix?: string;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="p-6 rounded-2xl bg-bg-secondary/80 border border-border-default hover:border-aurora-cyan/30 transition-all group"
-    >
+    <div className="p-6 rounded-2xl bg-bg-secondary/80 border border-border-default hover:border-aurora-cyan/30 transition-all group">
       <div className="p-3 rounded-xl bg-aurora-cyan/10 w-fit mb-4 group-hover:bg-aurora-cyan/20 transition-colors">
         <Icon className="w-6 h-6 text-aurora-cyan" />
       </div>
       <AnimatedCounter value={value} suffix={suffix} prefix={prefix} />
       <p className="text-text-muted mt-2">{label}</p>
-    </motion.div>
+    </div>
   );
 }
 
@@ -495,13 +497,24 @@ function ProminentCTA() {
 
 export default function AurumArticle() {
   const [activeSection, setActiveSection] = useState("intro");
+  const [isScrollSetup, setIsScrollSetup] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.95]);
 
-  // Track active section
+  // Defer scroll tracking setup to improve FCP
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsScrollSetup(true);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Track active section - deferred setup
+  useEffect(() => {
+    if (!isScrollSetup) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -518,44 +531,33 @@ export default function AurumArticle() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [isScrollSetup]);
 
   return (
     <div className="relative min-h-screen pb-32">
-      <FloatingOrbs />
-      <TableOfContents activeSection={activeSection} />
+      <Suspense fallback={null}>
+        <FloatingOrbs />
+      </Suspense>
+      {isScrollSetup && <TableOfContents activeSection={activeSection} />}
       <FloatingCTABar />
 
-      {/* Hero Section */}
-      <motion.div
-        ref={heroRef}
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative pt-8 pb-20 overflow-hidden"
-      >
+      {/* Hero Section - Simplified initial render for faster FCP */}
+      <div className="relative pt-8 pb-20 overflow-hidden">
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-mesh-gradient opacity-70" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg-primary/50 to-bg-primary" />
 
         <div className="container-custom relative z-10">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex justify-center mb-6"
-          >
+          {/* Badge - Static render first, animate after */}
+          <div className="flex justify-center mb-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-nova-gold/10 border border-nova-gold/30">
               <Award className="w-4 h-4 text-nova-gold" />
               <span className="text-sm font-medium text-nova-gold">Top 10 Companies to Watch in 2026</span>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Title */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-center mb-6"
-          >
+          {/* Title - Critical content rendered immediately without animation delay */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-center mb-6">
             <span className="bg-gradient-to-r from-aurora-cyan via-aurora-blue to-aurora-purple bg-clip-text text-transparent">
               AURUM
             </span>
@@ -563,26 +565,16 @@ export default function AurumArticle() {
             <span className="text-text-primary text-3xl md:text-4xl lg:text-5xl">
               The Decentralized Fintech Giant
             </span>
-          </motion.h1>
+          </h1>
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-text-muted text-center max-w-3xl mx-auto mb-8"
-          >
+          {/* Subtitle - Critical content */}
+          <p className="text-lg md:text-xl text-text-muted text-center max-w-3xl mx-auto mb-8">
             How AI-powered trading bots and the Rule of 72 are creating a new paradigm
             for wealth generation in 2026
-          </motion.p>
+          </p>
 
           {/* Meta info */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="flex items-center justify-center gap-6 text-sm text-text-muted"
-          >
+          <div className="flex items-center justify-center gap-6 text-sm text-text-muted">
             <span className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
               15 min read
@@ -591,85 +583,58 @@ export default function AurumArticle() {
               <Star className="w-4 h-4 text-nova-gold" />
               Featured Article
             </span>
-          </motion.div>
+          </div>
 
-          {/* Hero CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10"
+          {/* Hero CTA Buttons - Render immediately without animation */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10"
           >
-            <motion.a
+            <a
               href="https://backoffice.aurum.foundation/u/XHM02H"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(0, 255, 209, 0.5)" }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg overflow-hidden shadow-glow"
+              className="group relative flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg overflow-hidden shadow-glow hover:scale-105 transition-transform"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-aurora-cyan via-aurora-blue to-aurora-cyan bg-[length:200%_100%] animate-shimmer" />
+              <div className="absolute inset-0 bg-gradient-to-r from-aurora-cyan via-aurora-blue to-aurora-cyan bg-[length:200%_100%]" />
               <span className="relative flex items-center gap-2 text-bg-primary">
-                <Rocket className="w-5 h-5 group-hover:animate-bounce" />
+                <Rocket className="w-5 h-5" />
                 Join AURUM Now
-                <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ExternalLink className="w-4 h-4" />
               </span>
-            </motion.a>
+            </a>
 
-            <motion.a
+            <a
               href="https://t.me/+2Dh6dm4nZMsxZTg8"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-[#0088cc] hover:bg-[#0099dd] text-white font-bold text-lg transition-all shadow-lg hover:shadow-[0_0_30px_rgba(0,136,204,0.5)]"
+              className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-[#0088cc] hover:bg-[#0099dd] text-white font-bold text-lg transition-all shadow-lg"
             >
               <Send className="w-5 h-5" />
               Join Telegram
-            </motion.a>
-          </motion.div>
+            </a>
+          </div>
 
-          {/* Scroll indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="flex justify-center mt-10"
-          >
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="p-2 rounded-full border border-border-default"
-            >
+          {/* Scroll indicator - Simplified for faster initial render */}
+          <div className="flex justify-center mt-10">
+            <div className="p-2 rounded-full border border-border-default">
               <ChevronDown className="w-5 h-5 text-text-muted" />
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Main Content */}
       <div className="container-custom pb-20">
-        {/* Stats Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-20 -mt-10"
-        >
+        {/* Stats Grid - Render immediately without animations for faster FCP */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-20 -mt-10">
           <StatCard icon={TrendingUp} value={50} suffix="M+" label="USDT Trading Volume" prefix="$" />
           <StatCard icon={Bot} value={14} suffix="M+" label="AI Arbitrage Trades" prefix="$" />
           <StatCard icon={Users} value={15000} suffix="+" label="Active Users" />
           <StatCard icon={Zap} value={17.5} suffix="%" label="Avg Monthly Return" />
-        </motion.div>
+        </div>
 
-        {/* Introduction Section */}
+        {/* Introduction Section - Critical content rendered immediately */}
         <section id="intro" className="mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="prose prose-invert prose-lg max-w-4xl mx-auto"
-          >
+          <div className="prose prose-invert prose-lg max-w-4xl mx-auto">
             <p className="text-xl text-text-secondary leading-relaxed">
               In a financial landscape cluttered with promises and riddled with complexity,
               one company has emerged from the noise with a proposition so compelling that
@@ -691,7 +656,7 @@ export default function AurumArticle() {
               generated <strong className="text-success-green">14 million USDT</strong> through
               AI-powered arbitrage, and attracted more than <strong className="text-aurora-cyan">15,000 users</strong>.
             </p>
-          </motion.div>
+          </div>
         </section>
 
         {/* First Prominent CTA */}
